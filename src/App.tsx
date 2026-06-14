@@ -1,7 +1,7 @@
 import 'modern-normalize'
 
 import './components/styles/global.module.scss'
-import ProductList from './components/ProductsList'
+import ProductList from './components/ProductsList.tsx'
 
 function App() {
   return (
