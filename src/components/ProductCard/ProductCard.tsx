@@ -11,34 +11,33 @@ interface ProductCardProps {
 export default function ProductCard({ imgUrl, name, price, discount }: ProductCardProps) {
 
   return (
-    <div className={styles['card-container']}>
-      <div>
-        <img className={styles['card-img']} src={imgUrl} alt={name} />
-      </div>
-      <div className={styles['card-info']}>
-        <h3>{name}</h3>
-        <p></p>
-        {discount
-          ? (
-            <div>
-              <span>
-                {price - discount}
-              </span>
-              <br />
-              <span>
-                {price}
-              </span>
-              <br />
-              <span>
-                {discount}
-              </span>
-            </div>
-          )
-          : <div><span>{price}</span></div>
-        }
-
-
-      </div>
-    </div>
+    <li className={styles.cardContainer}>
+      <a href='#'>
+        <img className={styles.cardImg} src={imgUrl} alt={name} />
+        
+        <div className={styles.cardInfo}>
+          <h3 className={styles.name}>{name}</h3>
+          <div className={styles.price}>
+            {discount ? (
+                <>
+                  <span className={styles.newPrice}>{price - discount}₴</span>
+                  
+                  <span className={styles.oldPrice}>{price}₴</span>
+                </>
+              )
+              : <><span className={styles.allPrice}>{price}₴</span></>
+            }
+          </div>
+          <>
+            {discount &&
+              <>
+                <hr></hr>
+                <p className={styles.discount}>Save - {discount}₴</p>
+              </>
+            }
+          </>
+        </div>
+      </a>
+    </li>
   )
 };
