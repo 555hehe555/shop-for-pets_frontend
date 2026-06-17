@@ -55,3 +55,37 @@ img{
   display: block;
 }
 
+
+:root {
+  --bg: #DDF4EF;
+  --surface: #FFFFFF;
+
+  --primary: #2A9D8F;
+  --primary-hover: #23867A;
+
+  --accent: #F4A261;
+  --accent-hover: #E8904A;
+
+  --text: #2B2D42;
+  --text-secondary: #6C757D;
+
+  --success: #4CAF50;
+  --danger: #E63946;
+
+  --border: #D7E3E0;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .05);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, .12);
+
+  --radius: 16px;
+
+  --breakpoint-phone: 576px;
+  --breakpoint-tablet: 992px;
+  --breakpoint-pc: 1200px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, sans-serif;
+}

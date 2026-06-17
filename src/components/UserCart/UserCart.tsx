@@ -1,3 +1,5 @@
+import styles from './UserCart.module.scss'
+
 interface CartProps {
   count: number;
 }
@@ -5,7 +7,7 @@ interface CartProps {
 export default function Cart({ count }: CartProps) {
   return (
     <div>
-      Корзина: {count}
+      <p className={styles.inCart}>Корзина: {count}</p>
     </div>
   );
 }

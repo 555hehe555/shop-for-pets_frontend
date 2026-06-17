@@ -1,4 +1,5 @@
 import ProductCard from "./ProductCard/ProductCard.tsx";
+import styles from './ProductCard/ProductCard.module.scss'
 
 interface Product {
   id: number;
@@ -22,7 +23,7 @@ const products: Product[] = [
 
 export default function ProductList({ handleToggleCart }: ProductListProps) {
   return (
-    <ul>
+    <ul className={styles.listCards}>
       {products.map((product)=>(
         <ProductCard
           key={product.id}
