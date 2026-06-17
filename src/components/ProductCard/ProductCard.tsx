@@ -2,17 +2,27 @@ import styles from './ProductCard.module.scss';
 
 
 interface ProductCardProps {
+  id: number
   imgUrl: string;
   name: string;
   price: number;
   discount?: number;
+  onToggleCart: (id: number) => void;
 };
 
-export default function ProductCard({ imgUrl, name, price, discount }: ProductCardProps) {
+// interface cartState {
+//   addCard: boolean
+//   onuUpdate: () => void
+// }
+
+export default function ProductCard({ id, imgUrl, name, price, discount, onToggleCart }: ProductCardProps) {
+  const handleClick = () => {
+    onToggleCart(id);
+  };
 
   return (
     <li className={styles.cardContainer}>
-      <a href='#'>
+      <a onClick={handleClick}>
         <img className={styles.cardImg} src={imgUrl} alt={name} />
         
         <div className={styles.cardInfo}>

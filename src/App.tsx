@@ -1,11 +1,28 @@
 import 'modern-normalize'
 
+import { useState } from 'react'
 import './components/styles/global.module.scss'
+import UserCart from './components/UserCart/UserCart.tsx'
 import ProductList from './components/ProductsList.tsx'
 
 function App() {
+  const [cartItems, setCartItems] = useState<number[]>([]);
+
+  const handleToggleCart = (id: number) => {
+    setCartItems(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(itemId => itemId !== id);
+      }
+
+      return [...prev, id];
+    });
+  };
+
   return (
-    <ProductList/>
+    <>
+      <ProductList handleToggleCart={handleToggleCart} />
+      <UserCart count={cartItems.length} />
+    </>
   )
 }
 
