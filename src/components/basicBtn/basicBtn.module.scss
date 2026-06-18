@@ -1,0 +1,87 @@
+@mixin buttonVariant($bg, $hover, $textColor: white) {
+  background-color: $bg;
+  color: $textColor;
+
+  &:hover:not(:disabled) {
+    background-color: $hover;
+  }
+}
+
+.button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 20px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  width: fit-content;
+
+  transition: 0.5s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+}
+
+.sm {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.md {
+  padding: 12px 20px;
+  font-size: 16px;
+}
+
+.lg {
+  padding: 16px 28px;
+  font-size: 18px;
+}
+
+.primary {
+  @include buttonVariant(
+    var(--primary),
+    var(--primary-hover)
+  );
+}
+
+.secondary {
+  @include buttonVariant(
+    var(--surface),
+    var(--bg),
+    var(--text)
+  );
+
+  border: 1px solid var(--border);
+}
+
+.success {
+  @include buttonVariant(
+    var(--success),
+    #43a047
+  );
+}
+
+.danger {
+  @include buttonVariant(
+    var(--danger),
+    #d62839
+  );
+}

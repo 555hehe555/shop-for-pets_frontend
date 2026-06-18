@@ -4,6 +4,7 @@ import { useState } from 'react'
 import './components/styles/global.module.scss'
 import UserCart from './components/UserCart/UserCart.tsx'
 import ProductList from './components/ProductsList.tsx'
+import BasicBtn from './components/basicBtn/basicBtn.tsx'
 
 function App() {
   const [cartItems, setCartItems] = useState<number[]>([]);
@@ -20,6 +21,12 @@ function App() {
 
   return (
     <>
+      <BasicBtn 
+        text='hello?' 
+        onClick={() => alert("world!!")}
+        variant='secondary'
+        size='lg'
+      />
       <ProductList handleToggleCart={handleToggleCart} />
       <UserCart count={cartItems.length} />
     </>
