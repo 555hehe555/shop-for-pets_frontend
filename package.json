@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/lobster": "^5.2.8",
+    "@fontsource/roboto": "^5.2.10",
     "clsx": "^2.1.1",
     "modern-normalize": "^3.0.1",
     "react": "^19.2.6",

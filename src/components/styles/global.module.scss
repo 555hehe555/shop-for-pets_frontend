@@ -57,35 +57,40 @@ img{
 
 
 :root {
-  --bg: #DDF4EF;
+  --bg: #FFF8F2;
+
+  --header: #F17644;
+  --footer: #795548;
+
   --surface: #FFFFFF;
 
-  --primary: #2A9D8F;
-  --primary-hover: #23867A;
+  --primary: #FF8A5B;
+  --primary-hover: #F17644;
 
-  --accent: #F4A261;
-  --accent-hover: #E8904A;
+  --secondary: #7CC6B8;
 
-  --text-primary: #2B2D42;
-  --text-secondary: #6C757D;
+  --accent: #FF5E7D;
 
-  --success: #4CAF50;
-  --danger: #E63946;
+  --text: #2D3436;
+  --text-secondary: #636E72;
 
-  --border: #D7E3E0;
+  --success: #6BCB77;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .05);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, .12);
+  --border: #F0E4D7;
+
+  --font-main: "Roboto", sans-serif;
+  --font-logo: "Lobster", cursive;
 
   --radius: 16px;
 
   --breakpoint-phone: 576px;
-  --breakpoint-tablet: 992px;
-  --breakpoint-pc: 1200px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 992px;
+  --breakpoint-desktop: 1200px;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, sans-serif;
+  font-family: var(--font-main);
 }

@@ -1,35 +1,18 @@
 import 'modern-normalize'
 
-import { useState } from 'react'
 import './components/styles/global.module.scss'
-import UserCart from './components/UserCart/UserCart.tsx'
-import ProductList from './components/ProductsList.tsx'
-import BasicBtn from './components/basicBtn/basicBtn.tsx'
+import Header from './components/layout/Header/Header.tsx'
+import Main from './components/layout/Main/Main.tsx'
+import Footer from './components/layout/Footer/Footer.tsx'
+
 
 function App() {
-  const [cartItems, setCartItems] = useState<number[]>([]);
-
-  const handleToggleCart = (id: number) => {
-    setCartItems(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(itemId => itemId !== id);
-      }
-
-      return [...prev, id];
-    });
-  };
-
   return (
     <>
-      <BasicBtn 
-        text='hello?' 
-        onClick={() => alert("world!!")}
-        variant='secondary'
-        size='lg'
-      />
-      <ProductList handleToggleCart={handleToggleCart} />
-      <UserCart count={cartItems.length} />
-    </>
+      <Header />
+      <Main />
+      <Footer />
+  </>
   )
 }
 
