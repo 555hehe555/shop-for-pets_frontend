@@ -1,15 +1,17 @@
-import styles from "./basicBtn.module.scss";
+import type { ReactNode } from "react";
+import styles from "./Button.module.scss";
 
 interface BasicButtonProps {
-  text: string;
+  // text: string;
+  children: ReactNode;
   variant?: "primary" | "secondary" | "success" | "danger";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
   onClick?: () => void;
 }
 
-export default function BasicBtn({
-  text,
+export default function Button({
+  children,
   variant = "primary",
   size = "md",
   disabled = false,
@@ -25,7 +27,7 @@ export default function BasicBtn({
       onClick={onClick}
       disabled={disabled}
     >
-      {text}
+      {children}
     </button>
   );
 }

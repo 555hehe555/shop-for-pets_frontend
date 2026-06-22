@@ -1,15 +1,18 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+// import 'modern-normalize'
 
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/700.css';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
 
-import '@fontsource/lobster';
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/700.css";
 
-createRoot(document.getElementById('root')!).render(
+import "@fontsource/lobster/400.css";
+
+import "./styles/global.scss";
+
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
   </StrictMode>,
-)
+);
