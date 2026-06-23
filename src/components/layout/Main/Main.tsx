@@ -4,6 +4,7 @@ import { useState } from "react";
 import UserCart from "../../UserCart/UserCart.tsx";
 import ProductList from "../../ProductsList.tsx";
 import Button from "../../Button/Button.tsx";
+import RegistrationForm from "../../RegistrationForm/RegistrationForm.tsx";
 
 export default function Main() {
   const [cartItems, setCartItems] = useState<number[]>([]);
@@ -26,6 +27,12 @@ export default function Main() {
 
       <ProductList handleToggleCart={handleToggleCart} />
       <UserCart count={cartItems.length} />
+
+      <RegistrationForm
+        onSubmit={(value) => {
+          console.log(value);
+        }}
+      />
     </main>
   );
 }
