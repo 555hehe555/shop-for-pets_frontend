@@ -1,0 +1,55 @@
+import { createPortal } from "react-dom";
+import { useEffect } from "react";
+
+import styles from "./Modal.module.scss";
+
+interface ModalProps {
+  onClose: () => void; // Додаємо пропс children і типізуємо його
+  children: React.ReactNode;
+}
+
+export default function Modal({ onClose, children }: ModalProps) {
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
+  return createPortal(
+    <div
+      className={styles.backdrop}
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+    >
+      {" "}
+      <div className={styles.modal}>
+        {" "}
+        <button
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label="Close modal"
+        >
+          &times;{" "}
+        </button>
+        {/* Тут рендериться переданий вміст із пропса children */}
+        {children}{" "}
+      </div>{" "}
+    </div>,
+    document.body,
+  );
+}

@@ -5,6 +5,7 @@ import UserCart from "../../UserCart/UserCart.tsx";
 import ProductList from "../../ProductsList.tsx";
 import Button from "../../Button/Button.tsx";
 import RegistrationForm from "../../RegistrationForm/RegistrationForm.tsx";
+import Modal from "../../Modal/Modal.tsx";
 
 export default function Main() {
   const [cartItems, setCartItems] = useState<number[]>([]);
