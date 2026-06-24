@@ -1,5 +1,6 @@
 import styles from "./UserCart.module.scss";
-import shoppingCart from "../../data/shopping_cart.svg";
+
+import { GrCart } from "react-icons/gr";
 
 interface CartProps {
   count: number;
@@ -8,7 +9,7 @@ interface CartProps {
 export default function Cart({ count }: CartProps) {
   return (
     <div className={styles.cartContainer}>
-      <img className={styles.cartImg} src={shoppingCart} alt="Shopping Cart" />
+      <GrCart className={styles.cartImg} />
       <p className={styles.cartP}>{count}</p>
     </div>
   );

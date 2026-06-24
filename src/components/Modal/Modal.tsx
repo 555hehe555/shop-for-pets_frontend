@@ -36,19 +36,17 @@ export default function Modal({ onClose, children }: ModalProps) {
       role="dialog"
       aria-modal="true"
     >
-      {" "}
       <div className={styles.modal}>
-        {" "}
         <button
           className={styles.closeButton}
           onClick={onClose}
           aria-label="Close modal"
         >
-          &times;{" "}
+          &times;
         </button>
         {/* Тут рендериться переданий вміст із пропса children */}
-        {children}{" "}
-      </div>{" "}
+        {children}
+      </div>
     </div>,
     document.body,
   );

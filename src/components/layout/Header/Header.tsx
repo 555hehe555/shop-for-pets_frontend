@@ -1,11 +1,19 @@
-// import { useState } from "react";
+import { useState } from "react";
 import styles from "./Header.module.scss";
 
 import UserCart from "../../UserCart/UserCart.tsx";
 import Button from "../../Button/Button.tsx";
 import Input from "../../Input/Input";
+import Modal from "../../Modal/Modal.tsx";
+import RegistrationForm from "../../RegistrationForm/RegistrationForm.tsx";
 
 export default function Header() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <header>
       <div>
@@ -19,10 +27,19 @@ export default function Header() {
               Login
             </Button>
           </li>
-          <li className={styles.link}>
-            <Button size="sm" variant="primary">
+          <li>
+            <Button size="sm" variant="primary" onClick={openModal}>
               Registration
             </Button>
+            {isModalOpen && (
+              <Modal onClose={closeModal}>
+                <RegistrationForm
+                  onSubmit={(value) => {
+                    console.log(value);
+                  }}
+                />
+              </Modal>
+            )}
           </li>
         </div>
 
