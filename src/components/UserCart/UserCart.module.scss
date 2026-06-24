@@ -1,3 +1,15 @@
-.inCart {
-  color: var(--text-primary);
+.cartContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  .cartP {
+    color: var(--text-primary);
+    font-size: 16px;
+  }
+
+  .cartImg {
+    width: 40px;
+    height: 40px;
+  }
 }

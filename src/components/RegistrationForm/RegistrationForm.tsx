@@ -1,5 +1,8 @@
-// import stules from './RegistrationForm.module.scss'
+import styles from "./RegistrationForm.module.scss";
 import { useId } from "react";
+
+import Input from "../Input/Input";
+import Button from "../Button/Button";
 
 interface OnSubmitProps {
   onSubmit: (value: object) => void;
@@ -15,40 +18,56 @@ export default function RegistrationForm({ onSubmit }: OnSubmitProps) {
   };
 
   return (
-    <form action={handleSubmit}>
-      <label htmlFor={`${fieldId}-username`}>username</label>
-      <input
-        type="text"
-        name="username"
-        id={`${fieldId}-username`}
-        autoComplete="username"
-      />
+    <form className={styles.form} action={handleSubmit}>
+      <h2 className={styles.title}>Registration</h2>
 
-      <label htmlFor={`${fieldId}-pass1`}>pass1</label>
-      <input
-        type="password"
-        name="pass1"
-        id={`${fieldId}-pass1`}
-        autoComplete="new-password"
-      />
+      <div className={styles.field}>
+        <label htmlFor={`${fieldId}-username`}>Username</label>
+        <Input
+          type="text"
+          name="username"
+          id={`${fieldId}-username`}
+          autoComplete="username"
+          placeholder="Username"
+        />
+      </div>
 
-      <label htmlFor={`${fieldId}-pass2`}>pass2</label>
-      <input
-        type="password"
-        name="pass2"
-        id={`${fieldId}-pass2`}
-        autoComplete="new-password"
-      />
+      <div className={styles.field}>
+        <label htmlFor={`${fieldId}-pass1`}>Password</label>
+        <Input
+          type="password"
+          name="pass1"
+          id={`${fieldId}-pass1`}
+          autoComplete="new-password"
+          placeholder="Password"
+        />
+      </div>
 
-      <label htmlFor={`${fieldId}-email`}>email</label>
-      <input
-        type="email"
-        name="email"
-        id={`${fieldId}-email`}
-        autoComplete="email"
-      />
+      <div className={styles.field}>
+        <label htmlFor={`${fieldId}-pass2`}>Confirm password</label>
+        <Input
+          type="password"
+          name="pass2"
+          id={`${fieldId}-pass2`}
+          autoComplete="new-password"
+          placeholder="Repeat password"
+        />
+      </div>
 
-      <button type="submit">Registration</button>
+      <div className={styles.field}>
+        <label htmlFor={`${fieldId}-email`}>Email</label>
+        <Input
+          type="email"
+          name="email"
+          id={`${fieldId}-email`}
+          autoComplete="email"
+          placeholder="example@gmail.com"
+        />
+      </div>
+
+      <Button size="lg" type="submit">
+        Registration
+      </Button>
     </form>
   );
 }

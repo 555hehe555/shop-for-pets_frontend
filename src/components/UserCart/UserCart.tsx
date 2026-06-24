@@ -1,4 +1,5 @@
-import styles from './UserCart.module.scss'
+import styles from "./UserCart.module.scss";
+import shoppingCart from "../../data/shopping_cart.svg";
 
 interface CartProps {
   count: number;
@@ -6,8 +7,9 @@ interface CartProps {
 
 export default function Cart({ count }: CartProps) {
   return (
-    <div>
-      <p className={styles.inCart}>Корзина: {count}</p>
+    <div className={styles.cartContainer}>
+      <img className={styles.cartImg} src={shoppingCart} alt="Shopping Cart" />
+      <p className={styles.cartP}>{count}</p>
     </div>
   );
 }

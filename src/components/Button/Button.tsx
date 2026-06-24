@@ -1,13 +1,10 @@
-import type { ReactNode } from "react";
+import type { ReactNode, ComponentPropsWithoutRef } from "react";
 import styles from "./Button.module.scss";
 
-interface BasicButtonProps {
-  // text: string;
+interface BasicButtonProps extends ComponentPropsWithoutRef<"button"> {
   children: ReactNode;
   variant?: "primary" | "secondary" | "success" | "danger";
   size?: "sm" | "md" | "lg";
-  disabled?: boolean;
-  onClick?: () => void;
 }
 
 export default function Button({
@@ -15,7 +12,8 @@ export default function Button({
   variant = "primary",
   size = "md",
   disabled = false,
-  onClick,
+  className = "",
+  ...props
 }: BasicButtonProps) {
   return (
     <button
@@ -23,9 +21,10 @@ export default function Button({
         ${styles.button}
         ${styles[variant]}
         ${styles[size]}
-      `}
-      onClick={onClick}
+        ${className} 
+      `.trim()}
       disabled={disabled}
+      {...props}
     >
       {children}
     </button>

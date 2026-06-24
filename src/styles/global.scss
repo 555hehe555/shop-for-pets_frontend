@@ -3,80 +3,152 @@
    License: none (public domain)
 */
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-
-  text-decoration: none;
-  color: #000;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+article,
+aside,
+details,
+figcaption,
+figure,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
 body {
-	line-height: 1;
+  line-height: 1;
 }
-ol, ul {
-	list-style: none;
+ol,
+ul {
+  list-style: none;
 }
-blockquote, q {
-	quotes: none;
+blockquote,
+q {
+  quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
-
-img{
+img {
   display: block;
 }
 
-
 :root {
-  --bg: #FFF8F2;
+  --bg: #fff8f2;
 
-  --header: #F17644;
+  --header: #f17644;
   --footer: #795548;
 
-  --surface: #FFFFFF;
+  --surface: #ffffff;
 
-  --primary: #FF8A5B;
-  --primary-hover: #F17644;
+  --primary: #ff8a5b;
+  --primary-hover: #f17644;
 
-  --secondary: #7CC6B8;
+  --secondary: #7cc6b8;
 
-  --accent: #FF5E7D;
+  --accent: #ff5e7d;
 
-  --text: #2D3436;
-  --text-secondary: #636E72;
+  --text: #2d3436;
+  --text-secondary: #636e72;
 
-  --success: #6BCB77;
+  --success: #6bcb77;
 
-  --border: #F0E4D7;
+  --border: #f0e4d7;
 
   --font-main: "Roboto", sans-serif;
   --font-logo: "Lobster", cursive;
@@ -93,4 +165,10 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-main);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }

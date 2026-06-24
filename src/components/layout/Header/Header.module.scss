@@ -1,0 +1,26 @@
+header {
+  background-color: var(--header);
+  color: var(--text);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 25px;
+
+  .left {
+    width: 400px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.logo {
+  font-family: var(--font-logo);
+  font-size: 32px;
+}
+
+.containerSeaech {
+  width: 250px;
+}
