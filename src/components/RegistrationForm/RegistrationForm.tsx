@@ -1,8 +1,17 @@
+import { string, z } from "zod";
+
 import styles from "./RegistrationForm.module.scss";
-import { useId } from "react";
+import { useId, useState } from "react";
 
 import Input from "../Input/Input";
 import Button from "../Button/Button";
+
+const schima = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  pass1: z.string().min(8, "Password must be at least 8 characters"),
+  pass2: z.string().min(8, "Password must be at least 8 characters"),
+  email: z.string().email({ message: "Invalid email address" }),
+});
 
 interface OnSubmitProps {
   onSubmit: (value: object) => void;
@@ -11,10 +20,30 @@ interface OnSubmitProps {
 export default function RegistrationForm({ onSubmit }: OnSubmitProps) {
   const fieldId = useId();
 
+  const [erorrs, setErorrs] = useState<Record<string, string>>({});
+
   const handleSubmit = (formData: FormData) => {
     const data = Object.fromEntries(formData);
 
-    onSubmit(data);
+    const result = schima.safeParse(data);
+    console.log(result);
+
+    if (!result.success) {
+      const errorsForm: Record<string, string> = {};
+      result.error.issues.forEach((issu) => {
+        const path = issu.path[0] as string;
+        if (!errorsForm[path]) {
+          errorsForm[path] = issu.message;
+        }
+      });
+      setErorrs(errorsForm);
+      return;
+    }
+
+    console.log("регістрація вдалась");
+
+    setErorrs({});
+    onSubmit(result);
   };
 
   return (
@@ -30,6 +59,7 @@ export default function RegistrationForm({ onSubmit }: OnSubmitProps) {
           autoComplete="username"
           placeholder="Username"
         />
+        <span className={styles.erorrs}>{erorrs.username}</span>
       </div>
 
       <div className={styles.field}>
@@ -41,6 +71,7 @@ export default function RegistrationForm({ onSubmit }: OnSubmitProps) {
           autoComplete="new-password"
           placeholder="Password"
         />
+        <span className={styles.erorrs}>{erorrs.pass1}</span>
       </div>
 
       <div className={styles.field}>
@@ -52,6 +83,7 @@ export default function RegistrationForm({ onSubmit }: OnSubmitProps) {
           autoComplete="new-password"
           placeholder="Repeat password"
         />
+        <span className={styles.erorrs}>{erorrs.pass2}</span>
       </div>
 
       <div className={styles.field}>
@@ -63,6 +95,7 @@ export default function RegistrationForm({ onSubmit }: OnSubmitProps) {
           autoComplete="email"
           placeholder="example@gmail.com"
         />
+        <span className={styles.erorrs}>{erorrs.email}</span>
       </div>
 
       <Button size="lg" type="submit">
