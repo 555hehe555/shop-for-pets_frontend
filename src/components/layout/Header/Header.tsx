@@ -4,7 +4,8 @@ import styles from "./Header.module.scss";
 import Button from "@/ui/Button/Button.tsx";
 import Modal from "@/ui/Modal/Modal.tsx";
 import Input from "@/ui/Input/Input.tsx";
-import { RegistrationForm, LoginForm } from "@/features/auth";
+import { RegistrationForm, LoginForm, putLogin } from "@/features/auth";
+
 import { UserCart } from "@/features/cart";
 
 export default function Header() {
@@ -33,6 +34,7 @@ export default function Header() {
               <Modal onClose={closeLoginModal}>
                 <LoginForm
                   onSubmit={(value) => {
+                    putLogin(value);
                     console.log(value);
                   }}
                 />

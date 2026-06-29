@@ -35,7 +35,7 @@ export function LoginForm({ onSubmit }: OnSubmitProps) {
     console.log("вхід вдався");
 
     setErorrs({});
-    onSubmit(result);
+    onSubmit(result.data);
   };
 
   return (
@@ -64,18 +64,6 @@ export function LoginForm({ onSubmit }: OnSubmitProps) {
           placeholder="Password"
         />
         <span className={styles.erorrs}>{erorrs.pass}</span>
-      </div>
-
-      <div className={styles.field}>
-        <label htmlFor={`${fieldId}-email`}>Email</label>
-        <Input
-          type="email"
-          name="email"
-          id={`${fieldId}-email`}
-          autoComplete="email"
-          placeholder="example@gmail.com"
-        />
-        <span className={styles.erorrs}>{erorrs.email}</span>
       </div>
 
       <Button size="lg" type="submit">
