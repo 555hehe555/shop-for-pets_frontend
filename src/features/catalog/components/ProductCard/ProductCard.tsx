@@ -1,5 +1,5 @@
 import styles from "./ProductCard.module.scss";
-import type { Product } from "../ProductsList";
+import type { Product } from "../ProductsList/ProductsList";
 
 interface ProductCardProps {
   onToggleCart: (id: number) => void;
@@ -11,10 +11,7 @@ interface ProductCardProps {
 //   onuUpdate: () => void
 // }
 
-export default function ProductCard({
-  onToggleCart,
-  product,
-}: ProductCardProps) {
+export function ProductCard({ onToggleCart, product }: ProductCardProps) {
   const { id, imgUrl, name, price, discount } = product;
 
   const handleClick = () => {

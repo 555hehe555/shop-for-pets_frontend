@@ -1,23 +1,15 @@
-import { string, z } from "zod";
-
 import styles from "./RegistrationForm.module.scss";
 import { useId, useState } from "react";
 
-import Input from "../Input/Input";
-import Button from "../Button/Button";
-
-const schima = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  pass1: z.string().min(8, "Password must be at least 8 characters"),
-  pass2: z.string().min(8, "Password must be at least 8 characters"),
-  email: z.string().email({ message: "Invalid email address" }),
-});
+import Input from "@/ui/Input/Input";
+import Button from "@/ui/Button/Button";
+import { registrationSchema } from "@/schemas";
 
 interface OnSubmitProps {
   onSubmit: (value: object) => void;
 }
 
-export default function RegistrationForm({ onSubmit }: OnSubmitProps) {
+export function RegistrationForm({ onSubmit }: OnSubmitProps) {
   const fieldId = useId();
 
   const [erorrs, setErorrs] = useState<Record<string, string>>({});
@@ -25,7 +17,7 @@ export default function RegistrationForm({ onSubmit }: OnSubmitProps) {
   const handleSubmit = (formData: FormData) => {
     const data = Object.fromEntries(formData);
 
-    const result = schima.safeParse(data);
+    const result = registrationSchema.safeParse(data);
     console.log(result);
 
     if (!result.success) {

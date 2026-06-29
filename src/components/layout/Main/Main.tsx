@@ -1,9 +1,9 @@
 import { useState } from "react";
 // import styles from "./Main.module.scss";
 
-import UserCart from "../../UserCart/UserCart.tsx";
-import ProductList from "../../ProductsList.tsx";
-import Button from "../../Button/Button.tsx";
+import Button from "@/ui/Button/Button.tsx";
+import { ProductsList } from "@/features/catalog";
+import { UserCart } from "@/features/cart";
 // import RegistrationForm from "../../RegistrationForm/RegistrationForm.tsx";
 // import Modal from "../../Modal/Modal.tsx";
 
@@ -26,7 +26,7 @@ export default function Main() {
         Hello?
       </Button>
 
-      <ProductList handleToggleCart={handleToggleCart} />
+      <ProductsList handleToggleCart={handleToggleCart} />
       <UserCart count={cartItems.length} />
     </main>
   );

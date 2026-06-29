@@ -1,11 +1,11 @@
 import { useState } from "react";
 import styles from "./Header.module.scss";
 
-import UserCart from "../../UserCart/UserCart.tsx";
-import Button from "../../Button/Button.tsx";
-import Input from "../../Input/Input";
-import Modal from "../../Modal/Modal.tsx";
-import RegistrationForm from "../../RegistrationForm/RegistrationForm.tsx";
+import Button from "@/ui/Button/Button.tsx";
+import Modal from "@/ui/Modal/Modal.tsx";
+import Input from "@/ui/Input/Input.tsx";
+import { RegistrationForm } from "@/features/auth";
+import { UserCart } from "@/features/cart";
 
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,7 +44,12 @@ export default function Header() {
         </div>
 
         <div className={styles.containerSeaech}>
-          <Input type="text" size="md" placeholder="Search" maxLength={100} />
+          <Input
+            type="text"
+            inputSize="md"
+            placeholder="Search"
+            maxLength={100}
+          />
         </div>
 
         <div>

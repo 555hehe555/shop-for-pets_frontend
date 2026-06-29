@@ -3,12 +3,12 @@ import type { InputHTMLAttributes } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   variant?: "primary" | "secondary" | "success" | "danger";
-  size?: "sm" | "md" | "lg";
+  inputSize?: "sm" | "md" | "lg";
 }
 
 export default function Input({
   variant = "primary",
-  size = "md",
+  inputSize = "md",
   className,
   ...props
 }: InputProps) {
@@ -17,7 +17,7 @@ export default function Input({
       className={`
         ${styles.input}
         ${styles[variant]}
-        ${styles[size]}
+        ${styles[inputSize]}
         ${className ?? ""}
       `}
       {...props}

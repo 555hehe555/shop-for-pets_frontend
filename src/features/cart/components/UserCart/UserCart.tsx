@@ -2,11 +2,11 @@ import styles from "./UserCart.module.scss";
 
 import { GrCart } from "react-icons/gr";
 
-interface CartProps {
+interface UserCartProps {
   count: number;
 }
 
-export default function Cart({ count }: CartProps) {
+export function UserCart({ count }: UserCartProps) {
   return (
     <div className={styles.cartContainer}>
       <GrCart className={styles.cartImg} />
