@@ -4,15 +4,18 @@ import styles from "./Header.module.scss";
 import Button from "@/ui/Button/Button.tsx";
 import Modal from "@/ui/Modal/Modal.tsx";
 import Input from "@/ui/Input/Input.tsx";
-import { RegistrationForm } from "@/features/auth";
+import { RegistrationForm, LoginForm } from "@/features/auth";
 import { UserCart } from "@/features/cart";
 
 export default function Header() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
+  const openLoginModal = () => setIsLoginOpen(true);
+  const closeLoginModal = () => setIsLoginOpen(false);
 
-  const closeModal = () => setIsModalOpen(false);
+  const openRegistrationModal = () => setIsRegistrationOpen(true);
+  const closeRegistrationModal = () => setIsRegistrationOpen(false);
 
   return (
     <header>
@@ -22,17 +25,26 @@ export default function Header() {
 
       <div className={styles.left}>
         <div className={styles.containerLinks}>
-          <li className={styles.link}>
-            <Button size="sm" variant="primary">
+          <li>
+            <Button size="sm" variant="secondary" onClick={openLoginModal}>
               Login
             </Button>
+            {isLoginOpen && (
+              <Modal onClose={closeLoginModal}>
+                <LoginForm
+                  onSubmit={(value) => {
+                    console.log(value);
+                  }}
+                />
+              </Modal>
+            )}
           </li>
           <li>
-            <Button size="sm" variant="primary" onClick={openModal}>
+            <Button size="sm" variant="primary" onClick={openRegistrationModal}>
               Registration
             </Button>
-            {isModalOpen && (
-              <Modal onClose={closeModal}>
+            {isRegistrationOpen && (
+              <Modal onClose={closeRegistrationModal}>
                 <RegistrationForm
                   onSubmit={(value) => {
                     console.log(value);

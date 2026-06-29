@@ -34,6 +34,18 @@
       "username": "root",
       "password": "root",
       "email": "aaa@aaaaa.aaa"
+    },
+    {
+      "id": 2,
+      "username": "user",
+      "password": "user",
+      "email": "user@user.user"
+    },
+    {
+      "id": 3,
+      "username": "aboba",
+      "password": "aboba",
+      "email": "aboba@aboba.aboba"
     }
   ]
 }

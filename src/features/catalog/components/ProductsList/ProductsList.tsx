@@ -1,6 +1,7 @@
 import { ProductCard } from "../ProductCard/ProductCard";
 import styles from "./ProductList.module.scss";
 import { useState, useEffect } from "react";
+import { useAPI } from "@/data/user-config.json";
 
 export interface Product {
   id: number;
@@ -19,7 +20,7 @@ export function ProductsList({ handleToggleCart }: ProductListProps) {
 
   useEffect(() => {
     async function getProducts() {
-      const data = await fetch("http://localhost:3000/product");
+      const data = await fetch(`${useAPI}/product`);
       setProducts(await data.json());
     }
     getProducts();
