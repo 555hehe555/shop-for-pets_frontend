@@ -11,11 +11,11 @@ export interface Product {
   discount?: number;
 }
 
-interface ProductListProps {
-  handleToggleCart: (id: number) => void;
-}
+// interface ProductListProps {
+//   handleToggleCart: (id: number) => void;
+// }
 
-export function ProductsList({ handleToggleCart }: ProductListProps) {
+export function ProductsList() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function ProductsList({ handleToggleCart }: ProductListProps) {
         <ProductCard
           key={product.id}
           product={product}
-          onToggleCart={handleToggleCart}
+          // onToggleCart={handleToggleCart}
         />
       ))}
     </ul>

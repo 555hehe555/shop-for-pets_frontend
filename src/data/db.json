@@ -41,5 +41,12 @@
       "id": "OOEJC-1GuZQ"
     }
   ],
+  "cart": [
+    {
+      "user": 1,
+      "productId": "2",
+      "id": "XHgqwz26dIo"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

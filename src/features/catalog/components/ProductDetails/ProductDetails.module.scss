@@ -1,0 +1,88 @@
+.listCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  padding: 24px;
+}
+
+.cardContainer {
+  width: 300px;
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  overflow: hidden;
+
+  box-shadow: var(--shadow-sm);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .cardImg {
+    width: 100%;
+    height: 220px;
+
+    object-fit: cover;
+  }
+}
+
+.cardInfo {
+  padding: 16px;
+
+  .name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.4;
+
+    min-height: 50px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+  }
+
+  .price {
+    margin-top: 12px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    .newPrice,
+    .allPrice {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .oldPrice {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+
+      text-decoration: line-through;
+    }
+  }
+
+  .discount {
+    margin-top: 8px;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    color: var(--success);
+
+    min-height: 20px;
+  }
+}

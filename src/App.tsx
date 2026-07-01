@@ -1,16 +1,18 @@
-import Header from './components/layout/Header/Header.tsx'
-import Main from './components/layout/Main/Main.tsx'
-import Footer from './components/layout/Footer/Footer.tsx'
-
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import HomePage from "@/pages/HomePage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 
 function App() {
   return (
-    <>
-      <Header />
-      <Main />
-      <Footer />
-  </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/product/:id" element={<ProductDetailsPage />} />
+
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
