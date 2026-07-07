@@ -1,11 +1,3 @@
-import Footer from "@/components/layout/Footer/Footer.tsx";
-import Header from "@/components/layout/Header/Header.tsx";
-
-
-export default function ProductDetailsPage() {
-  return (
-    <Header />
-
-    <Footer />
-  )
+export default function NotFoundPage() {
+  return <h2>ой, цієї строрінки щось нема</h2>;
 }

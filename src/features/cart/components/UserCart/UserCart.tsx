@@ -10,7 +10,11 @@ export function UserCart({ count }: UserCartProps) {
   return (
     <div className={styles.cartContainer}>
       <GrCart className={styles.cartImg} />
-      <p className={styles.cartP}>{count}</p>
+      {count > 0 && (
+        <div className={styles.cartCountContainer}>
+          <span className={styles.cartCount}>{count}</span>
+        </div>
+      )}
     </div>
   );
 }

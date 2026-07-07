@@ -4,9 +4,10 @@ import styles from "./Header.module.scss";
 import Button from "@/ui/Button/Button.tsx";
 import Modal from "@/ui/Modal/Modal.tsx";
 import Input from "@/ui/Input/Input.tsx";
-import { RegistrationForm, LoginForm, putLogin } from "@/features/auth";
+import { RegistrationForm, LoginForm, LoginUser } from "@/features/auth";
 
 import { UserCart } from "@/features/cart";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -20,9 +21,9 @@ export default function Header() {
 
   return (
     <header>
-      <div>
-        <span className={styles.logo}>SfP</span>
-      </div>
+      <Link to="/" className={styles.logo}>
+        SfP
+      </Link>
 
       <div className={styles.left}>
         <div className={styles.containerLinks}>
@@ -33,8 +34,11 @@ export default function Header() {
             {isLoginOpen && (
               <Modal onClose={closeLoginModal}>
                 <LoginForm
-                  onSubmit={(value) => {
-                    putLogin(value);
+                  onSubmit={(value: { username: string; password: string }) => {
+                    LoginUser({
+                      username: value.username,
+                      pass: value.password,
+                    });
                     console.log(value);
                   }}
                 />
@@ -66,9 +70,9 @@ export default function Header() {
           />
         </div>
 
-        <div>
+        <Link to="/cart" className={styles.btnCart}>
           <UserCart count={3} />
-        </div>
+        </Link>
       </div>
     </header>
   );

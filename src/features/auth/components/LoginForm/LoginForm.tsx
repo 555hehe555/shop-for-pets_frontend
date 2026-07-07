@@ -6,7 +6,7 @@ import Button from "@/ui/Button/Button";
 import { loginSchema } from "@/schemas";
 
 interface OnSubmitProps {
-  onSubmit: (value: object) => void;
+  onSubmit: (value: { username: string; password: string }) => void;
 }
 
 export function LoginForm({ onSubmit }: OnSubmitProps) {
@@ -35,7 +35,7 @@ export function LoginForm({ onSubmit }: OnSubmitProps) {
     console.log("вхід вдався");
 
     setErorrs({});
-    onSubmit(result.data);
+    onSubmit({ username: result.data.username, password: result.data.pass });
   };
 
   return (

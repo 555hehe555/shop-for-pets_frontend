@@ -15,7 +15,7 @@ async function isUser_test({ username, pass }: LoginProps) {
   );
 }
 
-export async function putLogin({ username, pass }: LoginProps) {
+export async function LoginUser({ username, pass }: LoginProps) {
   const isUser = await isUser_test({ username, pass });
 
   if (!isUser) {
