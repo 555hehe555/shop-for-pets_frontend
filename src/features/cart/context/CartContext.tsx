@@ -1,13 +1,51 @@
-import { createContext, useContext } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import { fetchCartItems, type CartItem } from "../api";
 
 interface CartContextType {
-  cartItems: Array<string>;
+  cartItems: Array<CartItem>;
+  error: string | null;
+  loading: boolean;
+  itemsCount: number;
 }
 
-const CartContext = createContext();
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export default function CartProvider() {
-  return <CartContext.Provider></CartContext.Provider>;
+export default function CartProvider({ children }: { children: ReactNode }) {
+  const [cartItems, setCartItems] = useState<Array<CartItem>>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function getCartItems() {
+      setError(null);
+      setLoading(true);
+      try {
+        const data = await fetchCartItems();
+        setCartItems(data);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError(e.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+    getCartItems();
+  }, []);
+
+  const itemsCount = cartItems.length;
+
+  return (
+    <CartContext.Provider value={{ cartItems, error, loading, itemsCount }}>
+      {children}
+    </CartContext.Provider>
+  );
 }
 
 export function useCart() {

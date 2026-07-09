@@ -6,10 +6,12 @@ import Modal from "@/ui/Modal/Modal.tsx";
 import Input from "@/ui/Input/Input.tsx";
 import { RegistrationForm, LoginForm, LoginUser } from "@/features/auth";
 
-import { UserCart } from "@/features/cart";
+import { useCart, UserCart } from "@/features/cart";
 import { Link } from "react-router-dom";
 
 export default function Header() {
+  const { itemsCount } = useCart();
+
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
 
@@ -71,7 +73,7 @@ export default function Header() {
         </div>
 
         <Link to="/cart" className={styles.btnCart}>
-          <UserCart count={3} />
+          <UserCart count={itemsCount} />
         </Link>
       </div>
     </header>

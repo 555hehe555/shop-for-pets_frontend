@@ -20,15 +20,6 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
     getProductById();
   }, [id]);
 
-  async function handleAddToCart() {
-    const response = await fetch(`${BASE_URL}/cart`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user: 1, productId: id }),
-    });
-    console.log(await response.json());
-  }
-
   return (
     <main>
       <div className={styles.cardContainer}>
@@ -66,7 +57,7 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
         </div>
       </div>
 
-      <Button onClick={handleAddToCart}>в корзину</Button>
+      <Button>в корзину</Button>
     </main>
   );
 }
