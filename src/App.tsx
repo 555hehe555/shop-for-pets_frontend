@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "@/pages/HomePage";
-import ProductDetailsPage from "./pages/ProductDetailsPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import CartPage from "./pages/CartPage";
+import HomePage from "@/pages/HomePage/HomePage";
+import ProductDetailsPage from "./pages/ProductDetailsPage/ProductDetailsPage";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+import CartPage from "./pages/CartPage/CartPage";
 import { Layout } from "./components/layout/Layout/Layout";
 
 function App() {
