@@ -2,14 +2,7 @@ import { ProductCard } from "../ProductCard/ProductCard";
 import styles from "./ProductList.module.scss";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "@/data/user-config.json";
-
-export interface Product {
-  id: number;
-  imgUrl: string;
-  name: string;
-  price: number;
-  discount?: number;
-}
+import type { Product } from "../../api";
 
 // interface ProductListProps {
 //   handleToggleCart: (id: number) => void;

@@ -1,16 +1,5 @@
-import { useCart } from "@/features/cart";
+import { CartOverview } from "@/features/cart/components/CartOverview/CartOverview";
 
 export default function CartPage() {
-  const { cartItems, error, loading } = useCart();
-  console.log(cartItems, error, loading);
-
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
-
-  if (error) {
-    return <h2>{error}</h2>;
-  }
-
-  return <h2>CartPage</h2>;
+  return <CartOverview />;
 }
