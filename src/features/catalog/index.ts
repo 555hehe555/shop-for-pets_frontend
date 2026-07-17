@@ -1,5 +1,2 @@
 export { ProductCard } from "./components/ProductCard/ProductCard";
-export {
-  ProductsList,
-  type Product,
-} from "./components/ProductsList/ProductsList";
+export { ProductsList } from "./components/ProductsList/ProductsList";

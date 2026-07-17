@@ -45,12 +45,8 @@
     {
       "user": 1,
       "productId": "2",
-      "id": "XHgqwz26dIo"
-    },
-    {
-      "user": 1,
-      "productId": "3",
-      "id": "XHgqwz26dIx"
+      "id": "XHgqwz26dIo",
+      "quantity": 8
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import type { Product } from "../ProductsList/ProductsList";
 import { BASE_URL } from "@/data/user-config.json";
 import styles from "./ProductDetails.module.scss";
 import Button from "@/ui/Button/Button";
+import { useCart } from "@/features/cart/context/CartContext";
+import type { Product } from "../../api";
 
 interface ProductDetailsInterfase {
   id: string;
@@ -10,6 +11,7 @@ interface ProductDetailsInterfase {
 
 export function ProductDetails({ id }: ProductDetailsInterfase) {
   const [product, setProduct] = useState<Product>();
+  const { addToCartItem } = useCart();
 
   useEffect(() => {
     async function getProductById() {
@@ -57,7 +59,13 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
         </div>
       </div>
 
-      <Button>в корзину</Button>
+      <Button
+        onClick={() => {
+          addToCartItem(String(product?.id));
+        }}
+      >
+        в корзину
+      </Button>
     </main>
   );
 }

@@ -4,7 +4,7 @@ import styles from "./Button.module.scss";
 interface BasicButtonProps extends ComponentPropsWithoutRef<"button"> {
   children: ReactNode;
   variant?: "primary" | "secondary" | "success" | "danger";
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
 }
 
 export default function Button({

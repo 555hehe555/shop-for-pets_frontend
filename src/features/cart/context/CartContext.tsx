@@ -88,6 +88,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   async function deleteCartItem(id: string) {
     setError(null);
     setLoading(true);
+    console.log("deleteCartItem", id);
     try {
       await removeCartItem(id);
       await getCartItems();

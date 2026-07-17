@@ -15,6 +15,8 @@
 
   padding: 12px 20px;
 
+  min-width: 32px;
+
   border: none;
   border-radius: 12px;
 
@@ -35,9 +37,14 @@
   }
 
   &:disabled {
-    opacity: .6;
+    opacity: 0.6;
     cursor: not-allowed;
   }
+}
+
+.xs {
+  padding: 4px 10px;
+  font-size: 18px;
 }
 
 .sm {
@@ -56,32 +63,19 @@
 }
 
 .primary {
-  @include buttonVariant(
-    var(--primary),
-    var(--primary-hover)
-  );
+  @include buttonVariant(var(--primary), var(--primary-hover));
 }
 
 .secondary {
-  @include buttonVariant(
-    var(--surface),
-    var(--bg),
-    var(--text)
-  );
+  @include buttonVariant(var(--surface), var(--bg), var(--text));
 
   border: 1px solid var(--border);
 }
 
 .success {
-  @include buttonVariant(
-    var(--success),
-    #43a047
-  );
+  @include buttonVariant(var(--success), #43a047);
 }
 
 .danger {
-  @include buttonVariant(
-    var(--danger),
-    #d62839
-  );
+  @include buttonVariant(var(--danger), #d62839);
 }
