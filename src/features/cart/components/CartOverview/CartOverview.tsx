@@ -1,5 +1,4 @@
 import { useCart } from "@/features/cart";
-import { ProductCard } from "@/features/catalog";
 import { BASE_URL } from "@/data/user-config.json";
 import styles from "./CartOverview.module.scss";
 
@@ -7,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { Product } from "@/features/catalog/api";
 import Button from "@/ui/Button/Button";
 import { GoTrash } from "react-icons/go";
+import InfoState from "@/components/InfoState/InfoState";
 
 export function CartOverview() {
   const { cartItems, error, loading, changeCartItemQuantity, deleteCartItem } =
@@ -33,11 +33,23 @@ export function CartOverview() {
   console.log(cartProducts);
 
   if (loading) {
-    return <h2>Loading...</h2>;
+    return (
+      // <InfoState
+      //   title="Завантаження..."
+      //   message="Зачекайте, будь ласка, наші коти вже несуть вам пакети з вашими товарами, но у них ж лапки, тому це може зайняти трохи часу"
+      //   situation="loading"
+      // />
+    );
   }
 
   if (error) {
-    return <h2>{error}</h2>;
+    return (
+      <InfoState
+        title="Помилочка..."
+        message="Вибачте, але щось пішло не так, наші коти намагаються виправити ситуацію, але це може зайняти трохи часу, бо вони милинько сплять, тому трохи почекайте"
+        situation="error"
+      />
+    );
   }
 
   return (

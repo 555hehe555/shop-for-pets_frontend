@@ -1,6 +1,6 @@
 header {
-  background-color: var(--header);
-  color: var(--text);
+  background-color: var(--header-bg);
+  color: var(--header-text);
 
   display: flex;
   justify-content: space-between;
@@ -9,7 +9,6 @@ header {
 
   .left {
     width: 530px;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -30,6 +29,8 @@ header {
 .containerLinks {
   display: flex;
   justify-items: center;
+
+  gap: 10px;
   list-style: none;
 
   .link {

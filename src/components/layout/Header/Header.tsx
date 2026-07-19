@@ -30,7 +30,7 @@ export default function Header() {
       <div className={styles.left}>
         <div className={styles.containerLinks}>
           <li>
-            <Button size="sm" variant="secondary" onClick={openLoginModal}>
+            <Button size="sm" variant="tertiary" onClick={openLoginModal}>
               Login
             </Button>
             {isLoginOpen && (

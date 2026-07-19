@@ -22,50 +22,69 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
     getProductById();
   }, [id]);
 
-  return (
-    <main>
-      <div className={styles.cardContainer}>
-        <img
-          className={styles.cardImg}
-          src={product?.imgUrl}
-          alt={product?.name}
-        />
+  if (!product) return <p>Завантаження...</p>;
 
-        <div className={styles.cardInfo}>
-          <h3 className={styles.name}>{product?.name}</h3>
-          <div className={styles.price}>
-            {product?.discount ? (
+  return (
+    <div className={styles.container}>
+      <div className={styles.product}>
+        <div className={styles.gallery}>
+          <img
+            className={styles.image}
+            src={product.imgUrl}
+            alt={product.name}
+          />
+        </div>
+
+        <div className={styles.info}>
+          <h1 className={styles.title}>{product.name}</h1>
+
+          {/* <div className={styles.stock}>
+            {product.quantity > 0 ? "✔ В наявності" : "✖ Немає в наявності"}
+          </div> */}
+
+          {product.quantity > 0 ? (
+            <div className={styles.stock}>✔ В наявності</div>
+          ) : (
+            <div className={styles.notInStock}>✖ Немає в наявності</div>
+          )}
+
+          <div className={styles.priceBlock}>
+            {product.discount ? (
               <>
                 <span className={styles.newPrice}>
-                  {product.price - product?.discount}₴
+                  {product.price - product.discount}₴
                 </span>
 
                 <span className={styles.oldPrice}>{product.price}₴</span>
               </>
             ) : (
-              <>
-                <span className={styles.allPrice}>{product?.price}₴</span>
-              </>
+              <span className={styles.newPrice}>{product.price}₴</span>
             )}
           </div>
-          <>
-            {product?.discount && (
-              <>
-                <hr></hr>
-                <p className={styles.discount}>Save - {product?.discount}₴</p>
-              </>
-            )}
-          </>
+
+          {product.discount ||
+            (0 > 0 && (
+              <p className={styles.discount}>
+                Ви економите {product.discount}₴
+              </p>
+            ))}
+
+          <div className={styles.actions}>
+            <Button size="lg" onClick={() => addToCartItem(String(product.id))}>
+              Додати у кошик
+            </Button>
+          </div>
         </div>
       </div>
 
-      <Button
-        onClick={() => {
-          addToCartItem(String(product?.id));
-        }}
-      >
-        в корзину
-      </Button>
-    </main>
+      <section className={styles.description}>
+        <h2>Опис товару</h2>
+
+        <p>
+          Тут поки що буде опис товару. Потім ти просто підставиш
+          product.description.
+        </p>
+      </section>
+    </div>
   );
 }

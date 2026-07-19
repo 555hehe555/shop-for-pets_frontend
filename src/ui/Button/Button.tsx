@@ -3,7 +3,7 @@ import styles from "./Button.module.scss";
 
 interface BasicButtonProps extends ComponentPropsWithoutRef<"button"> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "success" | "danger";
+  variant?: "primary" | "secondary" | "tertiary" | "success" | "danger";
   size?: "xs" | "sm" | "md" | "lg";
 }
 

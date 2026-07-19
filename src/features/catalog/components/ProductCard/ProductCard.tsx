@@ -1,5 +1,6 @@
+import type { Product } from "../../api";
 import styles from "./ProductCard.module.scss";
-import type { Product } from "../ProductsList/ProductsList";
+
 import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {

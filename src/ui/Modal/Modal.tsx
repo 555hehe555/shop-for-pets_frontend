@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import { useEffect } from "react";
 
 import styles from "./Modal.module.scss";
+import Button from "../Button/Button";
 
 interface ModalProps {
   onClose: () => void; // Додаємо пропс children і типізуємо його
@@ -37,13 +38,16 @@ export default function Modal({ onClose, children }: ModalProps) {
       aria-modal="true"
     >
       <div className={styles.modal}>
-        <button
+        <Button
           className={styles.closeButton}
+          variant="tertiary"
+          size="xs"
           onClick={onClose}
           aria-label="Close modal"
+          style={{ background: "white" }}
         >
           &times;
-        </button>
+        </Button>
         {/* Тут рендериться переданий вміст із пропса children */}
         {children}
       </div>
