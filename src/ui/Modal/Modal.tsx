@@ -6,10 +6,11 @@ import Button from "../Button/Button";
 
 interface ModalProps {
   onClose: () => void; // Додаємо пропс children і типізуємо його
+  isOpen: boolean;
   children: React.ReactNode;
 }
 
-export default function Modal({ onClose, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, children }: ModalProps) {
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
@@ -29,6 +30,10 @@ export default function Modal({ onClose, children }: ModalProps) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose]);
+
+  if (!isOpen) {
+    return null;
+  }
 
   return createPortal(
     <div

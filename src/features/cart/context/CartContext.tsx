@@ -54,8 +54,13 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     setError(null);
     setLoading(true);
     try {
-      await addCartItem(id);
-      await getCartItems();
+      const existItem = cartItems.find((cartItem) => cartItem.productId === id);
+      if (!existItem) {
+        await addCartItem(id);
+        await getCartItems();
+      } else {
+        await changeCartItemQuantity(existItem.id, existItem.quantity + 1);
+      }
     } catch (e) {
       if (e instanceof Error) {
         setError(e.message);

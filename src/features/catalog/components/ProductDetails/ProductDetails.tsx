@@ -4,6 +4,7 @@ import styles from "./ProductDetails.module.scss";
 import Button from "@/ui/Button/Button";
 import { useCart } from "@/features/cart/context/CartContext";
 import type { Product } from "../../api";
+import toast from "react-hot-toast";
 
 interface ProductDetailsInterfase {
   id: string;
@@ -21,6 +22,17 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
     }
     getProductById();
   }, [id]);
+
+  async function handeleAddToCart() {
+    try {
+      await addToCartItem(id);
+
+      toast.success("Додано в корзину");
+    } catch (error) {
+      toast.error("помилка при додавані товара в корзину");
+      throw error;
+    }
+  }
 
   if (!product) return <p>Завантаження...</p>;
 
@@ -70,7 +82,7 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
             ))}
 
           <div className={styles.actions}>
-            <Button size="lg" onClick={() => addToCartItem(String(product.id))}>
+            <Button size="lg" onClick={handeleAddToCart}>
               Додати у кошик
             </Button>
           </div>

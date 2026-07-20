@@ -33,33 +33,11 @@ export default function Header() {
             <Button size="sm" variant="tertiary" onClick={openLoginModal}>
               Login
             </Button>
-            {isLoginOpen && (
-              <Modal onClose={closeLoginModal}>
-                <LoginForm
-                  onSubmit={(value: { username: string; password: string }) => {
-                    LoginUser({
-                      username: value.username,
-                      pass: value.password,
-                    });
-                    console.log(value);
-                  }}
-                />
-              </Modal>
-            )}
           </li>
           <li>
             <Button size="sm" variant="primary" onClick={openRegistrationModal}>
               Registration
             </Button>
-            {isRegistrationOpen && (
-              <Modal onClose={closeRegistrationModal}>
-                <RegistrationForm
-                  onSubmit={(value) => {
-                    console.log(value);
-                  }}
-                />
-              </Modal>
-            )}
           </li>
         </div>
 
@@ -76,6 +54,26 @@ export default function Header() {
           <UserCart count={itemsCount} />
         </Link>
       </div>
+
+      <Modal isOpen={isLoginOpen} onClose={closeLoginModal}>
+        <LoginForm
+          onSubmit={(value: { username: string; password: string }) => {
+            LoginUser({
+              username: value.username,
+              pass: value.password,
+            });
+            console.log(value);
+          }}
+        />
+      </Modal>
+
+      <Modal isOpen={isRegistrationOpen} onClose={closeRegistrationModal}>
+        <RegistrationForm
+          onSubmit={(value) => {
+            console.log(value);
+          }}
+        />
+      </Modal>
     </header>
   );
 }

@@ -44,9 +44,15 @@
   "cart": [
     {
       "user": 1,
+      "productId": "4",
+      "quantity": 1,
+      "id": "Z6PPY0efL2w"
+    },
+    {
+      "user": 1,
       "productId": "2",
-      "quantity": 51,
-      "id": "gakVHSytnvg"
+      "quantity": 10,
+      "id": "NgvNI_rWwPE"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
