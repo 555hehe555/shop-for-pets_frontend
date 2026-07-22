@@ -4,7 +4,7 @@ import styles from "./Header.module.scss";
 import Button from "@/ui/Button/Button.tsx";
 import Modal from "@/ui/Modal/Modal.tsx";
 import Input from "@/ui/Input/Input.tsx";
-import { RegistrationForm, LoginForm, LoginUser } from "@/features/auth";
+import { RegistrationForm, LoginForm } from "@/features/auth";
 
 import { useCart, UserCart } from "@/features/cart";
 import { Link } from "react-router-dom";
@@ -56,15 +56,7 @@ export default function Header() {
       </div>
 
       <Modal isOpen={isLoginOpen} onClose={closeLoginModal}>
-        <LoginForm
-          onSubmit={(value: { username: string; password: string }) => {
-            LoginUser({
-              username: value.username,
-              pass: value.password,
-            });
-            console.log(value);
-          }}
-        />
+        <LoginForm />
       </Modal>
 
       <Modal isOpen={isRegistrationOpen} onClose={closeRegistrationModal}>

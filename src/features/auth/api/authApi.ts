@@ -1,27 +1,35 @@
 import { BASE_URL } from "@/data/user-config.json";
+import { TbTypeface } from "react-icons/tb";
 
 interface LoginProps {
   username: string;
-  pass: string;
+  password: string;
 }
 
-// потім це перейде в бекенд
-async function isUser_test({ username, pass }: LoginProps) {
-  const response = await fetch(`${BASE_URL}/user`);
-  const users = await response.json();
+export async function loginUser({ username, password }: LoginProps) {
+  try {
+    const response = await fetch(`${BASE_URL}/accounts/login/`, {
+      method: "POST",
 
-  return users.some(
-    (user: LoginProps) => user.username === username && user.pass === pass,
-  );
-}
+      headers: {
+        "Content-Type": "application/json",
+      },
 
-export async function LoginUser({ username, pass }: LoginProps) {
-  const isUser = await isUser_test({ username, pass });
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    });
 
-  if (!isUser) {
-    console.log("Користувача не знайдено");
-    return;
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem("refresh", data.refresh);
+      localStorage.setItem("access", data.access);
+    }
+
+    return data;
+  } catch (e) {
+    throw new Error("error to authenticate user", e as Error);
   }
-
-  console.log("Вхід успішний");
 }

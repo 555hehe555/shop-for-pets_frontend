@@ -4,15 +4,13 @@ import { useId, useState } from "react";
 import Input from "@/ui/Input/Input";
 import Button from "@/ui/Button/Button";
 import { loginSchema } from "@/schemas";
+import { useAuth } from "../../context/AuthContext";
 
-interface OnSubmitProps {
-  onSubmit: (value: { username: string; password: string }) => void;
-}
-
-export function LoginForm({ onSubmit }: OnSubmitProps) {
+export function LoginForm() {
   const fieldId = useId();
 
   const [erorrs, setErorrs] = useState<Record<string, string>>({});
+  const { authenticateUser } = useAuth();
 
   const handleSubmit = (formData: FormData) => {
     const data = Object.fromEntries(formData);
@@ -35,7 +33,7 @@ export function LoginForm({ onSubmit }: OnSubmitProps) {
     console.log("вхід вдався");
 
     setErorrs({});
-    onSubmit({ username: result.data.username, password: result.data.pass });
+    authenticateUser(result.data.username, result.data.pass);
   };
 
   return (
