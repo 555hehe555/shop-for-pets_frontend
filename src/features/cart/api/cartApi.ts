@@ -1,9 +1,10 @@
 import { BASE_URL } from "@/data/user-config.json";
+import { authFetch } from "@/features/auth/api/authFetch";
 import { toast } from "react-hot-toast/headless";
 
 export async function fetchCartItems() {
   try {
-    const response = await fetch(`${BASE_URL}/cart`);
+    const response = await authFetch(`${BASE_URL}/cart`);
 
     if (!response.ok) {
       toast.error(

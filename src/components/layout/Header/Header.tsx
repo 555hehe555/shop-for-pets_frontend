@@ -8,18 +8,29 @@ import { RegistrationForm, LoginForm } from "@/features/auth";
 
 import { useCart, UserCart } from "@/features/cart";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 
 export default function Header() {
   const { itemsCount } = useCart();
+  const { isAuthenticated, logoutUser } = useAuth();
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openLoginModal = () => setIsLoginOpen(true);
   const closeLoginModal = () => setIsLoginOpen(false);
 
   const openRegistrationModal = () => setIsRegistrationOpen(true);
   const closeRegistrationModal = () => setIsRegistrationOpen(false);
+
+  const openDialog = () => setIsDialogOpen(true);
+  const closeDialog = () => setIsDialogOpen(false);
+  function closeAndLogoutDialog() {
+    closeDialog();
+    logoutUser();
+  }
 
   return (
     <header>
@@ -29,16 +40,30 @@ export default function Header() {
 
       <div className={styles.left}>
         <div className={styles.containerLinks}>
-          <li>
-            <Button size="sm" variant="tertiary" onClick={openLoginModal}>
-              Login
-            </Button>
-          </li>
-          <li>
-            <Button size="sm" variant="primary" onClick={openRegistrationModal}>
-              Registration
-            </Button>
-          </li>
+          {!isAuthenticated ? (
+            <>
+              <li>
+                <Button size="sm" variant="tertiary" onClick={openLoginModal}>
+                  Login
+                </Button>
+              </li>
+              <li>
+                <Button
+                  size="sm"
+                  variant="primary"
+                  onClick={openRegistrationModal}
+                >
+                  Registration
+                </Button>
+              </li>
+            </>
+          ) : (
+            <li>
+              <Button size="sm" variant="tertiary" onClick={openDialog}>
+                Logout
+              </Button>
+            </li>
+          )}
         </div>
 
         <div className={styles.containerSeaech}>
@@ -56,7 +81,7 @@ export default function Header() {
       </div>
 
       <Modal isOpen={isLoginOpen} onClose={closeLoginModal}>
-        <LoginForm />
+        <LoginForm onLoginSuccessful={closeLoginModal} />
       </Modal>
 
       <Modal isOpen={isRegistrationOpen} onClose={closeRegistrationModal}>
@@ -66,6 +91,13 @@ export default function Header() {
           }}
         />
       </Modal>
+
+      <ConfirmDialog
+        question="ви впевнені що хочете вийти?"
+        isDialogOpen={isDialogOpen}
+        onCancel={closeDialog}
+        onConfirm={closeAndLogoutDialog}
+      />
     </header>
   );
 }

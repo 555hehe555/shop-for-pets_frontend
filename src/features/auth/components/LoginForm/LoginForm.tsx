@@ -6,7 +6,11 @@ import Button from "@/ui/Button/Button";
 import { loginSchema } from "@/schemas";
 import { useAuth } from "../../context/AuthContext";
 
-export function LoginForm() {
+interface LoginInterface {
+  onLoginSuccessful: () => void;
+}
+
+export function LoginForm({ onLoginSuccessful }: LoginInterface) {
   const fieldId = useId();
 
   const [erorrs, setErorrs] = useState<Record<string, string>>({});
@@ -30,10 +34,15 @@ export function LoginForm() {
       return;
     }
 
-    console.log("вхід вдався");
-
     setErorrs({});
-    authenticateUser(result.data.username, result.data.pass);
+
+    try {
+      authenticateUser(result.data.username, result.data.pass);
+      onLoginSuccessful();
+      console.log("close form");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -58,7 +67,7 @@ export function LoginForm() {
           type="password"
           name="pass"
           id={`${fieldId}-pass`}
-          autoComplete="password"
+          autoComplete="current-password"
           placeholder="Password"
         />
         <span className={styles.erorrs}>{erorrs.pass}</span>

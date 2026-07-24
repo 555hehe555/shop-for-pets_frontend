@@ -21,15 +21,18 @@ export async function loginUser({ username, password }: LoginProps) {
       }),
     });
 
+    console.log(response);
+    if (!response.ok) {
+      throw new Error("error to authenticate user");
+    }
+
     const data = await response.json();
 
-    if (response.ok) {
-      localStorage.setItem("refresh", data.refresh);
-      localStorage.setItem("access", data.access);
-    }
+    localStorage.setItem("refresh", data.refresh);
+    localStorage.setItem("access", data.access);
 
     return data;
   } catch (e) {
-    throw new Error("error to authenticate user", e as Error);
+    throw e;
   }
 }

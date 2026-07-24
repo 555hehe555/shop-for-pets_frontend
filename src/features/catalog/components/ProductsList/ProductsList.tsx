@@ -13,7 +13,7 @@ export function ProductsList() {
 
   useEffect(() => {
     async function getProducts() {
-      const data = await fetch(`${BASE_URL}/product`);
+      const data = await fetch(`${BASE_URL}/products`);
       setProducts(await data.json());
     }
     getProducts();
