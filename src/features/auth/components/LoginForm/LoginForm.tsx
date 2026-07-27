@@ -16,7 +16,7 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
   const [erorrs, setErorrs] = useState<Record<string, string>>({});
   const { authenticateUser } = useAuth();
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
     const data = Object.fromEntries(formData);
 
     const result = loginSchema.safeParse(data);
@@ -37,7 +37,7 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
     setErorrs({});
 
     try {
-      authenticateUser(result.data.username, result.data.pass);
+      await authenticateUser(result.data.username, result.data.pass);
       onLoginSuccessful();
       console.log("close form");
     } catch (error) {

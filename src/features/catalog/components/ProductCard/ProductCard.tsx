@@ -20,7 +20,7 @@ export function ProductCard({ product }: ProductCardProps) {
     return null;
   }
 
-  const { id, imgUrl, name, price, discount } = product;
+  const { id, title, price, images } = product;
 
   return (
     <li
