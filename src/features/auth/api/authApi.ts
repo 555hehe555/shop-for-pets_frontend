@@ -1,4 +1,5 @@
 import { BASE_URL } from "@/data/user-config.json";
+import type { CreateCustomUser, CreateCustomUserRequest } from "@/types/api";
 import { TbTypeface } from "react-icons/tb";
 
 interface LoginProps {
@@ -34,5 +35,38 @@ export async function loginUser({ username, password }: LoginProps) {
     return data;
   } catch (e) {
     throw e;
+  }
+}
+
+export async function registrateUser({
+  username,
+  password,
+  email,
+}: CreateCustomUserRequest): Promise<CreateCustomUser> {
+  try {
+    const response = await fetch(`${BASE_URL}/users/`, {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        username: username,
+        password: password,
+        email: email,
+      }),
+    });
+
+    console.log(response);
+    if (!response.ok) {
+      throw new Error("error to registrate user");
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    throw error;
   }
 }

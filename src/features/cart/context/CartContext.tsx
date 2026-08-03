@@ -12,6 +12,7 @@ import {
   updateCartItemQuantity,
   type CartItem,
 } from "../api";
+import type { Cart } from "@/types/api";
 
 interface CartContextType {
   cartItems: Array<CartItem>;
@@ -27,7 +28,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export default function CartProvider({ children }: { children: ReactNode }) {
-  const [cartItems, setCartItems] = useState<Array<CartItem>>([]);
+  const [cartItems, setCartItems] = useState<Array<Cart>>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 

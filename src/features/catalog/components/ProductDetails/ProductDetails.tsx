@@ -3,7 +3,7 @@ import { BASE_URL } from "@/data/user-config.json";
 import styles from "./ProductDetails.module.scss";
 import Button from "@/ui/Button/Button";
 import { useCart } from "@/features/cart/context/CartContext";
-import type { Product } from "../../api";
+import type { Product } from "@/types/api";
 import toast from "react-hot-toast";
 
 interface ProductDetailsInterfase {
@@ -16,7 +16,7 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
 
   useEffect(() => {
     async function getProductById() {
-      const response = await fetch(`${BASE_URL}/product/${id}`);
+      const response = await fetch(`${BASE_URL}/products/${id}`);
       const productData = await response.json();
       setProduct(productData);
     }
@@ -43,18 +43,18 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
           <img
             className={styles.image}
             src={product.imgUrl}
-            alt={product.name}
+            alt={product.title}
           />
         </div>
 
         <div className={styles.info}>
-          <h1 className={styles.title}>{product.name}</h1>
+          <h1 className={styles.title}>{product.title}</h1>
 
           {/* <div className={styles.stock}>
             {product.quantity > 0 ? "✔ В наявності" : "✖ Немає в наявності"}
           </div> */}
 
-          {product.quantity > 0 ? (
+          {product.is_available ? (
             <div className={styles.stock}>✔ В наявності</div>
           ) : (
             <div className={styles.notInStock}>✖ Немає в наявності</div>
@@ -64,7 +64,7 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
             {product.discount ? (
               <>
                 <span className={styles.newPrice}>
-                  {product.price - product.discount}₴
+                  {Number(product.price) - Number(product.discount)}₴
                 </span>
 
                 <span className={styles.oldPrice}>{product.price}₴</span>

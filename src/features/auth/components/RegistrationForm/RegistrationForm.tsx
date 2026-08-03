@@ -4,17 +4,21 @@ import { useId, useState } from "react";
 import Input from "@/ui/Input/Input";
 import Button from "@/ui/Button/Button";
 import { registrationSchema } from "@/schemas";
+import { useAuth } from "../../context/AuthContext";
 
-interface OnSubmitProps {
-  onSubmit: (value: object) => void;
+interface RegistrationFormProps {
+  onRegistrationSuccessful: () => void;
 }
 
-export function RegistrationForm({ onSubmit }: OnSubmitProps) {
+export function RegistrationForm({
+  onRegistrationSuccessful,
+}: RegistrationFormProps) {
   const fieldId = useId();
+  const { registerUser } = useAuth();
 
   const [erorrs, setErorrs] = useState<Record<string, string>>({});
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
     const data = Object.fromEntries(formData);
 
     const result = registrationSchema.safeParse(data);
@@ -32,10 +36,17 @@ export function RegistrationForm({ onSubmit }: OnSubmitProps) {
       return;
     }
 
-    console.log("регістрація вдалась");
-
     setErorrs({});
-    onSubmit(result);
+    try {
+      await registerUser({
+        username: result.data.username,
+        password: result.data.pass1,
+        email: result.data.email,
+      });
+      onRegistrationSuccessful();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

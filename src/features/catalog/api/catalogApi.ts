@@ -1,6 +1,7 @@
 import { BASE_URL } from "@/data/user-config.json";
+import type { Product } from "@/types/api";
 
-export async function fetchProducts() {
+export async function fetchProducts(): Promise<Product[]> {
   try {
     const response = await fetch(`${BASE_URL}/products`);
 

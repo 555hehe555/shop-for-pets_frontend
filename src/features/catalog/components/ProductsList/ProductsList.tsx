@@ -1,8 +1,11 @@
-import { ProductCard } from "../ProductCard/ProductCard";
+import { ProductCard1 } from "../ProductCard/ProductCard.old";
 import styles from "./ProductList.module.scss";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "@/data/user-config.json";
-import { fetchProducts, type Product } from "../../api";
+import type { Product } from "@/types/api";
+import { fetchProducts } from "../../api";
+import { Box, List } from "@mui/material";
+import { ProductCard } from "../ProductCard/ProductCard";
 
 // interface ProductListProps {
 //   handleToggleCart: (id: number) => void;
@@ -22,7 +25,16 @@ export function ProductsList() {
   console.log(products);
 
   return (
-    <ul className={styles.listCards}>
+    //  className={styles.listCards}
+    <Box
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        padding: 3,
+        gap: 3,
+      }}
+    >
       {products.map((product) => (
         <ProductCard
           key={product.id}
@@ -30,6 +42,6 @@ export function ProductsList() {
           // onToggleCart={handleToggleCart}
         />
       ))}
-    </ul>
+    </Box>
   );
 }

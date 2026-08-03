@@ -1,8 +1,9 @@
 import { BASE_URL } from "@/data/user-config.json";
 import { authFetch } from "@/features/auth/api/authFetch";
+import type { Cart, CartRequest } from "@/types/api";
 import { toast } from "react-hot-toast/headless";
 
-export async function fetchCartItems() {
+export async function fetchCartItems(): Promise<Cart[]> {
   try {
     const response = await authFetch(`${BASE_URL}/cart`);
 

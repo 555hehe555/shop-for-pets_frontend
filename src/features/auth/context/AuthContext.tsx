@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { loginUser } from "../api/authApi";
+import { loginUser, registrateUser } from "../api/authApi";
 import { boolean } from "zod";
+import type { CreateCustomUserRequest } from "@/types/api";
 
 interface AuthContextInterface {
   accessToken: string | null;
@@ -10,6 +11,11 @@ interface AuthContextInterface {
 
   authenticateUser: (username: string, password: string) => Promise<void>;
   logoutUser: () => void;
+  registerUser: ({
+    username,
+    password,
+    email,
+  }: CreateCustomUserRequest) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextInterface | null>(null);
@@ -41,6 +47,23 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("refresh");
   }
 
+  async function registerUser({
+    username,
+    password,
+    email,
+  }: CreateCustomUserRequest) {
+    try {
+      await registrateUser({ username, password, email });
+
+      const loginData = await loginUser({ username, password });
+
+      setAccessToken(loginData.access);
+      setRefreshToken(loginData.refresh);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   console.log(!!accessToken);
 
   const isAuthenticated = !!accessToken;
@@ -53,6 +76,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated,
         authenticateUser,
         logoutUser,
+        registerUser,
       }}
     >
       {children}

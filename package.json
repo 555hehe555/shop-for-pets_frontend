@@ -7,11 +7,15 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:types": "swagger-typescript-api generate -p http://localhost:8000/api/schema/ -o ./src/types/api -n index.ts --no-client --route-types --clean-output"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@fontsource/lobster": "^5.2.8",
     "@fontsource/roboto": "^5.2.10",
+    "@mui/material": "^9.2.0",
     "clsx": "^2.1.1",
     "modern-normalize": "^3.0.1",
     "react": "^19.2.6",
@@ -35,6 +39,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "sass-embedded": "^1.100.0",
+    "swagger-typescript-api": "^13.12.6",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12"

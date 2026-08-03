@@ -85,11 +85,7 @@ export default function Header() {
       </Modal>
 
       <Modal isOpen={isRegistrationOpen} onClose={closeRegistrationModal}>
-        <RegistrationForm
-          onSubmit={(value) => {
-            console.log(value);
-          }}
-        />
+        <RegistrationForm onRegistrationSuccessful={closeRegistrationModal} />
       </Modal>
 
       <ConfirmDialog
