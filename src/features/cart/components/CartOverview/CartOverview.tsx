@@ -20,8 +20,7 @@ export function CartOverview() {
 
   useEffect(() => {
     async function getProducts() {
-      const data = await fetch(`${BASE_URL}/product`);
-      setProducts(await data.json());
+      const data = setProducts(await data.json());
     }
     getProducts();
   }, []);

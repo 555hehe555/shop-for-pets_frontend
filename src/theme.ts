@@ -1,8 +1,23 @@
 import { createTheme } from "@mui/material/styles";
-import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2";
+
+declare module "@mui/material/styles" {
+  interface Palette {
+    tertiary: Palette["primary"];
+    accent: Palette["primary"];
+  }
+  interface PaletteOptions {
+    tertiary?: PaletteOptions["primary"];
+    accent?: PaletteOptions["primary"];
+  }
+}
 
 export const theme = createTheme({
   palette: {
+    background: {
+      default: "#fff8f3",
+      paper: "#ffffff",
+    },
+
     primary: {
       main: "#f58a3a",
       dark: "#e87722",
@@ -12,6 +27,16 @@ export const theme = createTheme({
       main: "#4fae9d",
       dark: "#429988",
       contrastText: "#fff",
+    },
+    tertiary: {
+      main: "#f3ece6",
+      dark: "#e7ddd5",
+      contrastText: "#3a3a3a",
+    },
+
+    accent: {
+      main: "#e95f4b",
+      dark: "#da4f3b",
     },
 
     error: {
@@ -32,5 +57,12 @@ export const theme = createTheme({
     },
 
     divider: "#e8ddd2",
+  },
+
+  shape: {
+    borderRadius: 2,
+  },
+  typography: {
+    fontFamily: '"Roboto", sans-serif',
   },
 });

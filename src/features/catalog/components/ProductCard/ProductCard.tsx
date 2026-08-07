@@ -1,9 +1,11 @@
 import type { Product } from "@/types/api/";
 import {
+  Box,
   Card,
-  CardActions,
+  CardActionArea,
   CardContent,
   CardMedia,
+  Divider,
   Typography,
 } from "@mui/material";
 
@@ -12,14 +14,8 @@ import { styles } from "./ProductCard.styles";
 import { useNavigate } from "react-router-dom";
 
 interface ProductProps {
-  // onToggleCart: (id: number) => void;
   product: Product | undefined;
 }
-
-// interface cartState {
-//   addCard: boolean
-//   onuUpdate: () => void
-// }
 
 export function ProductCard({ product }: ProductProps) {
   const navigate = useNavigate();
@@ -34,19 +30,50 @@ export function ProductCard({ product }: ProductProps) {
 
   return (
     <Card sx={styles.cardContainer}>
-      <CardMedia
-        sx={styles.cardMedia}
-        component="img"
-        image="https://cdn.27.ua/sc--media--prod/default/5a/ed/c8/5aedc804-0c06-4c21-88cb-539dbef0fb7b.jpg"
-        title={mainImg?.alt}
-      />
+      <CardActionArea onClick={() => navigate(`product/${id}`)}>
+        <CardMedia
+          className="cardMedia"
+          component="img"
+          image="https://cdn.27.ua/sc--media--prod/default/5a/ed/c8/5aedc804-0c06-4c21-88cb-539dbef0fb7b.jpg"
+          title={mainImg?.alt}
+        />
 
-      <CardContent>
-        <Typography sx={styles.cardTitle} component="h3">
-          {title}
-        </Typography>
-      </CardContent>
-      <CardActions></CardActions>
+        <CardContent className="cardInfo">
+          <Typography className="cardTitle" component="h3">
+            {title}
+          </Typography>
+
+          <Box>
+            {discount ? (
+              <>
+                <Typography className="currentPrice" component="span">
+                  {Number(price) - Number(discount)}₴
+                </Typography>
+
+                <Typography className="oldPrice" component="span">
+                  {price}₴
+                </Typography>
+              </>
+            ) : (
+              <>
+                <Typography className="currentPrice" component="span">
+                  {price}₴
+                </Typography>
+              </>
+            )}
+          </Box>
+          <>
+            {discount && (
+              <>
+                <Divider />
+                <Typography className="discount" component="p">
+                  Save - {discount}₴
+                </Typography>
+              </>
+            )}
+          </>
+        </CardContent>
+      </CardActionArea>
     </Card>
 
     // <li

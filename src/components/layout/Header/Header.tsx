@@ -6,7 +6,7 @@ import Modal from "@/ui/Modal/Modal.tsx";
 import Input from "@/ui/Input/Input.tsx";
 import { RegistrationForm, LoginForm } from "@/features/auth";
 
-import { useCart, UserCart } from "@/features/cart";
+import { useCart, CartBtn } from "@/features/cart";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
@@ -76,7 +76,7 @@ export default function Header() {
         </div>
 
         <Link to="/cart" className={styles.btnCart}>
-          <UserCart count={itemsCount} />
+          <CartBtn count={itemsCount} />
         </Link>
       </div>
 

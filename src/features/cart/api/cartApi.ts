@@ -27,7 +27,7 @@ export async function fetchCartItems(): Promise<Cart[]> {
 
 export async function addCartItem(id: string) {
   try {
-    const response = await fetch(`${BASE_URL}/cart`, {
+    const response = await authFetch(`${BASE_URL}/cart`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user: 1, productId: id, quantity: 1 }),
@@ -53,7 +53,7 @@ export async function addCartItem(id: string) {
 
 export async function removeCartItem(id: string) {
   try {
-    const response = await fetch(`${BASE_URL}/cart/${id}`, {
+    const response = await authFetch(`${BASE_URL}/cart/${id}`, {
       method: "DELETE",
     });
 
@@ -77,7 +77,7 @@ export async function removeCartItem(id: string) {
 
 export async function updateCartItemQuantity(id: string, quantity: number) {
   try {
-    const response = await fetch(`${BASE_URL}/cart/${id}`, {
+    const response = await authFetch(`${BASE_URL}/cart/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity }),

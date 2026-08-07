@@ -1,2 +1,2 @@
-export { UserCart } from "./components/UserCart/UserCart";
+export { CartBtn } from "./components/CartBtn/CartBtn";
 export { useCart } from "./context/CartContext";
