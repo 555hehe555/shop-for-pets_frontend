@@ -1,4 +1,3 @@
-import type { Product } from "@/features/catalog";
 import Button from "../Button/Button";
 import Modal from "../Modal/Modal";
 

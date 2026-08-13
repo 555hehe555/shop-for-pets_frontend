@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { loginUser, registrateUser } from "../api/authApi";
-import { boolean } from "zod";
 import type { CreateCustomUserRequest } from "@/types/api";
 
 interface AuthContextInterface {

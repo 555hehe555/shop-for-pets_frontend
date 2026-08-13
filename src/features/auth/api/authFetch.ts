@@ -48,7 +48,7 @@ export async function authFetch(
         headers.set("Authorization", `Bearer ${newToken}`);
 
         return await fetch(input, { ...init, headers });
-      } catch (error) {
+      } catch {
         return response;
       }
     }

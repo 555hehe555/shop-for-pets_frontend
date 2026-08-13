@@ -4,4 +4,3 @@ export {
   removeCartItem,
   updateCartItemQuantity,
 } from "./cartApi";
-export * from "./cartTypes";

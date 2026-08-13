@@ -5,23 +5,13 @@ import Button from "@/ui/Button/Button";
 import { useCart } from "@/features/cart/context/CartContext";
 import type { Product } from "@/types/api";
 import toast from "react-hot-toast";
+import { useProductById } from "@/queries/catalog/useCatalogQueries";
+import { mainImgResolver } from "@/utils/mainImgResolver";
 
-interface ProductDetailsInterfase {
-  id: string;
-}
-
-export function ProductDetails({ id }: ProductDetailsInterfase) {
-  const [product, setProduct] = useState<Product>();
+export function ProductDetails({ id }: { id: number }) {
   const { addToCartItem } = useCart();
 
-  useEffect(() => {
-    async function getProductById() {
-      const response = await fetch(`${BASE_URL}/products/${id}`);
-      const productData = await response.json();
-      setProduct(productData);
-    }
-    getProductById();
-  }, [id]);
+  const { data: product, isLoading } = useProductById(id);
 
   async function handeleAddToCart() {
     try {
@@ -34,7 +24,9 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
     }
   }
 
-  if (!product) return <p>Завантаження...</p>;
+  if (isLoading || !product) return <p>Завантаження...</p>;
+
+  const mainImg = mainImgResolver(product.images);
 
   return (
     <div className={styles.container}>
@@ -42,8 +34,8 @@ export function ProductDetails({ id }: ProductDetailsInterfase) {
         <div className={styles.gallery}>
           <img
             className={styles.image}
-            src={product.imgUrl}
-            alt={product.title}
+            src={mainImg?.image}
+            alt={mainImg?.alt}
           />
         </div>
 

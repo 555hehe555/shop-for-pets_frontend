@@ -12,6 +12,7 @@
 
 export interface Cart {
   product: number;
+  product_data: Product;
   /**
    * @format int64
    * @min 0
@@ -42,6 +43,10 @@ export interface CreateCustomUser {
    * @pattern ^[\w.@+-]+$
    */
   username: string;
+  /**
+   * @format email
+   * @maxLength 254
+   */
   email?: string;
 }
 
@@ -58,6 +63,10 @@ export interface CreateCustomUserRequest {
    * @maxLength 128
    */
   password: string;
+  /**
+   * @format email
+   * @maxLength 254
+   */
   email?: string;
 }
 
@@ -74,6 +83,10 @@ export interface GetCustomUser {
    * @maxLength 500
    */
   description?: string | null;
+  /**
+   * @format email
+   * @maxLength 254
+   */
   email?: string;
   /** @format date-time */
   date_joined?: string;
@@ -108,6 +121,10 @@ export interface GetMe {
    * @pattern ^[\w.@+-]+$
    */
   username: string;
+  /**
+   * @format email
+   * @maxLength 254
+   */
   email?: string;
   /**
    * Staff status
@@ -180,6 +197,10 @@ export interface PatchedUpdateCustomUserRequest {
    * @maxLength 500
    */
   description?: string | null;
+  /**
+   * @format email
+   * @maxLength 254
+   */
   email?: string;
   /** @maxLength 150 */
   first_name?: string;
@@ -281,6 +302,10 @@ export interface UpdateCustomUser {
    * @maxLength 500
    */
   description: string | null;
+  /**
+   * @format email
+   * @maxLength 254
+   */
   email: string;
   /** @maxLength 150 */
   first_name: string;
@@ -302,6 +327,10 @@ export interface UpdateCustomUserRequest {
    * @maxLength 500
    */
   description: string | null;
+  /**
+   * @format email
+   * @maxLength 254
+   */
   email: string;
   /** @maxLength 150 */
   first_name: string;
@@ -440,7 +469,10 @@ export namespace Api {
    */
   export namespace ApiProductsList {
     export type RequestParams = {};
-    export type RequestQuery = {};
+    export type RequestQuery = {
+      /** A search term. */
+      search?: string;
+    };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = Product[];
@@ -523,7 +555,10 @@ export namespace Api {
     export type RequestParams = {
       id: number;
     };
-    export type RequestQuery = {};
+    export type RequestQuery = {
+      /** A search term. */
+      search?: string;
+    };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = Product[];

@@ -1,6 +1,5 @@
 import { BASE_URL } from "@/data/user-config.json";
 import type { CreateCustomUser, CreateCustomUserRequest } from "@/types/api";
-import { TbTypeface } from "react-icons/tb";
 
 interface LoginProps {
   username: string;
@@ -8,34 +7,29 @@ interface LoginProps {
 }
 
 export async function loginUser({ username, password }: LoginProps) {
-  try {
-    const response = await fetch(`${BASE_URL}/accounts/login/`, {
-      method: "POST",
+  const response = await fetch(`${BASE_URL}/accounts/login/`, {
+    method: "POST",
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+    headers: {
+      "Content-Type": "application/json",
+    },
 
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    });
+    body: JSON.stringify({
+      username: username,
+      password: password,
+    }),
+  });
 
-    console.log(response);
-    if (!response.ok) {
-      throw new Error("error to authenticate user");
-    }
-
-    const data = await response.json();
-
-    localStorage.setItem("refresh", data.refresh);
-    localStorage.setItem("access", data.access);
-
-    return data;
-  } catch (e) {
-    throw e;
+  if (!response.ok) {
+    throw new Error("error to authenticate user");
   }
+
+  const data = await response.json();
+
+  localStorage.setItem("refresh", data.refresh);
+  localStorage.setItem("access", data.access);
+
+  return data;
 }
 
 export async function registrateUser({
@@ -43,30 +37,25 @@ export async function registrateUser({
   password,
   email,
 }: CreateCustomUserRequest): Promise<CreateCustomUser> {
-  try {
-    const response = await fetch(`${BASE_URL}/users/`, {
-      method: "POST",
+  const response = await fetch(`${BASE_URL}/users/`, {
+    method: "POST",
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+    headers: {
+      "Content-Type": "application/json",
+    },
 
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        email: email,
-      }),
-    });
+    body: JSON.stringify({
+      username: username,
+      password: password,
+      email: email,
+    }),
+  });
 
-    console.log(response);
-    if (!response.ok) {
-      throw new Error("error to registrate user");
-    }
-
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    throw error;
+  if (!response.ok) {
+    throw new Error("error to registrate user");
   }
+
+  const data = await response.json();
+
+  return data;
 }

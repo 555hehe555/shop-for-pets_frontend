@@ -1,29 +1,19 @@
 import { useCart } from "@/features/cart";
-import { BASE_URL } from "@/data/user-config.json";
 import styles from "./CartOverview.module.scss";
 
-import { useEffect, useState } from "react";
-import type { Product } from "@/features/catalog/api";
+import { useState } from "react";
 import Button from "@/ui/Button/Button";
 import { GoTrash } from "react-icons/go";
 import InfoState from "@/components/InfoState/InfoState";
-import Modal from "@/ui/Modal/Modal";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import toast from "react-hot-toast";
+import { mainImgResolver } from "@/utils/mainImgResolver";
 
 export function CartOverview() {
   const { cartItems, error, loading, changeCartItemQuantity, deleteCartItem } =
     useCart();
-  const [products, setProducts] = useState<Product[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [idToDelete, setIdToDelete] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function getProducts() {
-      const data = setProducts(await data.json());
-    }
-    getProducts();
-  }, []);
+  const [idToDelete, setIdToDelete] = useState<number | null>(null);
 
   function handleCancel() {
     setIsDialogOpen(false);
@@ -40,17 +30,6 @@ export function CartOverview() {
 
     toast.success("успішно забрано з корзини");
   }
-
-  const cartProducts = cartItems.map((cartItem) => {
-    const product = products.find(
-      (productItem: Product) =>
-        String(productItem.id) === String(cartItem.productId),
-    );
-
-    return { ...cartItem, product };
-  });
-
-  console.log(cartProducts);
 
   if (loading) {
     return (
@@ -81,25 +60,25 @@ export function CartOverview() {
 
   return (
     <div className={styles.cartContainer}>
-      {cartProducts.length > 0 ? (
-        cartProducts.map((cartProduct) => (
-          <div key={cartProduct.product?.id} className={styles.cartItem}>
+      {cartItems.length > 0 ? (
+        cartItems.map((cartItem) => (
+          <div key={cartItem.product} className={styles.cartItem}>
             <div className={styles.cartItemLeft}>
               <img
                 className={styles.cartItemImage}
-                src={cartProduct.product?.imgUrl}
-                alt={cartProduct.product?.name}
+                src={mainImgResolver(cartItem.product_data.images)?.image || ""}
+                alt={mainImgResolver(cartItem.product_data.images)?.alt || ""}
               />
               <h3 className={styles.cartitemName}>
-                {cartProduct.product?.name}
+                {cartItem.product_data.title}
               </h3>
             </div>
 
             <div className={styles.cartItemRight}>
               <div className={styles.cartItemQuantity}>
                 <p className={styles.cartItemPrice}>
-                  {(cartProduct.product?.price || 0) *
-                    (cartProduct?.quantity || 0)}
+                  {(Number(cartItem.product_data.price) || 0) *
+                    (cartItem.quantity || 0)}
                   ₴
                 </p>
                 <div className={styles.cartItemQuantityControls}>
@@ -107,22 +86,22 @@ export function CartOverview() {
                     size="xs"
                     onClick={() =>
                       changeCartItemQuantity(
-                        String(cartProduct?.id),
-                        (cartProduct?.quantity || 0) - 1,
+                        cartItem?.product,
+                        (cartItem?.quantity || 0) - 1,
                       )
                     }
                   >
                     -
                   </Button>
                   <span className={styles.cartItemQuantityValue}>
-                    {cartProduct?.quantity || 0}
+                    {cartItem?.quantity || 0}
                   </span>
                   <Button
                     size="xs"
                     onClick={() =>
                       changeCartItemQuantity(
-                        String(cartProduct?.id),
-                        (cartProduct?.quantity || 0) + 1,
+                        cartItem?.product,
+                        (cartItem?.quantity || 0) + 1,
                       )
                     }
                   >
@@ -137,7 +116,7 @@ export function CartOverview() {
                 size="sm"
                 onClick={() => {
                   setIsDialogOpen(true);
-                  setIdToDelete(cartProduct.id);
+                  setIdToDelete(cartItem.product);
                 }}
               >
                 <GoTrash />

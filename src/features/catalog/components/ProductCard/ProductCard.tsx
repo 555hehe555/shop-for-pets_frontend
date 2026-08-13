@@ -12,6 +12,7 @@ import {
 import { styles } from "./ProductCard.styles";
 
 import { useNavigate } from "react-router-dom";
+import { mainImgResolver } from "@/utils/mainImgResolver";
 
 interface ProductProps {
   product: Product | undefined;
@@ -26,7 +27,7 @@ export function ProductCard({ product }: ProductProps) {
 
   const { id, title, price, discount, images } = product;
 
-  const mainImg = images.filter((image) => image.is_main).at(0);
+  const mainImg = mainImgResolver(images);
 
   return (
     <Card sx={styles.cardContainer}>

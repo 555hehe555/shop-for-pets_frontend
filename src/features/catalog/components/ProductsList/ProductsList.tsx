@@ -1,19 +1,14 @@
-import { useState, useEffect } from "react";
-import type { Product } from "@/types/api";
-import { fetchProducts } from "../../api";
 import { Grid } from "@mui/material";
 import { ProductCard } from "../ProductCard/ProductCard";
+import { useSearchParams } from "react-router-dom";
+import { useProducts } from "@/queries/catalog/useCatalogQueries";
 
 export function ProductsList() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    async function getProducts() {
-      const data = await fetchProducts();
-      setProducts(data);
-    }
-    getProducts();
-  }, []);
+  const search = searchParams.get("search") || undefined;
+
+  const { data: products = [] } = useProducts(search);
 
   return (
     <Grid

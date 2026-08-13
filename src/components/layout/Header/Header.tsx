@@ -7,13 +7,19 @@ import Input from "@/ui/Input/Input.tsx";
 import { RegistrationForm, LoginForm } from "@/features/auth";
 
 import { useCart, CartBtn } from "@/features/cart";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 
 export default function Header() {
   const { itemsCount } = useCart();
   const { isAuthenticated, logoutUser } = useAuth();
+
+  const [searchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
+  const navigate = useNavigate();
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
@@ -67,12 +73,25 @@ export default function Header() {
         </div>
 
         <div className={styles.containerSeaech}>
-          <Input
-            type="text"
-            inputSize="md"
-            placeholder="Search"
-            maxLength={100}
-          />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (searchQuery.trim()) {
+                navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+              } else {
+                navigate("/");
+              }
+            }}
+          >
+            <Input
+              type="text"
+              inputSize="md"
+              placeholder="Search"
+              maxLength={100}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </form>
         </div>
 
         <Link to="/cart" className={styles.btnCart}>
