@@ -1,19 +1,11 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
-import {
-  fetchCartItems,
-  addCartItem,
-  removeCartItem,
-  updateCartItemQuantity,
-} from "../api";
-import type { Cart } from "@/types/api";
+import { createContext, useContext, type ReactNode } from "react";
+import type { Cart, CartRequest } from "@/types/api";
 import { useCartItems } from "@/queries/cart/useCartQueries";
-import { useAddToCart } from "@/queries/cart/useCartMutations";
+import {
+  useAddToCart,
+  useChangeCartItemQuantity,
+  useRemoveCartItem,
+} from "@/queries/cart/useCartMutations";
 
 interface CartContextType {
   cartItems: Array<Cart>;
@@ -22,53 +14,24 @@ interface CartContextType {
   itemsCount: number;
 
   addToCartItem: (id: number) => Promise<void>;
-  changeCartItemQuantity: (id: number, quantity: number) => Promise<void>;
+  changeCartItemQuantity: ({ product, quantity }: CartRequest) => Promise<void>;
   deleteCartItem: (id: number) => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export default function CartProvider({ children }: { children: ReactNode }) {
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const { data: cartItems = [] } = useCartItems();
+  const {
+    data: cartItems = [],
+    isLoading: loading,
+    error: queryError,
+  } = useCartItems();
 
   const { mutateAsync: addToCartItem } = useAddToCart();
+  const { mutateAsync: changeCartItemQuantity } = useChangeCartItemQuantity();
+  const { mutateAsync: deleteCartItem } = useRemoveCartItem();
 
-  async function changeCartItemQuantity(id: number, quantity: number) {
-    setError(null);
-    setLoading(true);
-
-    if (quantity < 1) {
-      return;
-    }
-
-    try {
-      await updateCartItemQuantity(id, quantity);
-    } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function deleteCartItem(id: number) {
-    setError(null);
-    setLoading(true);
-    console.log("deleteCartItem", id);
-    try {
-      await removeCartItem(id);
-    } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+  const error = queryError ? queryError.message : null;
 
   const itemsCount = cartItems.length;
 

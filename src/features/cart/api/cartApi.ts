@@ -41,8 +41,11 @@ export async function removeCartItem(id: number) {
   }
 }
 
-export async function updateCartItemQuantity(id: number, quantity: number) {
-  const response = await authFetch(`${BASE_URL}/cart/${id}`, {
+export async function changeCartItemQuantity(
+  product: number,
+  quantity?: number,
+) {
+  const response = await authFetch(`${BASE_URL}/cart/${product}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ quantity }),

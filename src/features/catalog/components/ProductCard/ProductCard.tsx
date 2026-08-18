@@ -35,7 +35,7 @@ export function ProductCard({ product }: ProductProps) {
         <CardMedia
           className="cardMedia"
           component="img"
-          image="https://cdn.27.ua/sc--media--prod/default/5a/ed/c8/5aedc804-0c06-4c21-88cb-539dbef0fb7b.jpg"
+          image={mainImg?.image}
           title={mainImg?.alt}
         />
 

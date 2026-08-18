@@ -2,5 +2,5 @@ export {
   fetchCartItems,
   addCartItem,
   removeCartItem,
-  updateCartItemQuantity,
+  changeCartItemQuantity,
 } from "./cartApi";

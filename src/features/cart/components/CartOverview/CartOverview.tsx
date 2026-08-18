@@ -85,10 +85,10 @@ export function CartOverview() {
                   <Button
                     size="xs"
                     onClick={() =>
-                      changeCartItemQuantity(
-                        cartItem?.product,
-                        (cartItem?.quantity || 0) - 1,
-                      )
+                      changeCartItemQuantity({
+                        product: cartItem?.product,
+                        quantity: (cartItem?.quantity || 0) - 1,
+                      })
                     }
                   >
                     -
@@ -99,10 +99,10 @@ export function CartOverview() {
                   <Button
                     size="xs"
                     onClick={() =>
-                      changeCartItemQuantity(
-                        cartItem?.product,
-                        (cartItem?.quantity || 0) + 1,
-                      )
+                      changeCartItemQuantity({
+                        product: cartItem?.product,
+                        quantity: (cartItem?.quantity || 0) + 1,
+                      })
                     }
                   >
                     +

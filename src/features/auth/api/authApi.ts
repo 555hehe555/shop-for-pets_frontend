@@ -1,12 +1,17 @@
 import { BASE_URL } from "@/data/user-config.json";
-import type { CreateCustomUser, CreateCustomUserRequest } from "@/types/api";
+import type {
+  CreateCustomUser,
+  CreateCustomUserRequest,
+  GetMe,
+  TokenObtainPair,
+  TokenObtainPairRequest,
+} from "@/types/api";
+import { authFetch } from "./authFetch";
 
-interface LoginProps {
-  username: string;
-  password: string;
-}
-
-export async function loginUser({ username, password }: LoginProps) {
+export async function loginUser({
+  username,
+  password,
+}: TokenObtainPairRequest): Promise<TokenObtainPair> {
   const response = await fetch(`${BASE_URL}/accounts/login/`, {
     method: "POST",
 
@@ -53,6 +58,18 @@ export async function registrateUser({
 
   if (!response.ok) {
     throw new Error("error to registrate user");
+  }
+
+  const data = await response.json();
+
+  return data;
+}
+
+export async function getMe(): Promise<GetMe> {
+  const response = await authFetch(`${BASE_URL}/users/me/`);
+
+  if (!response.ok) {
+    throw new Error("error to get auntificate user");
   }
 
   const data = await response.json();

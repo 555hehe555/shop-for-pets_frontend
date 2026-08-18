@@ -1,6 +1,11 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { loginUser, registrateUser } from "../api/authApi";
 import type { CreateCustomUserRequest } from "@/types/api";
+import {
+  useLoginUser,
+  useRegistrateUser,
+} from "@/queries/auth/useAuthMutations";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AuthContextInterface {
   accessToken: string | null;
@@ -20,6 +25,9 @@ interface AuthContextInterface {
 const AuthContext = createContext<AuthContextInterface | null>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
+  const { mutateAsync: loginUser } = useLoginUser();
+  const { mutateAsync: registrateUser } = useRegistrateUser();
+
   const [accessToken, setAccessToken] = useState<string | null>(() =>
     localStorage.getItem("access"),
   );
@@ -28,17 +36,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   async function authenticateUser(username: string, password: string) {
-    try {
-      const data = await loginUser({ username, password });
+    const data = await loginUser({ username, password });
 
-      setAccessToken(data.access);
-      setRefreshToken(data.refresh);
-    } catch (error) {
-      throw error;
-    }
+    setAccessToken(data.access);
+    setRefreshToken(data.refresh);
   }
+  const queryClient = useQueryClient();
 
   function logoutUser() {
+    queryClient.invalidateQueries({ queryKey: ["cart"] });
+
     setAccessToken(null);
     setRefreshToken(null);
 
@@ -51,16 +58,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     password,
     email,
   }: CreateCustomUserRequest) {
-    try {
-      await registrateUser({ username, password, email });
+    await registrateUser({ username, password, email });
 
-      const loginData = await loginUser({ username, password });
+    const loginData = await loginUser({ username, password });
 
-      setAccessToken(loginData.access);
-      setRefreshToken(loginData.refresh);
-    } catch (error) {
-      throw error;
-    }
+    setAccessToken(loginData.access);
+    setRefreshToken(loginData.refresh);
   }
 
   console.log(!!accessToken);
