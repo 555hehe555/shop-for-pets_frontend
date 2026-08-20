@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { loginUser, registrateUser } from "../api/authApi";
 import type { CreateCustomUserRequest } from "@/types/api";
 import {
   useLoginUser,
@@ -44,7 +43,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
 
   function logoutUser() {
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
+    queryClient.clear();
+    window.location.href = "/";
 
     setAccessToken(null);
     setRefreshToken(null);

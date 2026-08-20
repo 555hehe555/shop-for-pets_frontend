@@ -16,11 +16,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { theme } from "./theme.ts";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 5 * 60 * 1000 } },

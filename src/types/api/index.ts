@@ -181,6 +181,12 @@ export interface PatchedProductRequest {
    */
   discount?: string;
   is_available?: boolean;
+  /** @minLength 1 */
+  species?: string | null;
+  /** @minLength 1 */
+  category?: string | null;
+  /** @minLength 1 */
+  brand?: string | null;
 }
 
 export interface PatchedUpdateCustomUserRequest {
@@ -229,6 +235,9 @@ export interface Product {
    */
   discount: string;
   is_available?: boolean;
+  species?: string | null;
+  category?: string | null;
+  brand?: string | null;
   images: ProductImage[];
 }
 
@@ -267,6 +276,12 @@ export interface ProductRequest {
    */
   discount: string;
   is_available?: boolean;
+  /** @minLength 1 */
+  species?: string | null;
+  /** @minLength 1 */
+  category?: string | null;
+  /** @minLength 1 */
+  brand?: string | null;
 }
 
 export interface TokenObtainPair {
@@ -470,8 +485,17 @@ export namespace Api {
   export namespace ApiProductsList {
     export type RequestParams = {};
     export type RequestQuery = {
+      brand__name?: string;
+      /** Multiple values may be separated by commas. */
+      brand__name__in?: string[];
+      category__name?: string;
+      /** Multiple values may be separated by commas. */
+      category__name__in?: string[];
       /** A search term. */
       search?: string;
+      species__name?: string;
+      /** Multiple values may be separated by commas. */
+      species__name__in?: string[];
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
@@ -556,8 +580,17 @@ export namespace Api {
       id: number;
     };
     export type RequestQuery = {
+      brand__name?: string;
+      /** Multiple values may be separated by commas. */
+      brand__name__in?: string[];
+      category__name?: string;
+      /** Multiple values may be separated by commas. */
+      category__name__in?: string[];
       /** A search term. */
       search?: string;
+      species__name?: string;
+      /** Multiple values may be separated by commas. */
+      species__name__in?: string[];
     };
     export type RequestBody = never;
     export type RequestHeaders = {};

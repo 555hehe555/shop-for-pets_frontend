@@ -1,11 +1,14 @@
 import { fetchProducts } from "@/features/catalog/api";
-import { fetchProductById } from "@/features/catalog/api/catalogApi";
+import {
+  fetchProductById,
+  type ProductFiltersParams,
+} from "@/features/catalog/api/catalogApi";
 import { useQuery } from "@tanstack/react-query";
 
-export function useProducts(search?: string) {
+export function useProducts(params: ProductFiltersParams = {}) {
   const query = useQuery({
-    queryKey: ["products"],
-    queryFn: () => fetchProducts(search),
+    queryKey: ["products", params],
+    queryFn: () => fetchProducts(params),
   });
 
   return query;

@@ -1,9 +1,34 @@
 import { BASE_URL } from "@/data/user-config.json";
 import type { Product } from "@/types/api";
 
-export async function fetchProducts(search?: string): Promise<Product[]> {
-  const url = search
-    ? `${BASE_URL}/products/?search=${encodeURIComponent(search)}`
+export type ProductFiltersParams = {
+  search?: string;
+  species?: string[];
+  categories?: string[];
+  brands?: string[];
+};
+
+export async function fetchProducts(
+  params: ProductFiltersParams = {},
+): Promise<Product[]> {
+  const query = new URLSearchParams();
+  if (params.search) {
+    query.append("search", params.search);
+  }
+  if (params.species?.length) {
+    query.append("species__name__in", params.species.join(","));
+  }
+  if (params.categories?.length) {
+    query.append("categories__name__in", params.categories.join(","));
+  }
+  if (params.brands?.length) {
+    query.append("brands__name__in", params.brands.join(","));
+  }
+
+  const queryString = query.toString();
+
+  const url = queryString
+    ? `${BASE_URL}/products/?${queryString}`
     : `${BASE_URL}/products`;
 
   const response = await fetch(url);
