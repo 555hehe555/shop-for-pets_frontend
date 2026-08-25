@@ -19,10 +19,10 @@ export async function fetchProducts(
     query.append("species__name__in", params.species.join(","));
   }
   if (params.categories?.length) {
-    query.append("categories__name__in", params.categories.join(","));
+    query.append("category__name__in", params.categories.join(","));
   }
   if (params.brands?.length) {
-    query.append("brands__name__in", params.brands.join(","));
+    query.append("brand__name__in", params.brands.join(","));
   }
 
   const queryString = query.toString();

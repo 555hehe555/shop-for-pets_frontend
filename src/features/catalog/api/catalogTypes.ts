@@ -13,3 +13,9 @@ export interface Product {
 
   images: Image[];
 }
+
+export interface FilterState {
+  species: string[];
+  categories: string[];
+  brands: string[];
+}

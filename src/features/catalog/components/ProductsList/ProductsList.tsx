@@ -4,12 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { useProducts } from "@/queries/catalog/useCatalogQueries";
 import { ProductFilters } from "../ProductFilters/ProductFilters";
 import { useState } from "react";
-
-interface FilterState {
-  species: string[];
-  categories: string[];
-  brands: string[];
-}
+import type { FilterState } from "../../api";
 
 export function ProductsList() {
   const [searchParams] = useSearchParams();
@@ -21,12 +16,14 @@ export function ProductsList() {
     brands: [],
   });
 
+  console.log(filters);
+
   const { data: products = [] } = useProducts({ search, ...filters });
 
   return (
     <Box sx={{ display: "flex", gap: 3, padding: 3, alignItems: "flex-start" }}>
       <Box sx={{ width: 250, flexShrink: 0 }}>
-        <ProductFilters />
+        <ProductFilters filters={filters} onChange={setFilters} />
       </Box>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={3}>

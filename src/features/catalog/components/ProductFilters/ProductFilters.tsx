@@ -1,10 +1,17 @@
 import {
   Box,
   Checkbox,
+  Collapse,
+  Divider,
   FormControlLabel,
   FormGroup,
+  IconButton,
   Typography,
 } from "@mui/material";
+import type { FilterState } from "../../api";
+import { check } from "zod";
+import { SlArrowUp, SlArrowDown } from "react-icons/sl";
+import { useState } from "react";
 
 const SPECIES_OPTIONS = [
   "Dogs",
@@ -33,26 +40,107 @@ const BRANDS_OPTIONS = [
   "Acana",
 ];
 
-export function ProductFilters() {
+interface ProductFiltersType {
+  filters: FilterState;
+  onChange: (filters: FilterState) => void;
+}
+
+interface FilterGroupType {
+  title: string;
+  options: string[];
+  filterKey: keyof FilterState;
+  handleToggle: (
+    category: keyof FilterState,
+    checked: boolean,
+    value: string,
+  ) => void;
+  filters: FilterState;
+}
+
+function FilterGroup({
+  title,
+  options,
+  filterKey,
+  handleToggle,
+  filters,
+}: FilterGroupType) {
+  const [open, setOpen] = useState(true);
+
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>
-        Фільти
-      </Typography>
+      <Box onClick={() => setOpen(!open)}>
+        <Typography variant="subtitle1">{title}</Typography>
+        <IconButton>{open ? <SlArrowUp /> : <SlArrowDown />}</IconButton>
+      </Box>
 
-      <Box>
-        <Typography variant="subtitle1">Бренди</Typography>
-
+      <Collapse in={open}>
         <FormGroup>
-          {BRANDS_OPTIONS.map((option) => (
+          {options.map((option) => (
             <FormControlLabel
-              control={<Checkbox color="primary" size="small" />}
+              control={
+                <Checkbox
+                  checked={filters[filterKey].includes(option)}
+                  onChange={(e) =>
+                    handleToggle(filterKey, e.target.checked, option)
+                  }
+                  color="primary"
+                  size="small"
+                />
+              }
               key={option}
               label={option}
             />
           ))}
         </FormGroup>
-      </Box>
+      </Collapse>
+    </Box>
+  );
+}
+
+export function ProductFilters({ filters, onChange }: ProductFiltersType) {
+  function handleToggle(
+    category: keyof FilterState,
+    checked: boolean,
+    value: string,
+  ) {
+    const currentList = filters[category];
+
+    const newList = checked
+      ? [...currentList, value]
+      : currentList.filter((item) => item !== value);
+
+    onChange({ ...filters, [category]: newList });
+  }
+
+  return (
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Фільти
+      </Typography>
+      <FilterGroup
+        title="Бренди"
+        options={BRANDS_OPTIONS}
+        filterKey="brands"
+        handleToggle={handleToggle}
+        filters={filters}
+      />
+      <Divider />
+      <FilterGroup
+        title="Категорії"
+        options={CATEGORIES_OPTIONS}
+        filterKey="categories"
+        handleToggle={handleToggle}
+        filters={filters}
+      />
+      <Divider />{" "}
+      <FilterGroup
+        title="Види"
+        options={SPECIES_OPTIONS}
+        filterKey="species"
+        handleToggle={handleToggle}
+        filters={filters}
+      />
+      <Divider />
     </Box>
   );
 }

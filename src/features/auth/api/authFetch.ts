@@ -32,7 +32,6 @@ export async function authFetch(
   }
 
   let response = await fetch(input, { ...init, headers });
-  console.log("response by authFetch: ", response);
 
   if (response.status === 401) {
     const refreshToken = localStorage.getItem("refresh");
@@ -69,7 +68,6 @@ export async function authFetch(
         headers.set("Authorization", `Bearer ${data.access}`);
 
         response = await fetch(input, { ...init, headers });
-        console.log("response by authFetch: ", response);
       } else {
         processQueue(new Error("faill refresh"));
 
