@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import type { FilterState } from "../../api";
-import { check } from "zod";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
 import { useState } from "react";
 

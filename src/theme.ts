@@ -4,10 +4,32 @@ declare module "@mui/material/styles" {
   interface Palette {
     tertiary: Palette["primary"];
     accent: Palette["primary"];
+    header: {
+      bg: string;
+      text: string;
+    };
+    logo: string;
   }
   interface PaletteOptions {
     tertiary?: PaletteOptions["primary"];
     accent?: PaletteOptions["primary"];
+    header?: {
+      bg: string;
+      text: string;
+    };
+    logo?: string;
+  }
+  interface TypographyVariants {
+    fontLogo: React.CSSProperties;
+  }
+  interface TypographyVariantsOptions {
+    fontLogo?: React.CSSProperties;
+  }
+}
+
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    fontLogo: true;
   }
 }
 
@@ -17,7 +39,6 @@ export const theme = createTheme({
       default: "#fff8f3",
       paper: "#ffffff",
     },
-
     primary: {
       main: "#f58a3a",
       dark: "#e87722",
@@ -33,12 +54,15 @@ export const theme = createTheme({
       dark: "#e7ddd5",
       contrastText: "#3a3a3a",
     },
-
     accent: {
       main: "#e95f4b",
       dark: "#da4f3b",
     },
-
+    header: {
+      bg: "#f37a45",
+      text: "#ffffff",
+    },
+    logo: "#d9f2f7",
     error: {
       main: "#d32f2f",
       dark: "#c62828",
@@ -55,14 +79,16 @@ export const theme = createTheme({
       main: "#2e7d32",
       dark: "#1b5e20",
     },
-
     divider: "#e8ddd2",
   },
-
   shape: {
     borderRadius: 2,
   },
   typography: {
     fontFamily: '"Roboto", sans-serif',
+    fontLogo: {
+      fontFamily: '"Lobster", cursive',
+      fontSize: "32px",
+    },
   },
 });

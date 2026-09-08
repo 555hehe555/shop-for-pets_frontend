@@ -1,15 +1,23 @@
 import { useState } from "react";
-import styles from "./Header.module.scss";
 
 import Button from "@/ui/Button/Button.tsx";
 import Modal from "@/ui/Modal/Modal.tsx";
-import Input from "@/ui/Input/Input.tsx";
 import { RegistrationForm, LoginForm } from "@/features/auth";
-
 import { useCart, CartBtn } from "@/features/cart";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
+
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  AppBar,
+  Box,
+  IconButton,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+
+import { styles } from "./Header.styles";
 
 export default function Header() {
   const { itemsCount } = useCart();
@@ -19,6 +27,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("search") || "",
   );
+
   const navigate = useNavigate();
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -33,27 +42,39 @@ export default function Header() {
 
   const openDialog = () => setIsDialogOpen(true);
   const closeDialog = () => setIsDialogOpen(false);
-  function closeAndLogoutDialog() {
+
+  const closeAndLogoutDialog = () => {
     closeDialog();
     logoutUser();
-  }
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    const query = searchQuery.trim();
+
+    if (query) {
+      navigate(`/?search=${encodeURIComponent(query)}`);
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
-    <header>
-      <Link to="/" className={styles.logo}>
-        SfP
-      </Link>
+    <AppBar position="static" sx={styles.appBar}>
+      <Toolbar sx={styles.toolbar}>
+        <Typography component={Link} variant="h2" to="/" sx={styles.logo}>
+          SfP
+        </Typography>
 
-      <div className={styles.left}>
-        <div className={styles.containerLinks}>
-          {!isAuthenticated ? (
-            <>
-              <li>
+        <Box sx={styles.leftContainer}>
+          <Box sx={styles.linksContainer}>
+            {!isAuthenticated ? (
+              <>
                 <Button size="sm" variant="tertiary" onClick={openLoginModal}>
                   Login
                 </Button>
-              </li>
-              <li>
+
                 <Button
                   size="sm"
                   variant="primary"
@@ -61,43 +82,35 @@ export default function Header() {
                 >
                   Registration
                 </Button>
-              </li>
-            </>
-          ) : (
-            <li>
+              </>
+            ) : (
               <Button size="sm" variant="tertiary" onClick={openDialog}>
                 Logout
               </Button>
-            </li>
-          )}
-        </div>
+            )}
+          </Box>
 
-        <div className={styles.containerSeaech}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (searchQuery.trim()) {
-                navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
-              } else {
-                navigate("/");
-              }
-            }}
+          <Box
+            component="form"
+            sx={styles.searchForm}
+            onSubmit={handleSearchSubmit}
           >
-            <Input
+            <TextField
               type="text"
-              inputSize="md"
+              size="small"
+              variant="outlined"
               placeholder="Search"
-              maxLength={100}
+              fullWidth
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </form>
-        </div>
+          </Box>
 
-        <Link to="/cart" className={styles.btnCart}>
-          <CartBtn count={itemsCount} />
-        </Link>
-      </div>
+          <IconButton component={Link} to="/cart" sx={styles.cartButton}>
+            <CartBtn count={itemsCount} />
+          </IconButton>
+        </Box>
+      </Toolbar>
 
       <Modal isOpen={isLoginOpen} onClose={closeLoginModal}>
         <LoginForm onLoginSuccessful={closeLoginModal} />
@@ -108,11 +121,11 @@ export default function Header() {
       </Modal>
 
       <ConfirmDialog
-        question="ви впевнені що хочете вийти?"
+        question="Ви впевнені, що хочете вийти?"
         isDialogOpen={isDialogOpen}
         onCancel={closeDialog}
         onConfirm={closeAndLogoutDialog}
       />
-    </header>
+    </AppBar>
   );
 }
