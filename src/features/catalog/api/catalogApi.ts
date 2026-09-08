@@ -6,11 +6,21 @@ export type ProductFiltersParams = {
   species?: string[];
   categories?: string[];
   brands?: string[];
+
+  page?: number;
+  page_size?: number;
 };
+
+interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
 
 export async function fetchProducts(
   params: ProductFiltersParams = {},
-): Promise<Product[]> {
+): Promise<PaginatedResponse<Product>> {
   const query = new URLSearchParams();
   if (params.search) {
     query.append("search", params.search);
@@ -23,6 +33,12 @@ export async function fetchProducts(
   }
   if (params.brands?.length) {
     query.append("brand__name__in", params.brands.join(","));
+  }
+  if (params.page) {
+    query.append("page", params.page.toString());
+  }
+  if (params.page_size) {
+    query.append("page_size", params.page_size.toString());
   }
 
   const queryString = query.toString();
