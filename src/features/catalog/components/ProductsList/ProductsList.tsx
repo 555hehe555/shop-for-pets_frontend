@@ -37,8 +37,16 @@ export function ProductsList() {
       <Box sx={{ width: 250, flexShrink: 0 }}>
         <ProductFilters filters={filters} onChange={handleFilters} />
       </Box>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={3}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 4,
+        }}
+      >
+        <Grid container spacing={3} sx={{ width: "100%" }}>
           {products.map((product) => (
             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
               <ProductCard product={product} />

@@ -1,11 +1,12 @@
-import styles from "./Footer.module.scss";
+import { Box, Typography } from "@mui/material";
+import { styles } from "./Footer.styles";
 
-export default function App() {
+export default function Footer() {
   return (
-    <footer className={styles.footer}>
-      <p className={styles.copyright}>
+    <Box component="footer" sx={styles.footer}>
+      <Typography variant="body2" sx={styles.copyright}>
         &copy; 3301. All rights don't reserved.
-      </p>
-    </footer>
+      </Typography>
+    </Box>
   );
 }

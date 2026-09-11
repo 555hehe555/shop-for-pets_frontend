@@ -1,10 +1,11 @@
-import styles from "./LoginForm.module.scss";
 import { useId, useState } from "react";
+import { Box, Typography } from "@mui/material";
 
 import Input from "@/ui/Input/Input";
 import Button from "@/ui/Button/Button";
 import { loginSchema } from "@/schemas";
 import { useAuth } from "../../context/AuthContext";
+import { styles } from "./LoginForm.styles";
 
 interface LoginInterface {
   onLoginSuccessful: () => void;
@@ -46,11 +47,19 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
   };
 
   return (
-    <form className={styles.form} action={handleSubmit}>
-      <h2 className={styles.title}>Login</h2>
+    <Box component="form" sx={styles.form} action={handleSubmit}>
+      <Typography variant="h4" component="h2" sx={styles.title}>
+        Login
+      </Typography>
 
-      <div className={styles.field}>
-        <label htmlFor={`${fieldId}-username`}>Username</label>
+      <Box sx={styles.field}>
+        <Typography
+          component="label"
+          htmlFor={`${fieldId}-username`}
+          sx={styles.label}
+        >
+          Username
+        </Typography>
         <Input
           type="text"
           name="username"
@@ -58,11 +67,19 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
           autoComplete="username"
           placeholder="Username"
         />
-        <span className={styles.erorrs}>{erorrs.username}</span>
-      </div>
+        <Typography component="span" sx={styles.errorText}>
+          {erorrs.username}
+        </Typography>
+      </Box>
 
-      <div className={styles.field}>
-        <label htmlFor={`${fieldId}-pass`}>Password</label>
+      <Box sx={styles.field}>
+        <Typography
+          component="label"
+          htmlFor={`${fieldId}-pass`}
+          sx={styles.label}
+        >
+          Password
+        </Typography>
         <Input
           type="password"
           name="pass"
@@ -70,12 +87,18 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
           autoComplete="current-password"
           placeholder="Password"
         />
-        <span className={styles.erorrs}>{erorrs.pass}</span>
-      </div>
+        <Typography component="span" sx={styles.errorText}>
+          {erorrs.pass}
+        </Typography>
+      </Box>
 
-      <Button size="lg" type="submit">
+      <Button
+        size="lg"
+        type="submit"
+        style={{ alignSelf: "center", minWidth: 180 }}
+      >
         Login
       </Button>
-    </form>
+    </Box>
   );
 }

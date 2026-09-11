@@ -1,5 +1,7 @@
-import styles from "./Input.module.scss";
+import { type SxProps } from "@mui/material";
+import { styles } from "./Input.styles";
 import type { InputHTMLAttributes } from "react";
+import { Box } from "@mui/system";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   variant?: "primary" | "secondary" | "success" | "danger";
@@ -13,13 +15,10 @@ export default function Input({
   ...props
 }: InputProps) {
   return (
-    <input
-      className={`
-        ${styles.input}
-        ${styles[variant]}
-        ${styles[inputSize]}
-        ${className ?? ""}
-      `}
+    <Box
+      component="input"
+      className={className}
+      sx={[styles.root, styles[variant], styles[inputSize]] as SxProps}
       {...props}
     />
   );

@@ -1,3 +1,4 @@
+import { Box, Stack, Typography } from "@mui/material";
 import Button from "../Button/Button";
 import Modal from "../Modal/Modal";
 
@@ -22,18 +23,22 @@ export default function ConfirmDialog({
 }: ConfirmDialogInterfase) {
   return (
     <Modal isOpen={isDialogOpen} onClose={onCancel}>
-      <div>
-        <h2>Ви впевнені?</h2>
-        <p>{question}</p>
-        <div>
+      <Box sx={{ p: 1, textAlign: "center" }}>
+        <Typography variant="h5" component="h2" sx={{ fontWeight: 700, mb: 1 }}>
+          Ви впевнені?
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 3 }}>
+          {question}
+        </Typography>
+        <Stack direction="row" spacing={2} justifyContent="center">
           <Button variant="secondary" onClick={onCancel}>
             {cancelText || "ні"}
           </Button>
           <Button variant="danger" onClick={onConfirm}>
             {confirmText || "так"}
           </Button>
-        </div>
-      </div>
+        </Stack>
+      </Box>
     </Modal>
   );
 }

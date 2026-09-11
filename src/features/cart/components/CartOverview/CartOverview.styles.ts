@@ -1,0 +1,85 @@
+import type { SxProps, Theme } from "@mui/material";
+
+export const styles: Record<string, SxProps<Theme>> = {
+  cartContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    maxWidth: 1000,
+    width: "100%",
+    margin: "0 auto",
+    p: 2,
+  },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 300,
+    p: 4,
+    textAlign: "center",
+  },
+  loadingText: {
+    fontSize: "1.1rem",
+    color: "text.secondary",
+    maxWidth: 600,
+  },
+  cartItem: (theme) => ({
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 2,
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: "16px",
+    padding: 1.5,
+    margin: "4px 0",
+    backgroundColor: theme.palette.background.paper,
+  }),
+  cartItemLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: 2,
+  },
+  cartItemRight: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  cartItemImage: {
+    width: 80,
+    height: 80,
+    objectFit: "cover",
+    borderRadius: "10px",
+  },
+  cartitemName: {
+    fontSize: "1.15rem",
+    lineHeight: 1.4,
+    minHeight: 50,
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+  },
+  cartItemQuantity: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 1,
+    alignSelf: "center",
+    mr: 4,
+  },
+  cartItemPrice: {
+    fontSize: "1.3rem",
+    fontWeight: 600,
+  },
+  cartItemQuantityControls: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+  },
+  cartItemQuantityValue: {
+    fontSize: "1.1rem",
+    fontWeight: 500,
+    minWidth: 24,
+    textAlign: "center",
+  },
+};

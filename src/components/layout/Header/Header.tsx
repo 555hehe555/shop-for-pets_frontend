@@ -8,16 +8,10 @@ import { useAuth } from "@/features/auth/context/AuthContext";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import {
-  AppBar,
-  Box,
-  IconButton,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 
 import { styles } from "./Header.styles";
+import Input from "@/ui/Input/Input";
 
 export default function Header() {
   const { itemsCount } = useCart();
@@ -48,7 +42,7 @@ export default function Header() {
     logoutUser();
   };
 
-  const handleSearchSubmit = (e: React.FormEvent<HTMLDivElement>) => {
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const query = searchQuery.trim();
@@ -95,12 +89,11 @@ export default function Header() {
             sx={styles.searchForm}
             onSubmit={handleSearchSubmit}
           >
-            <TextField
+            <Input
               type="text"
-              size="small"
-              variant="outlined"
+              inputSize="md"
               placeholder="Search"
-              fullWidth
+              maxLength={100}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

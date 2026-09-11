@@ -1,10 +1,11 @@
-import styles from "./RegistrationForm.module.scss";
 import { useId, useState } from "react";
+import { Box, Typography } from "@mui/material";
 
 import Input from "@/ui/Input/Input";
 import Button from "@/ui/Button/Button";
 import { registrationSchema } from "@/schemas";
 import { useAuth } from "../../context/AuthContext";
+import { styles } from "./RegistrationForm.styles";
 
 interface RegistrationFormProps {
   onRegistrationSuccessful: () => void;
@@ -50,11 +51,19 @@ export function RegistrationForm({
   };
 
   return (
-    <form className={styles.form} action={handleSubmit}>
-      <h2 className={styles.title}>Registration</h2>
+    <Box component="form" sx={styles.form} action={handleSubmit}>
+      <Typography variant="h4" component="h2" sx={styles.title}>
+        Registration
+      </Typography>
 
-      <div className={styles.field}>
-        <label htmlFor={`${fieldId}-username`}>Username</label>
+      <Box sx={styles.field}>
+        <Typography
+          component="label"
+          htmlFor={`${fieldId}-username`}
+          sx={styles.label}
+        >
+          Username
+        </Typography>
         <Input
           type="text"
           name="username"
@@ -62,11 +71,19 @@ export function RegistrationForm({
           autoComplete="username"
           placeholder="Username"
         />
-        <span className={styles.erorrs}>{erorrs.username}</span>
-      </div>
+        <Typography component="span" sx={styles.errorText}>
+          {erorrs.username}
+        </Typography>
+      </Box>
 
-      <div className={styles.field}>
-        <label htmlFor={`${fieldId}-pass1`}>Password</label>
+      <Box sx={styles.field}>
+        <Typography
+          component="label"
+          htmlFor={`${fieldId}-pass1`}
+          sx={styles.label}
+        >
+          Password
+        </Typography>
         <Input
           type="password"
           name="pass1"
@@ -74,11 +91,19 @@ export function RegistrationForm({
           autoComplete="new-password"
           placeholder="Password"
         />
-        <span className={styles.erorrs}>{erorrs.pass1}</span>
-      </div>
+        <Typography component="span" sx={styles.errorText}>
+          {erorrs.pass1}
+        </Typography>
+      </Box>
 
-      <div className={styles.field}>
-        <label htmlFor={`${fieldId}-pass2`}>Confirm password</label>
+      <Box sx={styles.field}>
+        <Typography
+          component="label"
+          htmlFor={`${fieldId}-pass2`}
+          sx={styles.label}
+        >
+          Confirm password
+        </Typography>
         <Input
           type="password"
           name="pass2"
@@ -86,11 +111,19 @@ export function RegistrationForm({
           autoComplete="new-password"
           placeholder="Repeat password"
         />
-        <span className={styles.erorrs}>{erorrs.pass2}</span>
-      </div>
+        <Typography component="span" sx={styles.errorText}>
+          {erorrs.pass2}
+        </Typography>
+      </Box>
 
-      <div className={styles.field}>
-        <label htmlFor={`${fieldId}-email`}>Email</label>
+      <Box sx={styles.field}>
+        <Typography
+          component="label"
+          htmlFor={`${fieldId}-email`}
+          sx={styles.label}
+        >
+          Email
+        </Typography>
         <Input
           type="email"
           name="email"
@@ -98,12 +131,18 @@ export function RegistrationForm({
           autoComplete="email"
           placeholder="example@gmail.com"
         />
-        <span className={styles.erorrs}>{erorrs.email}</span>
-      </div>
+        <Typography component="span" sx={styles.errorText}>
+          {erorrs.email}
+        </Typography>
+      </Box>
 
-      <Button size="lg" type="submit">
+      <Button
+        size="lg"
+        type="submit"
+        style={{ alignSelf: "center", minWidth: 180 }}
+      >
         Registration
       </Button>
-    </form>
+    </Box>
   );
 }

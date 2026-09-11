@@ -1,5 +1,7 @@
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
-import styles from "./Button.module.scss";
+import { styles } from "./Button.styles";
+import { ButtonBase, type SxProps } from "@mui/material";
+import type { Theme } from "@emotion/react";
 
 interface BasicButtonProps extends ComponentPropsWithoutRef<"button"> {
   children: ReactNode;
@@ -16,17 +18,13 @@ export default function Button({
   ...props
 }: BasicButtonProps) {
   return (
-    <button
-      className={`
-        ${styles.button}
-        ${styles[variant]}
-        ${styles[size]}
-        ${className} 
-      `.trim()}
+    <ButtonBase
+      className={className}
+      sx={[styles.root, styles[variant], styles[size]] as SxProps<Theme>}
       disabled={disabled}
       {...props}
     >
       {children}
-    </button>
+    </ButtonBase>
   );
 }

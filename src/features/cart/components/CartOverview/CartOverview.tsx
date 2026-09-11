@@ -1,13 +1,14 @@
 import { useCart } from "@/features/cart";
-import styles from "./CartOverview.module.scss";
-
 import { useState } from "react";
+import { Box, Typography } from "@mui/material";
+
 import Button from "@/ui/Button/Button";
 import { GoTrash } from "react-icons/go";
 import InfoState from "@/components/InfoState/InfoState";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import toast from "react-hot-toast";
 import { mainImgResolver } from "@/utils/mainImgResolver";
+import { styles } from "./CartOverview.styles";
 
 export function CartOverview() {
   const { cartItems, error, loading, changeCartItemQuantity, deleteCartItem } =
@@ -33,18 +34,13 @@ export function CartOverview() {
 
   if (loading) {
     return (
-      // <InfoState
-      //   title="Завантаження..."
-      //   message="Зачекайте, будь ласка, наші коти вже несуть вам пакети з вашими товарами, но у них ж лапки, тому це може зайняти трохи часу"
-      //   situation="loading"
-      // />
-      <div className={styles.loadingContainer}>
-        <p className={styles.loadingText}>
+      <Box sx={styles.loadingContainer}>
+        <Typography sx={styles.loadingText}>
           тут буде колись крутитись нормальній спінер, але наші коти ще не
           навчилися його робити, тому вони просто сплять і чекають поки ви
           підете, щоб вони могли спокійно спати далі
-        </p>
-      </div>
+        </Typography>
+      </Box>
     );
   }
 
@@ -59,29 +55,30 @@ export function CartOverview() {
   }
 
   return (
-    <div className={styles.cartContainer}>
+    <Box sx={styles.cartContainer}>
       {cartItems.length > 0 ? (
         cartItems.map((cartItem) => (
-          <div key={cartItem.product} className={styles.cartItem}>
-            <div className={styles.cartItemLeft}>
-              <img
-                className={styles.cartItemImage}
+          <Box key={cartItem.product} sx={styles.cartItem}>
+            <Box sx={styles.cartItemLeft}>
+              <Box
+                component="img"
+                sx={styles.cartItemImage}
                 src={mainImgResolver(cartItem.product_data.images)?.image || ""}
                 alt={mainImgResolver(cartItem.product_data.images)?.alt || ""}
               />
-              <h3 className={styles.cartitemName}>
+              <Typography variant="h6" component="h3" sx={styles.cartitemName}>
                 {cartItem.product_data.title}
-              </h3>
-            </div>
+              </Typography>
+            </Box>
 
-            <div className={styles.cartItemRight}>
-              <div className={styles.cartItemQuantity}>
-                <p className={styles.cartItemPrice}>
+            <Box sx={styles.cartItemRight}>
+              <Box sx={styles.cartItemQuantity}>
+                <Typography sx={styles.cartItemPrice}>
                   {(Number(cartItem.product_data.price) || 0) *
                     (cartItem.quantity || 0)}
                   ₴
-                </p>
-                <div className={styles.cartItemQuantityControls}>
+                </Typography>
+                <Box sx={styles.cartItemQuantityControls}>
                   <Button
                     size="xs"
                     onClick={() =>
@@ -93,9 +90,9 @@ export function CartOverview() {
                   >
                     -
                   </Button>
-                  <span className={styles.cartItemQuantityValue}>
+                  <Typography component="span" sx={styles.cartItemQuantityValue}>
                     {cartItem?.quantity || 0}
-                  </span>
+                  </Typography>
                   <Button
                     size="xs"
                     onClick={() =>
@@ -107,12 +104,11 @@ export function CartOverview() {
                   >
                     +
                   </Button>
-                </div>
-              </div>
+                </Box>
+              </Box>
 
               <Button
-                className={styles.cartItemDelete}
-                color="danger"
+                variant="danger"
                 size="sm"
                 onClick={() => {
                   setIsDialogOpen(true);
@@ -121,8 +117,8 @@ export function CartOverview() {
               >
                 <GoTrash />
               </Button>
-            </div>
-          </div>
+            </Box>
+          </Box>
         ))
       ) : (
         <InfoState
@@ -140,6 +136,6 @@ export function CartOverview() {
         onCancel={handleCancel}
         onConfirm={handleDeleteItem}
       />
-    </div>
+    </Box>
   );
 }

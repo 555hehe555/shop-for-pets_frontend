@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import { Box, Typography } from "@mui/material";
 
 import Button from "@/ui/Button/Button";
-import styles from "./InfoState.module.scss";
+import { styles } from "./InfoState.styles";
 
 import {
   CatLibrarian,
@@ -40,31 +41,36 @@ export default function InfoState({
   const navigate = useNavigate();
 
   return (
-    <div className={styles.container}>
-      <img
-        className={styles.image}
+    <Box sx={styles.container}>
+      <Box
+        component="img"
+        sx={styles.image}
         src={getRandomImage(situation)}
         alt={`Image for ${situation} situation`}
       />
-      <h2 className={styles.title}>{title}</h2>
-      <p className={styles.message}>{message}</p>
+      <Typography variant="h4" component="h2" sx={styles.title}>
+        {title}
+      </Typography>
+      <Typography variant="body1" sx={styles.message}>
+        {message}
+      </Typography>
 
-      <div className={styles.buttons}>
+      <Box sx={styles.buttons}>
         <Button
-          className={styles.button}
+          style={{ width: "200px" }}
           size="sm"
           onClick={() => navigate("/")}
         >
           На головну
         </Button>
         <Button
-          className={styles.button}
+          style={{ width: "200px" }}
           size="sm"
           onClick={() => window.history.back()}
         >
           До попередньої сторінки
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

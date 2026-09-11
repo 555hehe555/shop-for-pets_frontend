@@ -1,4 +1,5 @@
-import styles from "./CartBtn.module.scss";
+import { Box, Typography } from "@mui/material";
+import { styles } from "./CartBtn.styles";
 
 import { GrCart } from "react-icons/gr";
 
@@ -8,13 +9,13 @@ interface CartBtnProps {
 
 export function CartBtn({ count }: CartBtnProps) {
   return (
-    <div className={styles.cartContainer}>
-      <GrCart className={styles.cartImg} />
+    <Box sx={styles.cartContainer}>
+      <Box component={GrCart} sx={styles.cartImg} />
       {count > 0 && (
-        <div className={styles.cartCountContainer}>
-          <span className={styles.cartCount}>{count}</span>
-        </div>
+        <Box sx={styles.cartCountContainer}>
+          <Typography sx={styles.cartCount}>{count}</Typography>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }

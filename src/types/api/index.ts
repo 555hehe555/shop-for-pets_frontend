@@ -146,6 +146,22 @@ export interface GetMe {
   last_name?: string;
 }
 
+export interface PaginatedProductList {
+  /** @example 123 */
+  count: number;
+  /**
+   * @format uri
+   * @example "http://api.example.org/accounts/?page=4"
+   */
+  next?: string | null;
+  /**
+   * @format uri
+   * @example "http://api.example.org/accounts/?page=2"
+   */
+  previous?: string | null;
+  results: Product[];
+}
+
 export interface PatchedCartPatchRequest {
   /**
    * @format int64
@@ -491,6 +507,10 @@ export namespace Api {
       category__name?: string;
       /** Multiple values may be separated by commas. */
       category__name__in?: string[];
+      /** A page number within the paginated result set. */
+      page?: number;
+      /** Number of results to return per page. */
+      page_size?: number;
       /** A search term. */
       search?: string;
       species__name?: string;
@@ -499,7 +519,7 @@ export namespace Api {
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = Product[];
+    export type ResponseBody = PaginatedProductList;
   }
 
   /**
@@ -586,6 +606,10 @@ export namespace Api {
       category__name?: string;
       /** Multiple values may be separated by commas. */
       category__name__in?: string[];
+      /** A page number within the paginated result set. */
+      page?: number;
+      /** Number of results to return per page. */
+      page_size?: number;
       /** A search term. */
       search?: string;
       species__name?: string;
@@ -594,7 +618,7 @@ export namespace Api {
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = Product[];
+    export type ResponseBody = PaginatedProductList;
   }
 
   /**

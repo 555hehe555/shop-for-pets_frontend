@@ -1,50 +1,18 @@
-import { createPortal } from "react-dom";
-import { useEffect } from "react";
-
-import styles from "./Modal.module.scss";
+import { Modal as MuiModal, Box } from "@mui/material";
 import Button from "../Button/Button";
+import { styles } from "./Modal.styles";
 
 interface ModalProps {
-  onClose: () => void; // Додаємо пропс children і типізуємо його
+  onClose: () => void;
   isOpen: boolean;
   children: React.ReactNode;
 }
 
 export default function Modal({ isOpen, onClose, children }: ModalProps) {
-  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose]);
-
-  if (!isOpen) {
-    return null;
-  }
-
-  return createPortal(
-    <div
-      className={styles.backdrop}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className={styles.modal}>
+  return (
+    <MuiModal open={isOpen} onClose={onClose} sx={styles.backdrop}>
+      <Box sx={styles.modal}>
         <Button
-          className={styles.closeButton}
           variant="tertiary"
           size="xs"
           onClick={onClose}
@@ -53,10 +21,8 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
         >
           &times;
         </Button>
-        {/* Тут рендериться переданий вміст із пропса children */}
         {children}
-      </div>
-    </div>,
-    document.body,
+      </Box>
+    </MuiModal>
   );
 }
