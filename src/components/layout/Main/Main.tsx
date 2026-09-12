@@ -21,10 +21,6 @@ export default function Main() {
 
   return (
     <main>
-      <Button onClick={() => alert("world!!")} variant="secondary" size="lg">
-        Hello?
-      </Button>
-
       <ProductsList />
     </main>
   );

@@ -1,17 +1,18 @@
 import type { SxProps, Theme } from "@mui/material";
 
 export const styles: Record<string, SxProps<Theme>> = {
-  form: (theme) => ({
+  formContainer: {
+    minHeight: "calc(100vh - 70px)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  form: {
     display: "flex",
     flexDirection: "column",
     gap: "1.5rem",
-    maxWidth: 450,
-    margin: "0 auto",
-    padding: "2rem",
-    backgroundColor: theme.palette.background.paper,
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: "16px",
-  }),
+    maxWidth: 600,
+  },
   title: {
     textAlign: "center",
     fontSize: "2rem",

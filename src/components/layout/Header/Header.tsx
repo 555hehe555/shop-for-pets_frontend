@@ -1,8 +1,6 @@
 import { useState } from "react";
 
 import Button from "@/ui/Button/Button.tsx";
-import Modal from "@/ui/Modal/Modal.tsx";
-import { RegistrationForm, LoginForm } from "@/features/auth";
 import { useCart, CartBtn } from "@/features/cart";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
@@ -24,17 +22,8 @@ export default function Header() {
 
   const navigate = useNavigate();
 
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const openLoginModal = () => setIsLoginOpen(true);
-  const closeLoginModal = () => setIsLoginOpen(false);
-
-  const openRegistrationModal = () => setIsRegistrationOpen(true);
-  const closeRegistrationModal = () => setIsRegistrationOpen(false);
-
-  const openDialog = () => setIsDialogOpen(true);
   const closeDialog = () => setIsDialogOpen(false);
 
   const closeAndLogoutDialog = () => {
@@ -65,20 +54,20 @@ export default function Header() {
           <Box sx={styles.linksContainer}>
             {!isAuthenticated ? (
               <>
-                <Button size="sm" variant="tertiary" onClick={openLoginModal}>
-                  Login
-                </Button>
+                <Link to="/login">
+                  <Button size="sm" variant="primary">
+                    Login
+                  </Button>
+                </Link>
 
-                <Button
-                  size="sm"
-                  variant="primary"
-                  onClick={openRegistrationModal}
-                >
-                  Registration
-                </Button>
+                <Link to="/registration">
+                  <Button size="sm" variant="secondary">
+                    Registration
+                  </Button>
+                </Link>
               </>
             ) : (
-              <Button size="sm" variant="tertiary" onClick={openDialog}>
+              <Button size="sm" variant="tertiary">
                 Logout
               </Button>
             )}
@@ -104,14 +93,6 @@ export default function Header() {
           </IconButton>
         </Box>
       </Toolbar>
-
-      <Modal isOpen={isLoginOpen} onClose={closeLoginModal}>
-        <LoginForm onLoginSuccessful={closeLoginModal} />
-      </Modal>
-
-      <Modal isOpen={isRegistrationOpen} onClose={closeRegistrationModal}>
-        <RegistrationForm onRegistrationSuccessful={closeRegistrationModal} />
-      </Modal>
 
       <ConfirmDialog
         question="Ви впевнені, що хочете вийти?"

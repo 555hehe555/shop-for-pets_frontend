@@ -5,6 +5,7 @@ import { useProducts } from "@/queries/catalog/useCatalogQueries";
 import { ProductFilters } from "../ProductFilters/ProductFilters";
 import { useState, type ChangeEvent } from "react";
 import type { FilterState } from "../../api";
+import { styles } from "./ProductsList.styles";
 
 export function ProductsList() {
   const [searchParams] = useSearchParams();
@@ -33,20 +34,13 @@ export function ProductsList() {
   }
 
   return (
-    <Box sx={{ display: "flex", gap: 3, padding: 3, alignItems: "flex-start" }}>
-      <Box sx={{ width: 250, flexShrink: 0 }}>
+    <Box sx={styles.container}>
+      <Box sx={styles.filters}>
         <ProductFilters filters={filters} onChange={handleFilters} />
       </Box>
-      <Box
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 4,
-        }}
-      >
-        <Grid container spacing={3} sx={{ width: "100%" }}>
+
+      <Box sx={styles.productsContainer}>
+        <Grid container spacing={3} sx={styles.grid}>
           {products.map((product) => (
             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
               <ProductCard product={product} />

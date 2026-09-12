@@ -11,6 +11,7 @@ import {
 import type { FilterState } from "../../api";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
 import { useState } from "react";
+import { styles } from "./ProductFilters.styles";
 
 const SPECIES_OPTIONS = [
   "Dogs",
@@ -66,18 +67,30 @@ function FilterGroup({
   const [open, setOpen] = useState(true);
 
   return (
-    <Box>
-      <Box onClick={() => setOpen(!open)}>
-        <Typography variant="subtitle1">{title}</Typography>
-        <IconButton>{open ? <SlArrowUp /> : <SlArrowDown />}</IconButton>
+    <Box sx={styles.group}>
+      <Box sx={styles.groupHeader} onClick={() => setOpen((prev) => !prev)}>
+        <Typography variant="subtitle1" sx={styles.groupTitle}>
+          {title}
+        </Typography>
+
+        <IconButton
+          size="small"
+          sx={styles.toggleButton}
+          aria-label={open ? `Collapse ${title}` : `Expand ${title}`}
+        >
+          {open ? <SlArrowUp /> : <SlArrowDown />}
+        </IconButton>
       </Box>
 
       <Collapse in={open}>
-        <FormGroup>
+        <FormGroup sx={styles.options}>
           {options.map((option) => (
             <FormControlLabel
+              key={option}
+              sx={styles.option}
               control={
                 <Checkbox
+                  sx={styles.checkbox}
                   checked={filters[filterKey].includes(option)}
                   onChange={(e) =>
                     handleToggle(filterKey, e.target.checked, option)
@@ -86,7 +99,6 @@ function FilterGroup({
                   size="small"
                 />
               }
-              key={option}
               label={option}
             />
           ))}
@@ -112,10 +124,11 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
   }
 
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>
-        Фільти
+    <Box sx={styles.container}>
+      <Typography variant="h5" sx={styles.title}>
+        Фільтри
       </Typography>
+
       <FilterGroup
         title="Бренди"
         options={BRANDS_OPTIONS}
@@ -123,7 +136,9 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
         handleToggle={handleToggle}
         filters={filters}
       />
-      <Divider />
+
+      <Divider sx={styles.divider} />
+
       <FilterGroup
         title="Категорії"
         options={CATEGORIES_OPTIONS}
@@ -131,7 +146,9 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
         handleToggle={handleToggle}
         filters={filters}
       />
-      <Divider />{" "}
+
+      <Divider sx={styles.divider} />
+
       <FilterGroup
         title="Види"
         options={SPECIES_OPTIONS}
@@ -139,7 +156,6 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
         handleToggle={handleToggle}
         filters={filters}
       />
-      <Divider />
     </Box>
   );
 }

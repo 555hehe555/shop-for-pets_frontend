@@ -51,98 +51,100 @@ export function RegistrationForm({
   };
 
   return (
-    <Box component="form" sx={styles.form} action={handleSubmit}>
-      <Typography variant="h4" component="h2" sx={styles.title}>
-        Registration
-      </Typography>
+    <Box sx={styles.formContainer}>
+      <Box component="form" sx={styles.form} action={handleSubmit}>
+        <Typography variant="h4" component="h2" sx={styles.title}>
+          Registration
+        </Typography>
 
-      <Box sx={styles.field}>
-        <Typography
-          component="label"
-          htmlFor={`${fieldId}-username`}
-          sx={styles.label}
+        <Box sx={styles.field}>
+          <Typography
+            component="label"
+            htmlFor={`${fieldId}-username`}
+            sx={styles.label}
+          >
+            Username
+          </Typography>
+          <Input
+            type="text"
+            name="username"
+            id={`${fieldId}-username`}
+            autoComplete="username"
+            placeholder="Username"
+          />
+          <Typography component="span" sx={styles.errorText}>
+            {erorrs.username}
+          </Typography>
+        </Box>
+
+        <Box sx={styles.field}>
+          <Typography
+            component="label"
+            htmlFor={`${fieldId}-pass1`}
+            sx={styles.label}
+          >
+            Password
+          </Typography>
+          <Input
+            type="password"
+            name="pass1"
+            id={`${fieldId}-pass1`}
+            autoComplete="new-password"
+            placeholder="Password"
+          />
+          <Typography component="span" sx={styles.errorText}>
+            {erorrs.pass1}
+          </Typography>
+        </Box>
+
+        <Box sx={styles.field}>
+          <Typography
+            component="label"
+            htmlFor={`${fieldId}-pass2`}
+            sx={styles.label}
+          >
+            Confirm password
+          </Typography>
+          <Input
+            type="password"
+            name="pass2"
+            id={`${fieldId}-pass2`}
+            autoComplete="new-password"
+            placeholder="Repeat password"
+          />
+          <Typography component="span" sx={styles.errorText}>
+            {erorrs.pass2}
+          </Typography>
+        </Box>
+
+        <Box sx={styles.field}>
+          <Typography
+            component="label"
+            htmlFor={`${fieldId}-email`}
+            sx={styles.label}
+          >
+            Email
+          </Typography>
+          <Input
+            type="email"
+            name="email"
+            id={`${fieldId}-email`}
+            autoComplete="email"
+            placeholder="example@gmail.com"
+          />
+          <Typography component="span" sx={styles.errorText}>
+            {erorrs.email}
+          </Typography>
+        </Box>
+
+        <Button
+          size="lg"
+          type="submit"
+          style={{ alignSelf: "center", minWidth: 180 }}
         >
-          Username
-        </Typography>
-        <Input
-          type="text"
-          name="username"
-          id={`${fieldId}-username`}
-          autoComplete="username"
-          placeholder="Username"
-        />
-        <Typography component="span" sx={styles.errorText}>
-          {erorrs.username}
-        </Typography>
+          Registration
+        </Button>
       </Box>
-
-      <Box sx={styles.field}>
-        <Typography
-          component="label"
-          htmlFor={`${fieldId}-pass1`}
-          sx={styles.label}
-        >
-          Password
-        </Typography>
-        <Input
-          type="password"
-          name="pass1"
-          id={`${fieldId}-pass1`}
-          autoComplete="new-password"
-          placeholder="Password"
-        />
-        <Typography component="span" sx={styles.errorText}>
-          {erorrs.pass1}
-        </Typography>
-      </Box>
-
-      <Box sx={styles.field}>
-        <Typography
-          component="label"
-          htmlFor={`${fieldId}-pass2`}
-          sx={styles.label}
-        >
-          Confirm password
-        </Typography>
-        <Input
-          type="password"
-          name="pass2"
-          id={`${fieldId}-pass2`}
-          autoComplete="new-password"
-          placeholder="Repeat password"
-        />
-        <Typography component="span" sx={styles.errorText}>
-          {erorrs.pass2}
-        </Typography>
-      </Box>
-
-      <Box sx={styles.field}>
-        <Typography
-          component="label"
-          htmlFor={`${fieldId}-email`}
-          sx={styles.label}
-        >
-          Email
-        </Typography>
-        <Input
-          type="email"
-          name="email"
-          id={`${fieldId}-email`}
-          autoComplete="email"
-          placeholder="example@gmail.com"
-        />
-        <Typography component="span" sx={styles.errorText}>
-          {erorrs.email}
-        </Typography>
-      </Box>
-
-      <Button
-        size="lg"
-        type="submit"
-        style={{ alignSelf: "center", minWidth: 180 }}
-      >
-        Registration
-      </Button>
     </Box>
   );
 }

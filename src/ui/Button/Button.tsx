@@ -1,9 +1,9 @@
-import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import type { ReactNode } from "react";
 import { styles } from "./Button.styles";
-import { ButtonBase, type SxProps } from "@mui/material";
+import { ButtonBase, type ButtonBaseProps, type SxProps } from "@mui/material";
 import type { Theme } from "@emotion/react";
 
-interface BasicButtonProps extends ComponentPropsWithoutRef<"button"> {
+interface BasicButtonProps extends ButtonBaseProps {
   children: ReactNode;
   variant?: "primary" | "secondary" | "tertiary" | "success" | "danger";
   size?: "xs" | "sm" | "md" | "lg";
