@@ -4,6 +4,7 @@ import type { Theme } from "@mui/material/styles";
 export const styles: Record<string, SxProps<Theme>> = {
   container: {
     display: "flex",
+    flex: 1,
     gap: 3,
     p: 3,
     alignItems: "flex-start",
@@ -33,7 +34,10 @@ export const styles: Record<string, SxProps<Theme>> = {
 
   grid: {
     width: "100%",
+    mb: "auto",
   },
 
-  pagination: {},
+  pagination: {
+    mb: 3,
+  },
 };

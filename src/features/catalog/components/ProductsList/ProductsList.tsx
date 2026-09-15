@@ -23,11 +23,11 @@ export function ProductsList() {
     setPage(1);
   }
 
-  const { data } = useProducts({ search, ...filters, page, page_size: 2 });
+  const { data } = useProducts({ search, ...filters, page, page_size: 10 });
 
   const products = data?.results || [];
   const totalCount = data?.count || 0;
-  const totalPages = Math.ceil(totalCount / 2);
+  const totalPages = Math.ceil(totalCount / 10);
 
   function handlePages(event: ChangeEvent<unknown, Element>, value: number) {
     setPage(value);
@@ -42,7 +42,7 @@ export function ProductsList() {
       <Box sx={styles.productsContainer}>
         <Grid container spacing={3} sx={styles.grid}>
           {products.map((product) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
+            <Grid key={product.id}>
               <ProductCard product={product} />
             </Grid>
           ))}
@@ -54,6 +54,7 @@ export function ProductsList() {
             count={totalPages}
             onChange={handlePages}
             color="primary"
+            sx={styles.pagination}
           />
         )}
       </Box>

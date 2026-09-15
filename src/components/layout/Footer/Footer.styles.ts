@@ -10,9 +10,8 @@ export const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    position: "fixed",
-    bottom: 0,
     width: "100%",
+    height: "64px",
   } as SxProps<Theme>,
   copyright: {
     m: 0,

@@ -12,7 +12,6 @@ export const styles: Record<string, SxProps<Theme>> = {
   },
 
   title: {
-    mb: 2,
     fontWeight: 700,
     color: "text.primary",
   },

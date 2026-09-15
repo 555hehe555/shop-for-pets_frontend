@@ -109,6 +109,8 @@ function FilterGroup({
 }
 
 export function ProductFilters({ filters, onChange }: ProductFiltersType) {
+  const [open, setOpen] = useState(true);
+
   function handleToggle(
     category: keyof FilterState,
     checked: boolean,
@@ -125,37 +127,48 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
 
   return (
     <Box sx={styles.container}>
-      <Typography variant="h5" sx={styles.title}>
-        Фільтри
-      </Typography>
+      <Box sx={styles.groupHeader} onClick={() => setOpen((prev) => !prev)}>
+        <Typography variant="h5" sx={styles.title}>
+          Фільтри
+        </Typography>
 
-      <FilterGroup
-        title="Бренди"
-        options={BRANDS_OPTIONS}
-        filterKey="brands"
-        handleToggle={handleToggle}
-        filters={filters}
-      />
+        <IconButton
+          size="small"
+          sx={styles.toggleButton}
+          aria-label={open ? `Collapse Фільтри` : `Expand Фільтри`}
+        >
+          {open ? <SlArrowUp /> : <SlArrowDown />}
+        </IconButton>
+      </Box>
+      <Collapse in={open} orientation="vertical">
+        <FilterGroup
+          title="Бренди"
+          options={BRANDS_OPTIONS}
+          filterKey="brands"
+          handleToggle={handleToggle}
+          filters={filters}
+        />
 
-      <Divider sx={styles.divider} />
+        <Divider sx={styles.divider} />
 
-      <FilterGroup
-        title="Категорії"
-        options={CATEGORIES_OPTIONS}
-        filterKey="categories"
-        handleToggle={handleToggle}
-        filters={filters}
-      />
+        <FilterGroup
+          title="Категорії"
+          options={CATEGORIES_OPTIONS}
+          filterKey="categories"
+          handleToggle={handleToggle}
+          filters={filters}
+        />
 
-      <Divider sx={styles.divider} />
+        <Divider sx={styles.divider} />
 
-      <FilterGroup
-        title="Види"
-        options={SPECIES_OPTIONS}
-        filterKey="species"
-        handleToggle={handleToggle}
-        filters={filters}
-      />
+        <FilterGroup
+          title="Види"
+          options={SPECIES_OPTIONS}
+          filterKey="species"
+          handleToggle={handleToggle}
+          filters={filters}
+        />
+      </Collapse>
     </Box>
   );
 }
