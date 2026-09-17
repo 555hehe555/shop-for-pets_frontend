@@ -38,15 +38,16 @@ export function ProductsList() {
       <Box sx={styles.filters}>
         <ProductFilters filters={filters} onChange={handleFilters} />
       </Box>
-
-      <Box sx={styles.productsContainer}>
-        <Grid container spacing={3} sx={styles.grid}>
-          {products.map((product) => (
-            <Grid key={product.id}>
-              <ProductCard product={product} />
-            </Grid>
-          ))}
-        </Grid>
+      <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1 }}>
+        <Box sx={styles.productsContainer}>
+          <Grid container spacing={3} sx={styles.grid}>
+            {products.map((product) => (
+              <Grid key={product.id}>
+                <ProductCard product={product} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
 
         {totalPages > 1 && (
           <Pagination

@@ -4,7 +4,13 @@ import Footer from "@/components/layout/Footer/Footer.tsx";
 
 export function Layout() {
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <Header />
       <Outlet />
       <Footer />

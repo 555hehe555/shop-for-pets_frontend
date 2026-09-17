@@ -4,12 +4,25 @@ export const styles: Record<string, SxProps<Theme>> = {
   cartContainer: {
     display: "flex",
     flexDirection: "column",
+    flex: 1,
+
     gap: 2,
     maxWidth: 1000,
     width: "100%",
     margin: "0 auto",
     p: 2,
   },
+  cartSummary: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 2,
+    borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+    paddingTop: 2,
+    paddingBottom: 2,
+    marginTop: "auto",
+  },
+
   loadingContainer: {
     display: "flex",
     justifyContent: "center",

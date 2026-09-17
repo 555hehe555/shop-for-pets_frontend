@@ -38,6 +38,7 @@ export const styles: Record<string, SxProps<Theme>> = {
   },
 
   pagination: {
-    mb: 3,
+    position: "sticky",
+    bottom: 0,
   },
 };

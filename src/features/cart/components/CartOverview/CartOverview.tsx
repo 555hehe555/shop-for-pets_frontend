@@ -55,78 +55,121 @@ export function CartOverview() {
   }
 
   return (
-    <Box sx={styles.cartContainer}>
-      {cartItems.length > 0 ? (
-        cartItems.map((cartItem) => (
-          <Box key={cartItem.product} sx={styles.cartItem}>
-            <Box sx={styles.cartItemLeft}>
-              <Box
-                component="img"
-                sx={styles.cartItemImage}
-                src={mainImgResolver(cartItem.product_data.images)?.image || ""}
-                alt={mainImgResolver(cartItem.product_data.images)?.alt || ""}
-              />
-              <Typography variant="h6" component="h3" sx={styles.cartitemName}>
-                {cartItem.product_data.title}
-              </Typography>
-            </Box>
-
-            <Box sx={styles.cartItemRight}>
-              <Box sx={styles.cartItemQuantity}>
-                <Typography sx={styles.cartItemPrice}>
-                  {(Number(cartItem.product_data.price) || 0) *
-                    (cartItem.quantity || 0)}
-                  ₴
-                </Typography>
-                <Box sx={styles.cartItemQuantityControls}>
-                  <Button
-                    size="xs"
-                    onClick={() =>
-                      changeCartItemQuantity({
-                        product: cartItem?.product,
-                        quantity: (cartItem?.quantity || 0) - 1,
-                      })
+    <>
+      <Box sx={styles.cartContainer}>
+        <Box>
+          {cartItems.length > 0 ? (
+            cartItems.map((cartItem) => (
+              <Box key={cartItem.product} sx={styles.cartItem}>
+                <Box sx={styles.cartItemLeft}>
+                  <Box
+                    component="img"
+                    sx={styles.cartItemImage}
+                    src={
+                      mainImgResolver(cartItem.product_data.images)?.image || ""
                     }
+                    alt={
+                      mainImgResolver(cartItem.product_data.images)?.alt || ""
+                    }
+                  />
+                  <Typography
+                    variant="h6"
+                    component="h3"
+                    sx={styles.cartitemName}
                   >
-                    -
-                  </Button>
-                  <Typography component="span" sx={styles.cartItemQuantityValue}>
-                    {cartItem?.quantity || 0}
+                    {cartItem.product_data.title}
                   </Typography>
+                </Box>
+
+                <Box sx={styles.cartItemRight}>
+                  <Box sx={styles.cartItemQuantity}>
+                    <Typography sx={styles.cartItemPrice}>
+                      {(
+                        (Number(cartItem.product_data.price) || 0) *
+                        (cartItem.quantity || 0)
+                      ).toFixed(2)}
+                      ₴
+                    </Typography>
+                    <Box sx={styles.cartItemQuantityControls}>
+                      <Button
+                        size="xs"
+                        onClick={() =>
+                          changeCartItemQuantity({
+                            product: cartItem?.product,
+                            quantity: (cartItem?.quantity || 0) - 1,
+                          })
+                        }
+                      >
+                        -
+                      </Button>
+                      <Typography
+                        component="span"
+                        sx={styles.cartItemQuantityValue}
+                      >
+                        {cartItem?.quantity || 0}
+                      </Typography>
+                      <Button
+                        size="xs"
+                        onClick={() =>
+                          changeCartItemQuantity({
+                            product: cartItem?.product,
+                            quantity: (cartItem?.quantity || 0) + 1,
+                          })
+                        }
+                      >
+                        +
+                      </Button>
+                    </Box>
+                  </Box>
+
                   <Button
-                    size="xs"
-                    onClick={() =>
-                      changeCartItemQuantity({
-                        product: cartItem?.product,
-                        quantity: (cartItem?.quantity || 0) + 1,
-                      })
-                    }
+                    variant="danger"
+                    size="sm"
+                    onClick={() => {
+                      setIsDialogOpen(true);
+                      setIdToDelete(cartItem.product);
+                    }}
                   >
-                    +
+                    <GoTrash />
                   </Button>
                 </Box>
               </Box>
+            ))
+          ) : (
+            <InfoState
+              title="корзина щось порожння"
+              message="тут нема нічого, тому погнав дивитись і купляти корм"
+              situation="emptyCart"
+            />
+          )}
+        </Box>
 
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={() => {
-                  setIsDialogOpen(true);
-                  setIdToDelete(cartItem.product);
-                }}
-              >
-                <GoTrash />
-              </Button>
-            </Box>
-          </Box>
-        ))
-      ) : (
-        <InfoState
-          title="корзина щось порожння"
-          message="тут нема нічого, тому погнав дивитись і купляти корм"
-          situation="emptyCart"
-        />
-      )}
+        <Box sx={styles.cartSummary}>
+          <Typography variant="h5" component="h2">
+            Сумарна вартість:{" "}
+            {cartItems
+              .reduce(
+                (total, item) =>
+                  total +
+                  (Number(item.product_data.price) || 0) *
+                    (item?.quantity || 1),
+                0,
+              )
+              .toFixed(2)}
+            ₴
+          </Typography>
+
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => {
+              toast.success("успішно оформлено замовлення");
+            }}
+          >
+            Оформити замовлення
+          </Button>
+        </Box>
+      </Box>
 
       <ConfirmDialog
         question="Ви дійсно хочете видалити цей товар з корзини?"
@@ -136,6 +179,6 @@ export function CartOverview() {
         onCancel={handleCancel}
         onConfirm={handleDeleteItem}
       />
-    </Box>
+    </>
   );
 }

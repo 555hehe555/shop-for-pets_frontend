@@ -15,7 +15,7 @@ export interface Cart {
   product_data: Product;
   /**
    * @format int64
-   * @min 0
+   * @min 1
    * @max 9223372036854776000
    */
   quantity?: number;
@@ -29,7 +29,7 @@ export interface CartRequest {
   product: number;
   /**
    * @format int64
-   * @min 0
+   * @min 1
    * @max 9223372036854776000
    */
   quantity?: number;
@@ -165,7 +165,7 @@ export interface PaginatedProductList {
 export interface PatchedCartPatchRequest {
   /**
    * @format int64
-   * @min 0
+   * @min 1
    * @max 9223372036854776000
    */
   quantity?: number;

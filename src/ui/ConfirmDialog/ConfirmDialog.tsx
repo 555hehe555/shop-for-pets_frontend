@@ -30,7 +30,7 @@ export default function ConfirmDialog({
         <Typography variant="body1" sx={{ mb: 3 }}>
           {question}
         </Typography>
-        <Stack direction="row" spacing={2} justifyContent="center">
+        <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Button variant="secondary" onClick={onCancel}>
             {cancelText || "ні"}
           </Button>

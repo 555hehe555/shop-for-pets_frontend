@@ -67,7 +67,11 @@ export default function Header() {
                 </Link>
               </>
             ) : (
-              <Button size="sm" variant="tertiary">
+              <Button
+                size="sm"
+                variant="tertiary"
+                onClick={() => setIsDialogOpen(true)}
+              >
                 Logout
               </Button>
             )}
