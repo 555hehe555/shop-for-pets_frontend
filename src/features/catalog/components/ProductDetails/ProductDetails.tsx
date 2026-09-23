@@ -2,7 +2,9 @@ import Button from "@/ui/Button/Button";
 import { useProductById } from "@/queries/catalog/useCatalogQueries";
 import { mainImgResolver } from "@/utils/mainImgResolver";
 import { styles } from "./ProductDetails.styles";
-import { Box } from "@mui/material";
+import { Box, IconButton, Slide, Typography } from "@mui/material";
+import { GrCaretNext, GrCaretPrevious } from "react-icons/gr";
+import { useState } from "react";
 
 export function ProductDetails({
   id,
@@ -13,65 +15,171 @@ export function ProductDetails({
 }) {
   const { data: product, isLoading } = useProductById(id);
 
+  const [activeStep, setActiveStep] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
+    "right",
+  );
+
+  function handleNext() {
+    setSlideDirection("right");
+    setActiveStep(
+      (prevActiveStep) => (prevActiveStep + 1) % product!.images.length,
+    );
+  }
+
+  function handlePrevious() {
+    setSlideDirection("left");
+    setActiveStep(
+      (prevActiveStep) =>
+        (prevActiveStep - 1 + product!.images.length) % product!.images.length,
+    );
+  }
+
   if (isLoading || !product) return <p>Завантаження...</p>;
 
-  const mainImg = mainImgResolver(product.images);
+  // const mainImg = mainImgResolver(product.images);
+  console.log(product.images);
 
   return (
     <Box sx={styles.container}>
-      <div className="product">
-        <div className="gallery">
-          <img className="image" src={mainImg?.image} alt={mainImg?.alt} />
-        </div>
+      <Box className="product">
+        <Box className="gallery">
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              aspectRatio: "1",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            {product.images.length > 0 &&
+              product.images.map((image, index) => (
+                <Slide
+                  key={index}
+                  timeout={300}
+                  in={index === activeStep}
+                  direction={slideDirection}
+                  mountOnEnter
+                  unmountOnExit
+                >
+                  <Box
+                    component="img"
+                    className="image"
+                    src={image.image}
+                    alt={image?.alt}
+                    sx={{ position: "absolute", top: 0, left: 0 }}
+                  />
+                </Slide>
+              ))}
+          </Box>
 
-        <div className="info">
-          <h1 className="title">{product.title}</h1>
+          {product.images.length > 1 && (
+            <>
+              <IconButton
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: -10,
+                  transform: "translateY(-50%)",
 
-          {/* <div className={styles.stock}>
-            {product.quantity > 0 ? "✔ В наявності" : "✖ Немає в наявності"}
-          </div> */}
+                  borderRadius: "50%",
+                }}
+                onClick={handlePrevious}
+              >
+                <GrCaretPrevious />
+              </IconButton>
+              <IconButton
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  right: -10,
+                  transform: "translateY(-50%)",
+
+                  borderRadius: "50%",
+                }}
+                onClick={handleNext}
+              >
+                <GrCaretNext />
+              </IconButton>
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 10,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  display: "flex",
+                  gap: 1,
+                }}
+              >
+                {product.images.map((_, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      bgcolor:
+                        activeStep === index ? "primary.main" : "lightgray",
+                      borderRadius: "50%",
+                    }}
+                  ></Box>
+                ))}
+              </Box>
+            </>
+          )}
+        </Box>
+
+        <Box className="info">
+          <Typography className="title" variant="h2">
+            {product.title}
+          </Typography>
 
           {product.is_available ? (
-            <div className="stock">✔ В наявності</div>
+            <Typography className="stock" variant="body1">
+              ✔ В наявності
+            </Typography>
           ) : (
-            <div className="notInStock">✖ Немає в наявності</div>
+            <Typography className="notInStock" variant="body1">
+              ✖ Немає в наявності
+            </Typography>
           )}
 
-          <div className="priceBlock">
+          <Box className="priceBlock">
             {product.discount ? (
               <>
-                <span className="newPrice">
+                <Typography className="newPrice" variant="body1">
                   {Number(product.price) - Number(product.discount)}₴
-                </span>
+                </Typography>
 
-                <span className="oldPrice">{product.price}₴</span>
+                <Typography className="oldPrice" variant="body1">
+                  {product.price}₴
+                </Typography>
               </>
             ) : (
-              <span className="newPrice">{product.price}₴</span>
+              <Typography className="newPrice" variant="body1">
+                {product.price}₴
+              </Typography>
             )}
-          </div>
+          </Box>
 
-          {product.discount ||
-            (Number(product.discount ?? 0) > 0 && (
-              <p className="discount">Ви економите {product.discount}₴</p>
-            ))}
-
-          <div className="actions">
+          <Box className="actions">
             <Button size="lg" onClick={() => onAddToCartItem(id)}>
               Додати у кошик
             </Button>
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
 
-      <section className="description">
-        <h2>Опис товару</h2>
+      <Box component="section" className="description">
+        <Typography className="descriptionTitle" variant="h3">
+          Опис товару
+        </Typography>
 
-        <p>
-          Тут поки що буде опис товару. Потім ти просто підставиш
-          product.description.
-        </p>
-      </section>
+        <Typography className="descriptionText" variant="body1">
+          {product.description ||
+            "На жаль, опис цього товару відсутній. Будь ласка, зверніться до продавця для отримання додаткової інформації."}
+        </Typography>
+      </Box>
     </Box>
   );
 }

@@ -19,6 +19,7 @@ export const styles: Record<string, SxProps<Theme>> = {
       borderRadius: theme.shape.borderRadius,
       padding: "24px",
       boxShadow: 1,
+      position: "relative",
     },
 
     "& .image": {

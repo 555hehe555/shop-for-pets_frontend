@@ -38,7 +38,16 @@ export function ProductsList() {
       <Box sx={styles.filters}>
         <ProductFilters filters={filters} onChange={handleFilters} />
       </Box>
-      <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          flex: 1,
+          alignSelf: "stretch",
+          alignItems: "center",
+        }}
+      >
         <Box sx={styles.productsContainer}>
           <Grid container spacing={3} sx={styles.grid}>
             {products.map((product) => (

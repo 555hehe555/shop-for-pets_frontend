@@ -8,5 +8,15 @@ export default function ProductDetailsPage() {
 
   const { id } = useParams<{ id: string }>();
 
-  return <ProductDetails id={Number(id)} onAddToCartItem={addToCartItem} />;
+  return (
+    <main
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+      }}
+    >
+      <ProductDetails id={Number(id)} onAddToCartItem={addToCartItem} />
+    </main>
+  );
 }
