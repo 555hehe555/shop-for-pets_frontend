@@ -10,6 +10,7 @@ import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 
 import { styles } from "./Header.styles";
 import Input from "@/ui/Input/Input";
+import { GrUser } from "react-icons/gr";
 
 export default function Header() {
   const { itemsCount } = useCart();
@@ -94,6 +95,10 @@ export default function Header() {
 
           <IconButton component={Link} to="/cart" sx={styles.cartButton}>
             <CartBtn count={itemsCount} />
+          </IconButton>
+
+          <IconButton component={Link} to="/profile" sx={styles.profileButton}>
+            <GrUser color="white" />
           </IconButton>
         </Box>
       </Toolbar>

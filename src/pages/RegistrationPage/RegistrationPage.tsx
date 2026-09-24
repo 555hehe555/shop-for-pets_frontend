@@ -1,3 +1,4 @@
+import Main from "@/components/layout/Main/Main";
 import { RegistrationForm } from "@/features/auth";
 
 export default function RegistrationPage() {
@@ -6,6 +7,8 @@ export default function RegistrationPage() {
   }
 
   return (
-    <RegistrationForm onRegistrationSuccessful={onRegistrationSuccessful} />
+    <Main>
+      <RegistrationForm onRegistrationSuccessful={onRegistrationSuccessful} />
+    </Main>
   );
 }

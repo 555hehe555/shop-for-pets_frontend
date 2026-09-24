@@ -1,3 +1,4 @@
+import Main from "@/components/layout/Main/Main";
 import { useCart } from "@/features/cart";
 import { ProductDetails } from "@/features/catalog/components/ProductDetails/ProductDetails";
 
@@ -9,14 +10,8 @@ export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <main
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        flex: 1,
-      }}
-    >
+    <Main>
       <ProductDetails id={Number(id)} onAddToCartItem={addToCartItem} />
-    </main>
+    </Main>
   );
 }

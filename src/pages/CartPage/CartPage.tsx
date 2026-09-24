@@ -1,5 +1,10 @@
+import Main from "@/components/layout/Main/Main";
 import { CartOverview } from "@/features/cart/components/CartOverview/CartOverview";
 
 export default function CartPage() {
-  return <CartOverview />;
+  return (
+    <Main>
+      <CartOverview />
+    </Main>
+  );
 }

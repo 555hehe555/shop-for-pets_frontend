@@ -4,10 +4,12 @@ export const styles = {
   appBar: {
     backgroundColor: "header.bg",
     color: "header.text",
+
+    px: { sm: 4, md: 8, lg: 16 },
   },
   toolbar: {
     justifyContent: "space-between",
-    px: { xs: 2, md: 4 },
+    px: { xs: 2, sm: 4, md: 4 },
     py: "5px",
   },
   logo: (theme: Theme) => ({
@@ -39,4 +41,19 @@ export const styles = {
       transition: "0.5s ease",
     },
   },
+
+  profileButton: (theme: Theme) => ({
+    transition: "0.5s ease",
+
+    p: 1,
+    border: "1px solid",
+    borderColor: "divider",
+    borderRadius: "10px",
+    backgroundColor: theme.palette.secondary.main,
+
+    "&:hover": {
+      opacity: 0.7,
+      transition: "0.5s ease",
+    },
+  }),
 };

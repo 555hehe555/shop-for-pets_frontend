@@ -5,9 +5,6 @@ export const styles: Record<string, SxProps<Theme>> = {
   container: {
     width: "100%",
     p: 2.5,
-    backgroundColor: "background.paper",
-    border: "1px solid",
-    borderColor: "divider",
     borderRadius: 2,
   },
 

@@ -35,6 +35,13 @@ export const styles: Record<string, SxProps<Theme>> = {
   grid: {
     width: "100%",
     mb: "auto",
+    mt: 0,
+
+    listStyle: "none",
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 3,
   },
 
   pagination: { mt: 3 },

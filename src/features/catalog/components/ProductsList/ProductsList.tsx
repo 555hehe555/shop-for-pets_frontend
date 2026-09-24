@@ -7,6 +7,8 @@ import { useState, type ChangeEvent } from "react";
 import type { FilterState } from "../../api";
 import { styles } from "./ProductsList.styles";
 
+const PAGE_SIZE = 10;
+
 export function ProductsList() {
   const [searchParams] = useSearchParams();
 
@@ -23,13 +25,18 @@ export function ProductsList() {
     setPage(1);
   }
 
-  const { data } = useProducts({ search, ...filters, page, page_size: 10 });
+  const { data } = useProducts({
+    search,
+    ...filters,
+    page,
+    page_size: PAGE_SIZE,
+  });
 
-  const products = data?.results || [];
-  const totalCount = data?.count || 0;
-  const totalPages = Math.ceil(totalCount / 10);
+  const products = data?.results ?? [];
+  const totalCount = data?.count ?? 0;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
-  function handlePages(event: ChangeEvent<unknown, Element>, value: number) {
+  function handlePages(_: ChangeEvent<unknown, Element>, value: number) {
     setPage(value);
   }
 
@@ -49,13 +56,13 @@ export function ProductsList() {
         }}
       >
         <Box sx={styles.productsContainer}>
-          <Grid container spacing={3} sx={styles.grid}>
+          <Box component="ul" sx={styles.grid}>
             {products.map((product) => (
-              <Grid key={product.id}>
+              <li key={product.id}>
                 <ProductCard product={product} />
-              </Grid>
+              </li>
             ))}
-          </Grid>
+          </Box>
         </Box>
 
         {totalPages > 1 && (
