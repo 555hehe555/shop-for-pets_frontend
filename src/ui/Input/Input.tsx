@@ -5,7 +5,7 @@ import { Box } from "@mui/system";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   variant?: "primary" | "secondary" | "success" | "danger";
-  inputSize?: "sm" | "md" | "lg";
+  inputSize?: "sm" | "md" | "lg" | "manual";
 }
 
 export default function Input({

@@ -46,6 +46,10 @@ export const styles = {
     "&:disabled": {
       opacity: 0.6,
       cursor: "not-allowed",
+
+      border: "none",
+      backgroundColor: "transparent",
+      boxShadow: "none",
     },
   },
 
@@ -63,6 +67,7 @@ export const styles = {
     padding: "16px 28px",
     fontSize: "18px",
   },
+  manual: { padding: 0 },
 
   primary: (theme: Theme) =>
     getInputVariant(

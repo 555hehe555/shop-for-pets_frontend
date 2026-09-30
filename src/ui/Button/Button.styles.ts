@@ -54,6 +54,9 @@ export const styles = {
     },
   },
 
+  manual: {
+    padding: 0,
+  },
   xs: {
     padding: "4px 10px",
     fontSize: "18px",
@@ -94,5 +97,6 @@ export const styles = {
     getButtonVariant(theme.palette.success.main, theme.palette.success.dark),
   danger: (theme: Theme) =>
     getButtonVariant(theme.palette.error.main, theme.palette.error.dark),
-};
 
+  text: {},
+};
