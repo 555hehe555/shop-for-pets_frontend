@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "npm run generate:types && vite",
+    "dev:client": "vite",
+    "format": "prettier --write .",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

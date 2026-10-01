@@ -78,11 +78,7 @@ export interface GetCustomUser {
    * @pattern ^[\w.@+-]+$
    */
   username: string;
-  /**
-   * Опис користувача
-   * @maxLength 500
-   */
-  description?: string | null;
+  description?: string;
   /**
    * @format email
    * @maxLength 254
@@ -213,12 +209,7 @@ export interface PatchedUpdateCustomUserRequest {
    * @pattern ^[\w.@+-]+$
    */
   username?: string;
-  /**
-   * Опис користувача
-   * @minLength 1
-   * @maxLength 500
-   */
-  description?: string | null;
+  description?: string;
   /**
    * @format email
    * @maxLength 254
@@ -328,11 +319,7 @@ export interface UpdateCustomUser {
    * @pattern ^[\w.@+-]+$
    */
   username: string;
-  /**
-   * Опис користувача
-   * @maxLength 500
-   */
-  description: string | null;
+  description: string;
   /**
    * @format email
    * @maxLength 254
@@ -352,12 +339,7 @@ export interface UpdateCustomUserRequest {
    * @pattern ^[\w.@+-]+$
    */
   username: string;
-  /**
-   * Опис користувача
-   * @minLength 1
-   * @maxLength 500
-   */
-  description: string | null;
+  description: string;
   /**
    * @format email
    * @maxLength 254
