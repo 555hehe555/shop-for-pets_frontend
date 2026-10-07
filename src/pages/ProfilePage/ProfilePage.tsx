@@ -1,9 +1,20 @@
 import Main from "@/components/layout/Main/Main";
 import Button from "@/ui/Button/Button";
 import Input from "@/ui/Input/Input";
-import { Box, Divider, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionActions,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Divider,
+  Typography,
+} from "@mui/material";
 import { styles } from "./ProfilePage.styles";
 import { useState } from "react";
+import { SlArrowUp } from "react-icons/sl";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 
 export function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -14,6 +25,17 @@ export function ProfilePage() {
     dateOfBirth: "1990-01-01",
   });
 
+  const { logoutUser } = useAuth();
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const closeDialog = () => setIsDialogOpen(false);
+
+  const closeAndLogoutDialog = () => {
+    closeDialog();
+    logoutUser();
+  };
+
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setPersonalData((prevData) => ({ ...prevData, [name]: value }));
@@ -22,57 +44,141 @@ export function ProfilePage() {
   return (
     <Main>
       <Box sx={styles.profileContainer}>
-        <Typography component="h1">Profile page</Typography>
-        <Divider></Divider>
+        <Typography className="pageTitle" component="h2">
+          Профіль користувача
+        </Typography>
 
-        <Box>
-          <Box className="mainInfo">
-            <Box>
-              <img
-                src="https://nerdik.club/content/images/41/310x189l85nn0/copy_nabir-hralnykh-kubykiv-chessex-marble-polyhedral-oxi-copper-white-7-die-set-59787158102035.jpg"
-                alt="user image"
-              />
-              <Typography component="h2">Username</Typography>
+        <Accordion
+          slotProps={{
+            heading: { component: "h3" },
+            transition: { unmountOnExit: true },
+          }}
+        >
+          <AccordionSummary
+            className="tableTitle"
+            aria-controls="personal-data-content"
+            id="personal-data-header"
+            expandIcon={<SlArrowUp />}
+          >
+            Особисті дані
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box sx={styles.tableContainer}>
+              <Box className="tableInfo">
+                <Typography className="tableLabel">Повне ім'я</Typography>
+
+                {isEditing ? (
+                  <Input
+                    inputSize="sm"
+                    name="fullName"
+                    value={personalData.fullName}
+                    className="tableInput"
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <Typography className="tableValue">
+                    {personalData.fullName}
+                  </Typography>
+                )}
+              </Box>
+              <Divider />
+
+              <Box className="tableInfo">
+                <Typography className="tableLabel">Електронна пошта</Typography>
+
+                {isEditing ? (
+                  <Input
+                    inputSize="sm"
+                    name="email"
+                    value={personalData.email}
+                    className="tableInput"
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <Typography className="tableValue">
+                    {personalData.email}
+                  </Typography>
+                )}
+              </Box>
+              <Divider />
+
+              <Box className="tableInfo">
+                <Typography className="tableLabel">Номер телефону</Typography>
+
+                {isEditing ? (
+                  <Input
+                    inputSize="sm"
+                    name="phone"
+                    value={personalData.phone}
+                    className="tableInput"
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <Typography className="tableValue">
+                    {personalData.phone}
+                  </Typography>
+                )}
+              </Box>
+              <Divider />
+
+              <Box className="tableInfo">
+                <Typography className="tableLabel">Дата народження</Typography>
+
+                {isEditing ? (
+                  <Input
+                    inputSize="sm"
+                    name="dateOfBirth"
+                    value={personalData.dateOfBirth}
+                    className="tableInput"
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <Typography className="tableValue">
+                    {personalData.dateOfBirth}
+                  </Typography>
+                )}
+              </Box>
             </Box>
-
-            <Box>
-              <Button>change image</Button>
-            </Box>
-          </Box>
-        </Box>
-        <Divider></Divider>
-
-        <Box className="tableContainer">
-          <Box className="tableInfo">
-            <Typography className="tableLabel">Повне ім'я</Typography>
-
+          </AccordionDetails>
+          <AccordionActions>
             {isEditing ? (
-              <Input
-                inputSize="sm"
-                name="fullName"
-                value={personalData.fullName}
-                className="tableInput"
-                onChange={handleInputChange}
-              />
+              <Button
+                variant="secondary"
+                size="sm"
+                className="editButton"
+                onClick={() => setIsEditing(false)}
+              >
+                Зберегти
+              </Button>
             ) : (
-              <Typography className="tableValue">
-                {personalData.fullName}
-              </Typography>
+              <Button
+                variant="tertiary"
+                size="sm"
+                className="editButton"
+                onClick={() => setIsEditing(true)}
+              >
+                Змінити
+              </Button>
             )}
-          </Box>
-          <Divider />
+          </AccordionActions>
+        </Accordion>
 
-          {isEditing ? (
-            <Button variant="secondary" onClick={() => setIsEditing(false)}>
-              Зберегти
-            </Button>
-          ) : (
-            <Button variant="tertiary" onClick={() => setIsEditing(true)}>
-              Змінити
-            </Button>
-          )}
-        </Box>
+        <Button
+          size="sm"
+          variant="tertiary"
+          className="logoutButton"
+          onClick={() => setIsDialogOpen(true)}
+        >
+          Logout
+        </Button>
       </Box>
+
+      <ConfirmDialog
+        question="Ви впевнені, що хочете вийти?"
+        isDialogOpen={isDialogOpen}
+        onCancel={closeDialog}
+        onConfirm={closeAndLogoutDialog}
+      />
     </Main>
   );
 }

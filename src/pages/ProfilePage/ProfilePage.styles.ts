@@ -2,21 +2,28 @@ import type { SxProps, Theme } from "@mui/material";
 
 export const styles: Record<string, SxProps<Theme>> = {
   profileContainer: (theme) => ({
-    "& .mainInfo": {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: 1,
+    margin: "18px 20%",
+    maxWidth: "800px",
+    display: "flex",
+    flexDirection: "column",
 
-      margin: 2,
+    "& .pageTitle": {
+      fontSize: "24px",
+      fontWeight: "bold",
+      marginBottom: "16px",
+    },
+
+    "& .tableTitle": {
+      fontSize: "20px",
+      fontWeight: "bold",
+      marginBottom: "8px",
     },
 
     "& .tableContainer": {
+      marginTop: "24px",
       display: "flex",
       flexDirection: "column",
       gap: 1,
-      margin: "18px auto",
-      maxWidth: "600px",
     },
     "& .tableInfo": {
       display: "flex",
@@ -36,6 +43,16 @@ export const styles: Record<string, SxProps<Theme>> = {
     "& .tableValue": {
       flex: "0 0 300px",
       fontSize: "16px",
+    },
+
+    "& .editButton": {
+      marginTop: "16px",
+      alignSelf: "flex-end",
+    },
+
+    "& .logoutButton": {
+      marginTop: "32px",
+      alignSelf: "flex-end",
     },
   }),
 };

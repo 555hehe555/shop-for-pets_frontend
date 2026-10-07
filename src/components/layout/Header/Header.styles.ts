@@ -18,8 +18,8 @@ export const styles = {
     fontFamily: theme.typography.fontLogo,
   }),
   leftContainer: {
-    width: "530px",
     display: "flex",
+    gap: "25px",
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -33,6 +33,7 @@ export const styles = {
   },
   searchForm: {
     width: "250px",
+    mr: "10px",
   },
   cartButton: {
     p: 0,

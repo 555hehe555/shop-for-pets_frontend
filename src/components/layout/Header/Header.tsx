@@ -3,7 +3,6 @@ import { useState } from "react";
 import Button from "@/ui/Button/Button.tsx";
 import { useCart, CartBtn } from "@/features/cart";
 import { useAuth } from "@/features/auth/context/AuthContext";
-import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
@@ -14,7 +13,7 @@ import { GrUser } from "react-icons/gr";
 
 export default function Header() {
   const { itemsCount } = useCart();
-  const { isAuthenticated, logoutUser } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(
@@ -22,15 +21,6 @@ export default function Header() {
   );
 
   const navigate = useNavigate();
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const closeDialog = () => setIsDialogOpen(false);
-
-  const closeAndLogoutDialog = () => {
-    closeDialog();
-    logoutUser();
-  };
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,13 +58,7 @@ export default function Header() {
                 </Link>
               </>
             ) : (
-              <Button
-                size="sm"
-                variant="tertiary"
-                onClick={() => setIsDialogOpen(true)}
-              >
-                Logout
-              </Button>
+              <></>
             )}
           </Box>
 
@@ -102,13 +86,6 @@ export default function Header() {
           </IconButton>
         </Box>
       </Toolbar>
-
-      <ConfirmDialog
-        question="Ви впевнені, що хочете вийти?"
-        isDialogOpen={isDialogOpen}
-        onCancel={closeDialog}
-        onConfirm={closeAndLogoutDialog}
-      />
     </AppBar>
   );
 }
