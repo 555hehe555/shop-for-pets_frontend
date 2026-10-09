@@ -2,10 +2,11 @@ import type { SxProps, Theme } from "@mui/material";
 
 export const styles: Record<string, SxProps<Theme>> = {
   profileContainer: (theme) => ({
-    margin: "18px 20%",
-    maxWidth: "800px",
+    margin: "18px auto",
+    minWidth: "1000px",
     display: "flex",
     flexDirection: "column",
+    gap: "16px",
 
     "& .pageTitle": {
       fontSize: "24px",
@@ -53,6 +54,12 @@ export const styles: Record<string, SxProps<Theme>> = {
     "& .logoutButton": {
       marginTop: "32px",
       alignSelf: "flex-end",
+    },
+
+    "& .accordion": {
+      border: `1px solid ${theme.palette.divider}`,
+      borderRadius: "16px",
+      boxShadow: theme.shadows[1],
     },
   }),
 };

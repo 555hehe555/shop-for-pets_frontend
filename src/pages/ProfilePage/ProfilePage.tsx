@@ -8,6 +8,7 @@ import {
   AccordionSummary,
   Box,
   Divider,
+  Radio,
   Typography,
 } from "@mui/material";
 import { styles } from "./ProfilePage.styles";
@@ -15,6 +16,14 @@ import { useState } from "react";
 import { SlArrowUp } from "react-icons/sl";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
+import Modal from "@/ui/Modal/Modal";
+
+interface PetData {
+  id?: number;
+  name: string;
+  species: string;
+  dateOfBirth: string;
+}
 
 export function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -24,6 +33,15 @@ export function ProfilePage() {
     phone: "+1 234 567 890",
     dateOfBirth: "1990-01-01",
   });
+
+  const [petsData, setPetsData] = useState<PetData[]>([
+    {
+      id: 1,
+      name: "Buddy",
+      species: "Dog",
+      dateOfBirth: "2018-05-15",
+    },
+  ]);
 
   const { logoutUser } = useAuth();
 
@@ -41,6 +59,10 @@ export function ProfilePage() {
     setPersonalData((prevData) => ({ ...prevData, [name]: value }));
   }
 
+  function handleAddPet(newPet: PetData) {
+    setPetsData((prevPets) => [...prevPets, newPet]);
+  }
+
   return (
     <Main>
       <Box sx={styles.profileContainer}>
@@ -53,6 +75,7 @@ export function ProfilePage() {
             heading: { component: "h3" },
             transition: { unmountOnExit: true },
           }}
+          className="accordion"
         >
           <AccordionSummary
             className="tableTitle"
@@ -141,6 +164,21 @@ export function ProfilePage() {
             </Box>
           </AccordionDetails>
           <AccordionActions>
+            <Button
+              variant="primary"
+              size="sm"
+              className="addPetButton"
+              onClick={() =>
+                handleAddPet({
+                  name: "New Pet",
+                  species: "Species",
+                  dateOfBirth: "2020-01-01",
+                })
+              }
+            >
+              Додати тварину
+            </Button>
+
             {isEditing ? (
               <Button
                 variant="secondary"
@@ -163,6 +201,14 @@ export function ProfilePage() {
           </AccordionActions>
         </Accordion>
 
+        <Divider />
+
+        <Typography className="tableTitle" component="h3">
+          Мої домашні улюбленці
+        </Typography>
+
+        {/* {petsData.map((pet, index) => ())} */}
+
         <Button
           size="sm"
           variant="tertiary"
@@ -179,6 +225,86 @@ export function ProfilePage() {
         onCancel={closeDialog}
         onConfirm={closeAndLogoutDialog}
       />
+
+      <Modal onClose={() => {}} isOpen={true}>
+        <Box sx={{ backgroundColor: "white" }}>
+          <Box component="form" sx={styles.form} action={() => {}}>
+            <Typography variant="h2" component="h2" sx={styles.title}>
+              Login
+            </Typography>
+
+            <Box sx={styles.field}>
+              <Typography component="label" sx={styles.label}>
+                кличка вашої тваринки
+              </Typography>
+              <Input
+                type="text"
+                name="name"
+                placeholder="кличка вашої тваринки"
+              />
+            </Box>
+
+            <Box sx={styles.field}>
+              <Typography component="label" sx={styles.label}>
+                {/* species: "Dog", */}
+                Вид
+              </Typography>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <Box sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
+                  <Radio
+                    checked={true}
+                    onChange={() => {}}
+                    value="a"
+                    name="radio-buttons"
+                    slotProps={{ input: { "aria-label": "A" } }}
+                  />
+                  <Typography component="span" sx={{ fontSize: "16px" }}>
+                    Dog
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
+                  <Radio
+                    checked={false}
+                    onChange={() => {}}
+                    value="b"
+                    name="radio-buttons"
+                    slotProps={{ input: { "aria-label": "B" } }}
+                  />
+                  <Typography component="span" sx={{ fontSize: "16px" }}>
+                    Cat
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+
+            <Box sx={styles.field}>
+              <Typography component="label" sx={styles.label}>
+                Дата народження
+              </Typography>
+              <Input
+                type="text"
+                name="dateOfBirth"
+                placeholder="Дата народження"
+              />
+            </Box>
+
+            <Button
+              size="md"
+              type="submit"
+              style={{ alignSelf: "center", minWidth: 180 }}
+            >
+              Login
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Main>
   );
 }
