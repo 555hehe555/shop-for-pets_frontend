@@ -13,7 +13,7 @@ import { SlArrowUp } from "react-icons/sl";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import { PetModal } from "../PetModal/PetModal";
 
-interface PetData {
+export interface PetData {
   id?: number;
   name: string;
   species: string;
@@ -36,8 +36,14 @@ export function ProfilePet() {
     dateOfBirth: "",
   });
 
-  function handleAddPet(newPet: PetData) {
-    setPetsData((prevPets) => [...prevPets, newPet]);
+  function handleAddPet(petData: PetData) {
+    const nextId =
+      petData.id ??
+      (petsData.length > 0
+        ? Math.max(...petsData.map((p) => p.id ?? 0)) + 1
+        : 1);
+
+    setPetsData((prevPets) => [...prevPets, { ...petData, id: nextId }]);
     setNewPet({ name: "", species: "", dateOfBirth: "" });
   }
 
@@ -48,15 +54,31 @@ export function ProfilePet() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setNewPet({ name: "", species: "", dateOfBirth: "" });
+  };
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  // const openDialog = () => setIsDialogOpen(true);
-  const closeDialog = () => setIsDialogOpen(false);
+  const [petToDelete, setPetToDelete] = useState<number | null>(null);
 
-  const closeAndLogoutDialog = () => {
+  const openDeleteDialog = (id?: number) => {
+    if (id !== undefined) {
+      setPetToDelete(id);
+      setIsDialogOpen(true);
+    }
+  };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+    setPetToDelete(null);
+  };
+
+  const confirmDeletePet = () => {
+    if (petToDelete !== null) {
+      setPetsData((prevPets) => prevPets.filter((p) => p.id !== petToDelete));
+    }
     closeDialog();
-    // deletePet
   };
 
   return (
@@ -77,7 +99,7 @@ export function ProfilePet() {
         </Box>
 
         {petsData.map((pet, index) => (
-          <Accordion key={index}>
+          <Accordion key={pet.id ?? index}>
             <AccordionSummary
               className="tableTitle"
               aria-controls="pet-data-content"
@@ -99,7 +121,7 @@ export function ProfilePet() {
                 variant="secondary"
                 size="sm"
                 className="button"
-                onClick={() => { }}
+                onClick={() => {}}
               >
                 Змінити
               </Button>
@@ -107,11 +129,7 @@ export function ProfilePet() {
                 variant="tertiary"
                 size="sm"
                 className="button"
-                onClick={() => {
-                  setPetsData((prevPets) =>
-                    prevPets.filter((p) => p.id !== pet.id),
-                  );
-                }}
+                onClick={() => openDeleteDialog(pet.id)}
               >
                 Видалити
               </Button>
@@ -121,13 +139,19 @@ export function ProfilePet() {
       </Box>
 
       <ConfirmDialog
-        question="Ви впевнені, що хочете вийти?"
+        question="Ви впевнені, що хочете видалити тваринку?"
         isDialogOpen={isDialogOpen}
         onCancel={closeDialog}
-        onConfirm={closeAndLogoutDialog}
+        onConfirm={confirmDeletePet}
       />
 
-      <PetModal isModalOpen={isModalOpen} closeModal={closeModal} />
+      <PetModal
+        isModalOpen={isModalOpen}
+        closeModal={closeModal}
+        newPet={newPet}
+        handleAddPet={handleAddPet}
+        handlePetInputChange={handlePetInputChange}
+      />
     </>
   );
 }

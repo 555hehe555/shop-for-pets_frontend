@@ -1,24 +1,14 @@
 import { Box, FormGroup, Radio, Typography } from "@mui/material";
-import { useState } from "react";
-
 import { styles } from "./PetModal.styles";
-
 import Modal from "@/ui/Modal/Modal";
-
 import Input from "@/ui/Input/Input";
 import Button from "@/ui/Button/Button";
+import type { PetData } from "../ProfilePet/ProfilePet";
 
-interface PetData {
-  id?: number;
-  name: string;
-  species: string;
-  dateOfBirth: string;
-}
-
-interface PetModalProps {
+export interface PetModalProps {
   isModalOpen: boolean;
   closeModal: () => void;
-
+  newPet: Omit<PetData, "id">;
   handleAddPet: (newPet: PetData) => void;
   handlePetInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -26,13 +16,14 @@ interface PetModalProps {
 export function PetModal({
   isModalOpen,
   closeModal,
+  newPet,
   handleAddPet,
   handlePetInputChange,
 }: PetModalProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    handleAddPet({ ...newPet, id: petsData.length + 1 });
+    handleAddPet(newPet);
     closeModal();
   }
 
