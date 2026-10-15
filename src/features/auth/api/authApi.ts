@@ -3,6 +3,7 @@ import type {
   CreateCustomUser,
   CreateCustomUserRequest,
   GetMe,
+  PatchedUpdateCustomUserRequest,
   TokenObtainPair,
   TokenObtainPairRequest,
 } from "@/types/api";
@@ -70,6 +71,25 @@ export async function getMe(): Promise<GetMe> {
 
   if (!response.ok) {
     throw new Error("error to get auntificate user");
+  }
+
+  const data = await response.json();
+
+  return data;
+}
+
+export async function updateUser(
+  id: number,
+  inData: PatchedUpdateCustomUserRequest,
+): Promise<void> {
+  const response = await authFetch(`${BASE_URL}/users/${id}/`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(inData),
+  });
+
+  if (!response.ok) {
+    throw new Error("error to patch user");
   }
 
   const data = await response.json();

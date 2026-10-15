@@ -14,17 +14,35 @@ import { useState } from "react";
 import { SlArrowUp } from "react-icons/sl";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
+import { useGetMe } from "@/queries/auth/useAuthQueries";
+import type { PatchedUpdateCustomUserRequest } from "@/types/api";
+import { useUpdateUser } from "@/queries/auth/useAuthMutations";
 
 export function ProfileUser() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [personalData, setPersonalData] = useState({
-    fullName: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 234 567 890",
-    dateOfBirth: "1990-01-01",
-  });
+  const { data: userData } = useGetMe();
+
+  const [draft, setDraft] = useState<null | PatchedUpdateCustomUserRequest>(
+    null,
+  );
+
+  const isEditing = draft !== null;
+
+  function startEditing() {
+    if (userData) {
+      setDraft({
+        full_name: userData?.full_name,
+        email: userData?.email,
+        phone_number: userData?.phone_number,
+        date_of_birth: userData?.date_of_birth,
+      });
+    }
+  }
 
   const { logoutUser } = useAuth();
+
+  const { mutate: updateUser } = useUpdateUser();
+
+  const values = draft;
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const openDialog = () => setIsDialogOpen(true);
@@ -37,7 +55,17 @@ export function ProfileUser() {
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    setPersonalData((prevData) => ({ ...prevData, [name]: value }));
+    setDraft((prevData) =>
+      prevData ? { ...prevData, [name]: value } : prevData,
+    );
+  }
+
+  function handleSave() {
+    if (values && userData && userData.id) {
+      updateUser({ id: userData.id, inData: values });
+
+      setDraft(null);
+    }
   }
 
   return (
@@ -70,14 +98,14 @@ export function ProfileUser() {
                 {isEditing ? (
                   <Input
                     inputSize="sm"
-                    name="fullName"
-                    value={personalData.fullName}
+                    name="full_name"
+                    value={values?.full_name}
                     className="tableInput"
                     onChange={handleInputChange}
                   />
                 ) : (
                   <Typography className="tableValue">
-                    {personalData.fullName}
+                    {userData?.full_name}
                   </Typography>
                 )}
               </Box>
@@ -90,13 +118,13 @@ export function ProfileUser() {
                   <Input
                     inputSize="sm"
                     name="email"
-                    value={personalData.email}
+                    value={values?.email}
                     className="tableInput"
                     onChange={handleInputChange}
                   />
                 ) : (
                   <Typography className="tableValue">
-                    {personalData.email}
+                    {userData?.email}
                   </Typography>
                 )}
               </Box>
@@ -108,14 +136,14 @@ export function ProfileUser() {
                 {isEditing ? (
                   <Input
                     inputSize="sm"
-                    name="phone"
-                    value={personalData.phone}
+                    name="phone_number"
+                    value={values?.phone_number ?? ""}
                     className="tableInput"
                     onChange={handleInputChange}
                   />
                 ) : (
                   <Typography className="tableValue">
-                    {personalData.phone}
+                    {userData?.phone_number}
                   </Typography>
                 )}
               </Box>
@@ -127,14 +155,15 @@ export function ProfileUser() {
                 {isEditing ? (
                   <Input
                     inputSize="sm"
-                    name="dateOfBirth"
-                    value={personalData.dateOfBirth}
+                    type="date"
+                    name="date_of_birth"
+                    value={values?.date_of_birth ?? ""}
                     className="tableInput"
                     onChange={handleInputChange}
                   />
                 ) : (
                   <Typography className="tableValue">
-                    {personalData.dateOfBirth}
+                    {userData?.date_of_birth}
                   </Typography>
                 )}
               </Box>
@@ -154,7 +183,7 @@ export function ProfileUser() {
                 variant="secondary"
                 size="sm"
                 className="editButton"
-                onClick={() => setIsEditing(false)}
+                onClick={handleSave}
               >
                 Зберегти
               </Button>
@@ -163,7 +192,7 @@ export function ProfileUser() {
                 variant="tertiary"
                 size="sm"
                 className="editButton"
-                onClick={() => setIsEditing(true)}
+                onClick={startEditing}
               >
                 Змінити
               </Button>

@@ -78,7 +78,6 @@ export interface GetCustomUser {
    * @pattern ^[\w.@+-]+$
    */
   username: string;
-  description?: string;
   /**
    * @format email
    * @maxLength 254
@@ -107,39 +106,27 @@ export interface GetCustomUser {
    * Designates that this user has all permissions without explicitly assigning them.
    */
   is_superuser?: boolean;
+  /** @maxLength 150 */
+  full_name?: string;
+  /** @maxLength 128 */
+  phone_number?: string | null;
+  /** @format date */
+  date_of_birth?: string | null;
 }
 
 export interface GetMe {
   id: number;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   * @maxLength 150
-   * @pattern ^[\w.@+-]+$
-   */
-  username: string;
+  /** @maxLength 150 */
+  full_name?: string;
   /**
    * @format email
    * @maxLength 254
    */
   email?: string;
-  /**
-   * Staff status
-   * Designates whether the user can log into this admin site.
-   */
-  is_staff?: boolean;
-  /** @format date-time */
-  date_joined?: string;
-  /** @format date-time */
-  last_login?: string | null;
-  /**
-   * Active
-   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-   */
-  is_active?: boolean;
-  /** @maxLength 150 */
-  first_name?: string;
-  /** @maxLength 150 */
-  last_name?: string;
+  /** @maxLength 128 */
+  phone_number?: string | null;
+  /** @format date */
+  date_of_birth?: string | null;
 }
 
 export interface PaginatedProductList {
@@ -202,28 +189,17 @@ export interface PatchedProductRequest {
 }
 
 export interface PatchedUpdateCustomUserRequest {
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   * @minLength 1
-   * @maxLength 150
-   * @pattern ^[\w.@+-]+$
-   */
-  username?: string;
-  description?: string;
+  /** @maxLength 150 */
+  full_name?: string;
   /**
    * @format email
    * @maxLength 254
    */
   email?: string;
-  /** @maxLength 150 */
-  first_name?: string;
-  /** @maxLength 150 */
-  last_name?: string;
-  /**
-   * @minLength 1
-   * @maxLength 128
-   */
-  password?: string;
+  /** @maxLength 128 */
+  phone_number?: string | null;
+  /** @format date */
+  date_of_birth?: string | null;
 }
 
 export interface Product {
@@ -312,48 +288,18 @@ export interface TokenRefreshRequest {
   refresh: string;
 }
 
-export interface UpdateCustomUser {
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   * @maxLength 150
-   * @pattern ^[\w.@+-]+$
-   */
-  username: string;
-  description: string;
-  /**
-   * @format email
-   * @maxLength 254
-   */
-  email: string;
-  /** @maxLength 150 */
-  first_name: string;
-  /** @maxLength 150 */
-  last_name: string;
-}
-
 export interface UpdateCustomUserRequest {
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   * @minLength 1
-   * @maxLength 150
-   * @pattern ^[\w.@+-]+$
-   */
-  username: string;
-  description: string;
+  /** @maxLength 150 */
+  full_name?: string;
   /**
    * @format email
    * @maxLength 254
    */
-  email: string;
-  /** @maxLength 150 */
-  first_name: string;
-  /** @maxLength 150 */
-  last_name: string;
-  /**
-   * @minLength 1
-   * @maxLength 128
-   */
-  password?: string;
+  email?: string;
+  /** @maxLength 128 */
+  phone_number?: string | null;
+  /** @format date */
+  date_of_birth?: string | null;
 }
 
 export namespace Api {
@@ -675,7 +621,7 @@ export namespace Api {
   }
 
   /**
-   * @description Create user.
+   * @description Create a new user.
    * @tags Users
    * @name ApiUsersCreate
    * @request POST:/api/users/
@@ -707,7 +653,7 @@ export namespace Api {
   }
 
   /**
-   * @description Fully update user.
+   * @description Fully update user profile.
    * @tags Users
    * @name ApiUsersUpdate
    * @request PUT:/api/users/{id}/
@@ -720,11 +666,11 @@ export namespace Api {
     export type RequestQuery = {};
     export type RequestBody = UpdateCustomUserRequest;
     export type RequestHeaders = {};
-    export type ResponseBody = UpdateCustomUser;
+    export type ResponseBody = GetCustomUser;
   }
 
   /**
-   * @description Partially update user.
+   * @description Partially update user profile.
    * @tags Users
    * @name ApiUsersPartialUpdate
    * @request PATCH:/api/users/{id}/
@@ -737,7 +683,7 @@ export namespace Api {
     export type RequestQuery = {};
     export type RequestBody = PatchedUpdateCustomUserRequest;
     export type RequestHeaders = {};
-    export type ResponseBody = UpdateCustomUser;
+    export type ResponseBody = GetCustomUser;
   }
 
   /**
