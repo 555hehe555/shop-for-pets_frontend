@@ -154,6 +154,18 @@ export interface PatchedCartPatchRequest {
   quantity?: number;
 }
 
+export interface PatchedPetRequest {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  name?: string;
+  species?: number;
+  /** @format date */
+  birthday?: string | null;
+  favourite_products?: number[];
+}
+
 export interface PatchedProductImageRequest {
   /** @format binary */
   image?: File;
@@ -200,6 +212,29 @@ export interface PatchedUpdateCustomUserRequest {
   phone_number?: string | null;
   /** @format date */
   date_of_birth?: string | null;
+}
+
+export interface Pet {
+  id: number;
+  owner: number;
+  /** @maxLength 100 */
+  name: string;
+  species: number;
+  /** @format date */
+  birthday?: string | null;
+  favourite_products?: number[];
+}
+
+export interface PetRequest {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  name: string;
+  species: number;
+  /** @format date */
+  birthday?: string | null;
+  favourite_products?: number[];
 }
 
 export interface Product {
@@ -412,6 +447,104 @@ export namespace Api {
   export namespace ApiCartDestroy {
     export type RequestParams = {
       productId: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
+  }
+
+  /**
+   * No description
+   * @tags api
+   * @name ApiPetsList
+   * @request GET:/api/pets/
+   * @secure
+   */
+  export namespace ApiPetsList {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = Pet[];
+  }
+
+  /**
+   * No description
+   * @tags api
+   * @name ApiPetsCreate
+   * @request POST:/api/pets/
+   * @secure
+   */
+  export namespace ApiPetsCreate {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PetRequest;
+    export type RequestHeaders = {};
+    export type ResponseBody = Pet;
+  }
+
+  /**
+   * No description
+   * @tags api
+   * @name ApiPetsRetrieve
+   * @request GET:/api/pets/{id}/
+   * @secure
+   */
+  export namespace ApiPetsRetrieve {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = Pet;
+  }
+
+  /**
+   * No description
+   * @tags api
+   * @name ApiPetsUpdate
+   * @request PUT:/api/pets/{id}/
+   * @secure
+   */
+  export namespace ApiPetsUpdate {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PetRequest;
+    export type RequestHeaders = {};
+    export type ResponseBody = Pet;
+  }
+
+  /**
+   * No description
+   * @tags api
+   * @name ApiPetsPartialUpdate
+   * @request PATCH:/api/pets/{id}/
+   * @secure
+   */
+  export namespace ApiPetsPartialUpdate {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PatchedPetRequest;
+    export type RequestHeaders = {};
+    export type ResponseBody = Pet;
+  }
+
+  /**
+   * No description
+   * @tags api
+   * @name ApiPetsDestroy
+   * @request DELETE:/api/pets/{id}/
+   * @secure
+   */
+  export namespace ApiPetsDestroy {
+    export type RequestParams = {
+      id: number;
     };
     export type RequestQuery = {};
     export type RequestBody = never;

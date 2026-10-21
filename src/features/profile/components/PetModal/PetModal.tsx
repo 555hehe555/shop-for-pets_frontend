@@ -3,13 +3,13 @@ import { styles } from "./PetModal.styles";
 import Modal from "@/ui/Modal/Modal";
 import Input from "@/ui/Input/Input";
 import Button from "@/ui/Button/Button";
-import type { PetData } from "../ProfilePet/ProfilePet";
+import type { PetRequest } from "@/types/api";
 
 export interface PetModalProps {
   isModalOpen: boolean;
   closeModal: () => void;
-  newPet: Omit<PetData, "id">;
-  handleAddPet: (newPet: PetData) => void;
+  newPet: Omit<PetRequest, "id">;
+  handleAddPet: (newPet: PetRequest) => void;
   handlePetInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

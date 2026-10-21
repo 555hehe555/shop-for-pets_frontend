@@ -12,38 +12,25 @@ import { useState } from "react";
 import { SlArrowUp } from "react-icons/sl";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import { PetModal } from "../PetModal/PetModal";
+import { usePets } from "@/queries/profile/useProfileQueries";
+import type { Pet, PetRequest } from "@/types/api";
+import { useCreatePet } from "@/queries/profile/useProfileMutations";
 
-export interface PetData {
-  id?: number;
-  name: string;
-  species: string;
-  dateOfBirth: string;
-}
+const species = ["Dogs", "Cats", "Birds", "Fish", "Small Pets", "Reptiles"];
 
 export function ProfilePet() {
-  const [petsData, setPetsData] = useState<PetData[]>([
-    {
-      id: 1,
-      name: "Buddy",
-      species: "Dog",
-      dateOfBirth: "2018-05-15",
-    },
-  ]);
+  const { data: petsData } = usePets();
 
-  const [newPet, setNewPet] = useState<Omit<PetData, "id">>({
+  const { mutate: createPet } = useCreatePet();
+
+  const [newPet, setNewPet] = useState<Omit<Pet, "id" | "owner">>({
     name: "",
-    species: "",
-    dateOfBirth: "",
+    species: 0,
+    birthday: "",
   });
 
-  function handleAddPet(petData: PetData) {
-    const nextId =
-      petData.id ??
-      (petsData.length > 0
-        ? Math.max(...petsData.map((p) => p.id ?? 0)) + 1
-        : 1);
-
-    setPetsData((prevPets) => [...prevPets, { ...petData, id: nextId }]);
+  function handleAddPet(petData: PetRequest) {
+    createPet({ inData: petData });
     setNewPet({ name: "", species: "", dateOfBirth: "" });
   }
 
@@ -98,44 +85,50 @@ export function ProfilePet() {
           </Button>
         </Box>
 
-        {petsData.map((pet, index) => (
-          <Accordion key={pet.id ?? index}>
-            <AccordionSummary
-              className="tableTitle"
-              aria-controls="pet-data-content"
-              id="pet-data-header"
-              expandIcon={<SlArrowUp />}
-            >
-              <Typography className="petName">{pet.name}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Box className="petInfo">
-                <Typography className="petSpecies">{pet.species}</Typography>
-                <Typography className="petDateOfBirth">
-                  {pet.dateOfBirth}
-                </Typography>
-              </Box>
-            </AccordionDetails>
-            <AccordionActions>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="button"
-                onClick={() => {}}
+        {petsData ? (
+          petsData.map((pet, index) => (
+            <Accordion key={pet.id ?? index}>
+              <AccordionSummary
+                className="tableTitle"
+                aria-controls="pet-data-content"
+                id="pet-data-header"
+                expandIcon={<SlArrowUp />}
               >
-                Змінити
-              </Button>
-              <Button
-                variant="tertiary"
-                size="sm"
-                className="button"
-                onClick={() => openDeleteDialog(pet.id)}
-              >
-                Видалити
-              </Button>
-            </AccordionActions>
-          </Accordion>
-        ))}
+                <Typography className="petName">{pet.name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box className="petInfo">
+                  <Typography className="petSpecies">{pet.species}</Typography>
+                  <Typography className="petDateOfBirth">
+                    {pet.birthday}
+                  </Typography>
+                </Box>
+              </AccordionDetails>
+              <AccordionActions>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="button"
+                  onClick={() => {}}
+                >
+                  Змінити
+                </Button>
+                <Button
+                  variant="tertiary"
+                  size="sm"
+                  className="button"
+                  onClick={() => openDeleteDialog(pet.id)}
+                >
+                  Видалити
+                </Button>
+              </AccordionActions>
+            </Accordion>
+          ))
+        ) : (
+          <Typography component="h3" variant="h3">
+            У вас поки нема домашніх улюбленців
+          </Typography>
+        )}
       </Box>
 
       <ConfirmDialog
