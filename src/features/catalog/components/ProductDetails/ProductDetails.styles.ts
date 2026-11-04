@@ -22,10 +22,56 @@ export const styles: Record<string, SxProps<Theme>> = {
       position: "relative",
     },
 
+    "& .sliderWrapper": {
+      width: "100%",
+      height: "100%",
+      aspectRatio: "1",
+      overflow: "hidden",
+      position: "relative",
+    },
+
     "& .image": {
       width: "100%",
       aspectRatio: "1",
       objectFit: "contain",
+      position: "absolute",
+      top: 0,
+      left: 0,
+    },
+
+    "& .navButton": {
+      position: "absolute",
+      top: "50%",
+      transform: "translateY(-50%)",
+      borderRadius: "50%",
+    },
+
+    "& .navButtonPrev": {
+      left: -10,
+    },
+
+    "& .navButtonNext": {
+      right: -10,
+    },
+
+    "& .dots": {
+      position: "absolute",
+      bottom: 10,
+      left: "50%",
+      transform: "translateX(-50%)",
+      display: "flex",
+      gap: "8px",
+    },
+
+    "& .dot": {
+      width: 10,
+      height: 10,
+      borderRadius: "50%",
+      backgroundColor: "lightgray",
+
+      "&.active": {
+        backgroundColor: theme.palette.primary.main,
+      },
     },
 
     "& .info": {
@@ -98,12 +144,12 @@ export const styles: Record<string, SxProps<Theme>> = {
       padding: "24px",
       boxShadow: 1,
 
-      "& h2": {
+      "& h2, & .descriptionTitle": {
         marginBottom: "16px",
         fontSize: "1.5rem",
       },
 
-      "& p": {
+      "& p, & .descriptionText": {
         color: theme.palette.text.secondary,
         lineHeight: 1.7,
       },

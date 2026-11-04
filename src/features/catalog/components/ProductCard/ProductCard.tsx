@@ -13,6 +13,7 @@ import { styles } from "./ProductCard.styles";
 
 import { useNavigate } from "react-router-dom";
 import { mainImgResolver } from "@/utils/mainImgResolver";
+import { ProductPrice } from "../ProductPrice/ProductPrice";
 
 interface ProductProps {
   product: Product | undefined;
@@ -44,7 +45,9 @@ export function ProductCard({ product }: ProductProps) {
             {title}
           </Typography>
 
-          <Box>
+          <ProductPrice price={Number(price)} discount={Number(discount)} />
+
+          {/* <Box>
             {discount ? (
               <>
                 <Typography className="currentPrice" component="span">
@@ -62,7 +65,7 @@ export function ProductCard({ product }: ProductProps) {
                 </Typography>
               </>
             )}
-          </Box>
+          </Box> */}
           <>
             {discount && (
               <>
