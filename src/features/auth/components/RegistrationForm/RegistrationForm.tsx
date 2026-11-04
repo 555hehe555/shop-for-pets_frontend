@@ -137,11 +137,7 @@ export function RegistrationForm({
           </Typography>
         </Box>
 
-        <Button
-          size="lg"
-          type="submit"
-          style={{ alignSelf: "center", minWidth: 180 }}
-        >
+        <Button size="lg" type="submit" sx={styles.submitButton}>
           Registration
         </Button>
       </Box>

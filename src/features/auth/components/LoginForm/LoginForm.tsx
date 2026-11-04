@@ -93,11 +93,7 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
           </Typography>
         </Box>
 
-        <Button
-          size="lg"
-          type="submit"
-          style={{ alignSelf: "center", minWidth: 180 }}
-        >
+        <Button size="lg" type="submit" sx={styles.submitButton}>
           Login
         </Button>
       </Box>

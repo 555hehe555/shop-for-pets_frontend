@@ -39,5 +39,8 @@ export const styles = {
     display: "flex",
     gap: "20px",
     marginTop: "20px",
+    "& button": {
+      width: "200px",
+    },
   } as SxProps<Theme>,
 };

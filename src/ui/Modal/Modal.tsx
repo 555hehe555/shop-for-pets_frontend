@@ -17,7 +17,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
           size="xs"
           onClick={onClose}
           aria-label="Close modal"
-          style={{ background: "white" }}
+          sx={styles.closeButton}
         >
           &times;
         </Button>

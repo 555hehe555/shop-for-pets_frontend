@@ -56,18 +56,10 @@ export default function InfoState({
       </Typography>
 
       <Box sx={styles.buttons}>
-        <Button
-          style={{ width: "200px" }}
-          size="sm"
-          onClick={() => navigate("/")}
-        >
+        <Button size="sm" onClick={() => navigate("/")}>
           На головну
         </Button>
-        <Button
-          style={{ width: "200px" }}
-          size="sm"
-          onClick={() => window.history.back()}
-        >
+        <Button size="sm" onClick={() => window.history.back()}>
           До попередньої сторінки
         </Button>
       </Box>

@@ -16,6 +16,7 @@ interface BasicButtonProps extends ButtonBaseProps {
 }
 
 export default function Button({
+  sx,
   children,
   variant = "primary",
   size = "md",
@@ -23,10 +24,19 @@ export default function Button({
   className = "",
   ...props
 }: BasicButtonProps) {
+  const customSx = Array.isArray(sx) ? sx : [sx];
+
   return (
     <ButtonBase
       className={className}
-      sx={[styles.root, styles[variant], styles[size]] as SxProps<Theme>}
+      sx={
+        [
+          styles.root,
+          styles[variant],
+          styles[size],
+          ...customSx,
+        ] as SxProps<Theme>
+      }
       disabled={disabled}
       {...props}
     >

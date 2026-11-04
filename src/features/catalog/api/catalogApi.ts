@@ -1,5 +1,5 @@
 import { BASE_URL } from "@/data/user-config.json";
-import type { Product } from "@/types/api";
+import type { Brand, Category, Product, Species } from "@/types/api";
 
 export type ProductFiltersParams = {
   search?: string;
@@ -67,4 +67,37 @@ export async function fetchProductById(id: number): Promise<Product> {
   }
 
   return productData;
+}
+
+export async function fetchBrands(): Promise<Brand[]> {
+  const response = await fetch(`${BASE_URL}/brands/`);
+  const brandData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`faill to fetch brands list`);
+  }
+
+  return brandData;
+}
+
+export async function fetchCategories(): Promise<Category[]> {
+  const response = await fetch(`${BASE_URL}/categories/`);
+  const categoriesData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`faill to fetch categories list`);
+  }
+
+  return categoriesData;
+}
+
+export async function fetchSpecies(): Promise<Species[]> {
+  const response = await fetch(`${BASE_URL}/species/`);
+  const speciesData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`faill to fetch species list`);
+  }
+
+  return speciesData;
 }

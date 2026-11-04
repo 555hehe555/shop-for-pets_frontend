@@ -10,6 +10,12 @@
  * ---------------------------------------------------------------
  */
 
+export interface Brand {
+  id: number;
+  /** @maxLength 50 */
+  name: string;
+}
+
 export interface Cart {
   product: number;
   product_data: Product;
@@ -33,6 +39,12 @@ export interface CartRequest {
    * @max 9223372036854776000
    */
   quantity?: number;
+}
+
+export interface Category {
+  id: number;
+  /** @maxLength 50 */
+  name: string;
 }
 
 export interface CreateCustomUser {
@@ -302,6 +314,12 @@ export interface ProductRequest {
   brand?: string | null;
 }
 
+export interface Species {
+  id: number;
+  /** @maxLength 50 */
+  name: string;
+}
+
 export interface TokenObtainPair {
   access: string;
   refresh: string;
@@ -366,6 +384,22 @@ export namespace Api {
     export type RequestBody = TokenRefreshRequest;
     export type RequestHeaders = {};
     export type ResponseBody = TokenRefresh;
+  }
+
+  /**
+   * @description Returns a list of available brands for filters.
+   * @tags Filters
+   * @name ApiBrandsList
+   * @summary Get brands
+   * @request GET:/api/brands/
+   * @secure
+   */
+  export namespace ApiBrandsList {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = Brand[];
   }
 
   /**
@@ -455,9 +489,26 @@ export namespace Api {
   }
 
   /**
-   * No description
-   * @tags api
+   * @description Returns a list of available product categories for filters.
+   * @tags Filters
+   * @name ApiCategoriesList
+   * @summary Get categories
+   * @request GET:/api/categories/
+   * @secure
+   */
+  export namespace ApiCategoriesList {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = Category[];
+  }
+
+  /**
+   * @description Returns a list of pets belonging to the authenticated user.
+   * @tags Pets
    * @name ApiPetsList
+   * @summary Get pets
    * @request GET:/api/pets/
    * @secure
    */
@@ -470,9 +521,10 @@ export namespace Api {
   }
 
   /**
-   * No description
-   * @tags api
+   * @description Creates a new pet for the authenticated user.
+   * @tags Pets
    * @name ApiPetsCreate
+   * @summary Create pet
    * @request POST:/api/pets/
    * @secure
    */
@@ -485,9 +537,10 @@ export namespace Api {
   }
 
   /**
-   * No description
-   * @tags api
+   * @description Returns detailed information about a specific pet.
+   * @tags Pets
    * @name ApiPetsRetrieve
+   * @summary Get pet
    * @request GET:/api/pets/{id}/
    * @secure
    */
@@ -502,9 +555,10 @@ export namespace Api {
   }
 
   /**
-   * No description
-   * @tags api
+   * @description Updates all editable fields of a pet.
+   * @tags Pets
    * @name ApiPetsUpdate
+   * @summary Update pet
    * @request PUT:/api/pets/{id}/
    * @secure
    */
@@ -519,9 +573,10 @@ export namespace Api {
   }
 
   /**
-   * No description
-   * @tags api
+   * @description Updates selected fields of a pet.
+   * @tags Pets
    * @name ApiPetsPartialUpdate
+   * @summary Partially update pet
    * @request PATCH:/api/pets/{id}/
    * @secure
    */
@@ -536,9 +591,10 @@ export namespace Api {
   }
 
   /**
-   * No description
-   * @tags api
+   * @description Deletes a pet belonging to the authenticated user.
+   * @tags Pets
    * @name ApiPetsDestroy
+   * @summary Delete pet
    * @request DELETE:/api/pets/{id}/
    * @secure
    */
@@ -736,6 +792,22 @@ export namespace Api {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = ProductImage;
+  }
+
+  /**
+   * @description Returns a list of available animal species for filters.
+   * @tags Filters
+   * @name ApiSpeciesList
+   * @summary Get species
+   * @request GET:/api/species/
+   * @secure
+   */
+  export namespace ApiSpeciesList {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = Species[];
   }
 
   /**

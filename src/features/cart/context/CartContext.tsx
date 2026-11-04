@@ -1,5 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 import type { Cart, CartRequest } from "@/types/api";
+import { useAuth } from "@/features/auth/context/AuthContext";
 import { useCartItems } from "@/queries/cart/useCartQueries";
 import {
   useAddToCart,
@@ -21,11 +22,13 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export default function CartProvider({ children }: { children: ReactNode }) {
+  const { isAuthenticated } = useAuth();
+
   const {
     data: cartItems = [],
     isLoading: loading,
     error: queryError,
-  } = useCartItems();
+  } = useCartItems(isAuthenticated);
 
   const { mutateAsync: addToCartItem } = useAddToCart();
   const { mutateAsync: changeCartItemQuantity } = useChangeCartItemQuantity();

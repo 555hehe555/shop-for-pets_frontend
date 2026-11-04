@@ -8,20 +8,29 @@ import {
   Typography,
 } from "@mui/material";
 import { styles } from "./ProfilePet.styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SlArrowUp } from "react-icons/sl";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import { PetModal } from "../PetModal/PetModal";
 import { usePets } from "@/queries/profile/useProfileQueries";
-import type { Pet, PetRequest } from "@/types/api";
+import type { Pet, PetRequest, Species } from "@/types/api";
 import { useCreatePet } from "@/queries/profile/useProfileMutations";
-
-const species = ["Dogs", "Cats", "Birds", "Fish", "Small Pets", "Reptiles"];
+import { fetchSpecies } from "@/features/catalog/api/catalogApi";
 
 export function ProfilePet() {
   const { data: petsData } = usePets();
 
   const { mutate: createPet } = useCreatePet();
+
+  const [speciesData, setSpeciesData] = useState<Species[] | null>(null);
+
+  useEffect(() => {
+    async function getSpecies() {
+      const arrSpecies = await fetchSpecies();
+      setSpeciesData(arrSpecies);
+    }
+    getSpecies();
+  }, []);
 
   const [newPet, setNewPet] = useState<Omit<Pet, "id" | "owner">>({
     name: "",
@@ -31,7 +40,7 @@ export function ProfilePet() {
 
   function handleAddPet(petData: PetRequest) {
     createPet({ inData: petData });
-    setNewPet({ name: "", species: "", dateOfBirth: "" });
+    setNewPet({ name: "", species: 0, birthday: "" });
   }
 
   function handlePetInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -43,7 +52,7 @@ export function ProfilePet() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setNewPet({ name: "", species: "", dateOfBirth: "" });
+    setNewPet({ name: "", species: 0, birthday: "" });
   };
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);

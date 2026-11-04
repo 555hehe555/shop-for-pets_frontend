@@ -81,9 +81,17 @@ export default function Header() {
             <CartBtn count={itemsCount} />
           </IconButton>
 
-          <IconButton component={Link} to="/profile" sx={styles.profileButton}>
-            <GrUser color="white" />
-          </IconButton>
+          {isAuthenticated ? (
+            <IconButton
+              component={Link}
+              to="/profile"
+              sx={styles.profileButton}
+            >
+              <GrUser color="white" />
+            </IconButton>
+          ) : (
+            <></>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

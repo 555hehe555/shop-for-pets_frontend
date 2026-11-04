@@ -8,6 +8,7 @@ import { Layout } from "./components/layout/Layout/Layout";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 import { ProfilePage } from "./pages/ProfilePage/ProfilePage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -16,10 +17,14 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
-          <Route path="/cart" element={<CartPage />} />
+
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registration" element={<RegistrationPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/cart" element={<CartPage />} />
+          </Route>
 
           <Route path="*" element={<NotFoundPage />} />
         </Route>

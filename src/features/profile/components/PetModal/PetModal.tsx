@@ -1,4 +1,12 @@
-import { Box, FormGroup, Radio, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  FormGroup,
+  MenuItem,
+  Radio,
+  Select,
+  Typography,
+} from "@mui/material";
 import { styles } from "./PetModal.styles";
 import Modal from "@/ui/Modal/Modal";
 import Input from "@/ui/Input/Input";
@@ -54,38 +62,20 @@ export function PetModal({
                 Вид
               </Typography>
 
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Box sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
-                  <Radio
-                    checked={newPet.species === "Dog"}
-                    onChange={handlePetInputChange}
-                    value="Dog"
-                    name="species"
-                    slotProps={{ input: { "aria-label": "Собака" } }}
-                  />
-                  <Typography component="span" sx={{ fontSize: "16px" }}>
-                    Собака
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
-                  <Radio
-                    checked={newPet.species === "Cat"}
-                    onChange={handlePetInputChange}
-                    value="Cat"
-                    name="species"
-                    slotProps={{ input: { "aria-label": "Кіт" } }}
-                  />
-                  <Typography component="span" sx={{ fontSize: "16px" }}>
-                    Кіт
-                  </Typography>
-                </Box>
-              </Box>
+              <FormControl fullWidth>
+                <Select
+                  name="species"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={newPe}
+                  label="Age"
+                  onChange={handleChange}
+                >
+                  <MenuItem value={10}>Ten</MenuItem>
+                  <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
 
             <Box sx={styles.field}>
@@ -105,7 +95,7 @@ export function PetModal({
           <Button
             size="md"
             type="submit"
-            style={{ alignSelf: "center", minWidth: 180 }}
+            sx={styles.submitButton}
           >
             Додати
           </Button>
