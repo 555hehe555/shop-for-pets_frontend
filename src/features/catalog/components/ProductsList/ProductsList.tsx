@@ -1,4 +1,4 @@
-import { Box, Grid, Pagination } from "@mui/material";
+import { Box, Pagination } from "@mui/material";
 import { ProductCard } from "../ProductCard/ProductCard";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "@/queries/catalog/useCatalogQueries";
@@ -45,16 +45,7 @@ export function ProductsList() {
       <Box sx={styles.filters}>
         <ProductFilters filters={filters} onChange={handleFilters} />
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          flex: 1,
-          alignSelf: "stretch",
-          alignItems: "center",
-        }}
-      >
+      <Box sx={styles.content}>
         <Box sx={styles.productsContainer}>
           <Box component="ul" sx={styles.grid}>
             {products.map((product) => (

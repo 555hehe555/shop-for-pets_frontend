@@ -3,7 +3,6 @@ import {
   FormControl,
   FormGroup,
   MenuItem,
-  Radio,
   Select,
   Typography,
 } from "@mui/material";
@@ -67,9 +66,9 @@ export function PetModal({
                   name="species"
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={newPe}
+                  value={newPet.species}
                   label="Age"
-                  onChange={handleChange}
+                  onChange={handlePetInputChange}
                 >
                   <MenuItem value={10}>Ten</MenuItem>
                   <MenuItem value={20}>Twenty</MenuItem>
@@ -92,11 +91,7 @@ export function PetModal({
             </Box>
           </FormGroup>
 
-          <Button
-            size="md"
-            type="submit"
-            sx={styles.submitButton}
-          >
+          <Button size="md" type="submit" sx={styles.submitButton}>
             Додати
           </Button>
         </Box>

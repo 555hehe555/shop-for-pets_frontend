@@ -33,7 +33,6 @@ export default function Header() {
       navigate("/");
     }
   };
-
   return (
     <AppBar position="static" sx={styles.appBar}>
       <Toolbar sx={styles.toolbar}>
@@ -43,7 +42,7 @@ export default function Header() {
 
         <Box sx={styles.leftContainer}>
           <Box sx={styles.linksContainer}>
-            {!isAuthenticated ? (
+            {!isAuthenticated && (
               <>
                 <Link to="/login">
                   <Button size="sm" variant="primary">
@@ -57,8 +56,6 @@ export default function Header() {
                   </Button>
                 </Link>
               </>
-            ) : (
-              <></>
             )}
           </Box>
 
@@ -81,7 +78,7 @@ export default function Header() {
             <CartBtn count={itemsCount} />
           </IconButton>
 
-          {isAuthenticated ? (
+          {isAuthenticated && (
             <IconButton
               component={Link}
               to="/profile"
@@ -89,8 +86,6 @@ export default function Header() {
             >
               <GrUser color="white" />
             </IconButton>
-          ) : (
-            <></>
           )}
         </Box>
       </Toolbar>

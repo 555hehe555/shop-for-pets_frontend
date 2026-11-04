@@ -23,6 +23,15 @@ export const styles: Record<string, SxProps<Theme>> = {
     flexShrink: 0,
   },
 
+  content: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    flex: 1,
+    alignSelf: "stretch",
+    alignItems: "center",
+  },
+
   productsContainer: {
     flexGrow: 1,
     display: "flex",

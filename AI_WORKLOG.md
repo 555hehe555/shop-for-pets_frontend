@@ -1,11 +1,13 @@
 # AI Worklog - Material UI Migration
 
 ## Overview
+
 This log tracks the progress of migrating existing React components from legacy SCSS Modules (`*.module.scss`) and plain HTML elements to Material UI (`@mui/material`) with `*.styles.ts` objects and MUI components (`Box`, `Typography`, `Modal`, `Stack`, etc.).
 
 ---
 
 ## [Group 1] Baseline UI Components & Dialogs (Modal, ConfirmDialog)
+
 - **Status**: Completed
 - **Changes**:
   - Created `src/ui/Modal/Modal.styles.ts` defining MUI `SxProps` styles for backdrop, modal container, and close button.
@@ -15,6 +17,7 @@ This log tracks the progress of migrating existing React components from legacy 
 - **Verification**: `npx tsc --noEmit` passed with zero errors.
 
 ## [Group 2] Layout Components & Common Info States (Footer, InfoState)
+
 - **Status**: Completed
 - **Changes**:
   - Created `src/components/layout/Footer/Footer.styles.ts` and refactored `Footer.tsx` to use MUI `Box` & `Typography`.
@@ -23,6 +26,7 @@ This log tracks the progress of migrating existing React components from legacy 
 - **Verification**: `npx tsc --noEmit` passed with zero errors.
 
 ## [Group 3] Auth Feature Components (LoginForm, RegistrationForm)
+
 - **Status**: Completed
 - **Changes**:
   - Created `src/features/auth/components/LoginForm/LoginForm.styles.ts` and refactored `LoginForm.tsx` to use MUI `Box` & `Typography`.
@@ -31,6 +35,7 @@ This log tracks the progress of migrating existing React components from legacy 
 - **Verification**: `npx tsc --noEmit` passed with zero errors.
 
 ## [Group 4] Cart Feature Components (CartOverview, CartBtn)
+
 - **Status**: Completed
 - **Changes**:
   - Created `src/features/cart/components/CartOverview/CartOverview.styles.ts` and refactored `CartOverview.tsx` to use MUI `Box` & `Typography`.
@@ -38,6 +43,7 @@ This log tracks the progress of migrating existing React components from legacy 
 - **Verification**: `npx tsc --noEmit` passed with zero errors.
 
 ## [Group 5] Cleanup of Remaining SCSS Files & Final Verification
+
 - **Status**: Completed
 - **Changes**:
   - Deleted empty unused `.module.scss` files in pages and catalog (`ProductList.module.scss`, `CartPage.module.scss`, `HomePage.module.scss`, `NotFoundPage.module.scss`, `ProductDetailsPage.module.scss`).

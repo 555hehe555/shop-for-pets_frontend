@@ -1,6 +1,5 @@
 import Button from "@/ui/Button/Button";
 import { useProductById } from "@/queries/catalog/useCatalogQueries";
-import { mainImgResolver } from "@/utils/mainImgResolver";
 import { styles } from "./ProductDetails.styles";
 import { Box, IconButton, Slide, Typography } from "@mui/material";
 import { GrCaretNext, GrCaretPrevious } from "react-icons/gr";

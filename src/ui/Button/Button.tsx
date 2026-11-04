@@ -6,12 +6,7 @@ import type { Theme } from "@emotion/react";
 interface BasicButtonProps extends ButtonBaseProps {
   children: ReactNode;
   variant?:
-    | "primary"
-    | "secondary"
-    | "tertiary"
-    | "success"
-    | "danger"
-    | "text";
+    "primary" | "secondary" | "tertiary" | "success" | "danger" | "text";
   size?: "xs" | "sm" | "md" | "lg" | "manual";
 }
 

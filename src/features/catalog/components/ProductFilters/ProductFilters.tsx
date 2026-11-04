@@ -1,5 +1,6 @@
 import {
   Box,
+  ButtonBase,
   Checkbox,
   Collapse,
   Divider,
@@ -10,7 +11,7 @@ import {
 } from "@mui/material";
 import type { FilterState } from "../../api";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { styles } from "./ProductFilters.styles";
 
 const SPECIES_OPTIONS = [
@@ -127,19 +128,24 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
 
   return (
     <Box sx={styles.container}>
-      <Box sx={styles.groupHeader} onClick={() => setOpen((prev) => !prev)}>
+      <ButtonBase
+        sx={styles.groupHeader}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-controls={useId()}
+      >
         <Typography variant="h5" sx={styles.title}>
           Фільтри
         </Typography>
 
-        <IconButton
-          size="small"
-          sx={styles.toggleButton}
-          aria-label={open ? `Collapse Фільтри` : `Expand Фільтри`}
+        <Box
+          component="span"
+          sx={styles.toggleButtonContainer}
+          aria-hidden="true"
         >
           {open ? <SlArrowUp /> : <SlArrowDown />}
-        </IconButton>
-      </Box>
+        </Box>
+      </ButtonBase>
       <Collapse in={open} orientation="vertical">
         <FilterGroup
           title="Бренди"

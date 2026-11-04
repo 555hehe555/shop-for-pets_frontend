@@ -76,39 +76,5 @@ export function ProductCard({ product }: ProductProps) {
         </CardContent>
       </CardActionArea>
     </Card>
-
-    // <li
-    //   className={styles.cardContainer}
-    //   onClick={() => navigate(`product/${id}`)}
-    // >
-    //   <img className={styles.cardImg} src={mainImg?.image} alt={mainImg?.alt} />
-
-    //   <div className={styles.cardInfo}>
-    //     <h3 className={styles.name}>{title}</h3>
-    //     <div className={styles.price}>
-    //       {discount ? (
-    //         <>
-    //           <span className={styles.newPrice}>
-    //             {Number(price) - Number(discount)}₴
-    //           </span>
-
-    //           <span className={styles.oldPrice}>{price}₴</span>
-    //         </>
-    //       ) : (
-    //         <>
-    //           <span className={styles.allPrice}>{price}₴</span>
-    //         </>
-    //       )}
-    //     </div>
-    //     <>
-    //       {discount && (
-    //         <>
-    //           <hr></hr>
-    //           <p className={styles.discount}>Save - {discount}₴</p>
-    //         </>
-    //       )}
-    //     </>
-    //   </div>
-    // </li>
   );
 }
