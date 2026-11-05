@@ -88,6 +88,12 @@ export function ProfilePet() {
     resetNewPet();
   }
 
+  function handleDraftNameChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target;
+
+    setDraft((prev) => (prev ? { ...prev, name: value } : prev));
+  }
+
   function handlePetInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setNewPet((prevPet) => ({ ...prevPet, [name]: value }));
@@ -160,7 +166,7 @@ export function ProfilePet() {
                         name="name"
                         placeholder="кличка вашої тваринки"
                         value={draft?.name}
-                        onChange={handlePetInputChange}
+                        onChange={handleDraftNameChange}
                       />
                     ) : (
                       <Typography className="tableValue">
@@ -169,7 +175,6 @@ export function ProfilePet() {
                     )}
                   </Box>
                   <Divider />
-                  
                 </Box>
               </AccordionDetails>
               <AccordionActions>
@@ -177,7 +182,9 @@ export function ProfilePet() {
                   variant="secondary"
                   size="sm"
                   className="button"
-                  onClick={() => setEditingId(editingId === pet.id ? null : pet.id)}
+                  onClick={() =>
+                    setEditingId(editingId === pet.id ? null : pet.id)
+                  }
                 >
                   Змінити
                 </Button>
