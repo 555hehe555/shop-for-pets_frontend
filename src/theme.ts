@@ -64,6 +64,7 @@ export const theme = createTheme({
     },
     logo: "#d9f2f7",
     error: {
+      light: "#ce5353",
       main: "#d32f2f",
       dark: "#c62828",
     },
@@ -76,6 +77,7 @@ export const theme = createTheme({
       dark: "#01579b",
     },
     success: {
+      light: "#6fb072",
       main: "#2e7d32",
       dark: "#1b5e20",
     },

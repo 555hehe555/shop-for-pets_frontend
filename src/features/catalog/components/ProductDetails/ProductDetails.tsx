@@ -96,21 +96,20 @@ export function ProductDetails({
             {product.title}
           </Typography>
 
-          {product.is_available ? (
-            <Typography className="stock" variant="body1">
-              ✔ В наявності
-            </Typography>
-          ) : (
-            <Typography className="notInStock" variant="body1">
-              ✖ Немає в наявності
-            </Typography>
-          )}
-
           <ProductPrice
             className="priceBlock"
             price={Number(product.price)}
             discount={Number(product.discount)}
           />
+
+          <Typography
+            className={
+              "stock " + (product.is_available ? "available" : "notAvailable")
+            }
+            variant="body1"
+          >
+            {product.is_available ? "В наявності" : "Немає в наявності"}
+          </Typography>
 
           <Box className="actions">
             <Button size="lg" onClick={() => onAddToCartItem(id)}>

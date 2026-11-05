@@ -12,12 +12,18 @@ import Input from "@/ui/Input/Input";
 import Button from "@/ui/Button/Button";
 import type { PetRequest } from "@/types/api";
 
+export type PetFormValues = Omit<PetRequest, "birthday"> & {
+  birthday: string;
+};
+
 export interface PetModalProps {
   isModalOpen: boolean;
   closeModal: () => void;
-  newPet: Omit<PetRequest, "id">;
+  newPet: PetFormValues;
   handleAddPet: (newPet: PetRequest) => void;
   handlePetInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSpecies: (speciesId: number) => void;
+  speciesData: { id: number; name: string }[];
 }
 
 export function PetModal({
@@ -26,6 +32,8 @@ export function PetModal({
   newPet,
   handleAddPet,
   handlePetInputChange,
+  handleSpecies,
+  speciesData,
 }: PetModalProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -43,10 +51,15 @@ export function PetModal({
           </Typography>
           <FormGroup sx={styles.formGroup}>
             <Box sx={styles.field}>
-              <Typography component="label" sx={styles.label}>
+              <Typography
+                component="label"
+                htmlFor="pet-name"
+                sx={styles.label}
+              >
                 кличка вашої тваринки
               </Typography>
               <Input
+                id="pet-name"
                 type="text"
                 name="name"
                 placeholder="кличка вашої тваринки"
@@ -56,36 +69,49 @@ export function PetModal({
             </Box>
 
             <Box sx={styles.field}>
-              <Typography component="label" sx={styles.label}>
-                {/* species: "Dog", */}
+              <Typography
+                component="label"
+                htmlFor="pet-species"
+                sx={styles.label}
+              >
                 Вид
               </Typography>
 
               <FormControl fullWidth>
                 <Select
+                  id="pet-species"
                   name="species"
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={newPet.species}
-                  label="Age"
-                  onChange={handlePetInputChange}
+                  value={newPet.species || ""}
+                  displayEmpty
+                  onChange={(e) => handleSpecies(Number(e.target.value))}
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  <MenuItem value="" disabled>
+                    Виберіть вид тваринки
+                  </MenuItem>
+
+                  {speciesData.map((species) => (
+                    <MenuItem key={species.id} value={species.id}>
+                      {species.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
 
             <Box sx={styles.field}>
-              <Typography component="label" sx={styles.label}>
+              <Typography
+                component="label"
+                htmlFor="pet-birthday"
+                sx={styles.label}
+              >
                 Дата народження
               </Typography>
               <Input
+                id="pet-birthday"
                 type="date"
-                name="dateOfBirth"
+                name="birthday"
                 placeholder="Дата народження"
-                value={newPet.dateOfBirth}
+                value={newPet.birthday}
                 onChange={handlePetInputChange}
               />
             </Box>

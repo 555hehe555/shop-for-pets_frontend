@@ -5,24 +5,61 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Divider,
   Typography,
 } from "@mui/material";
 import { styles } from "./ProfilePet.styles";
 import { useEffect, useState } from "react";
 import { SlArrowUp } from "react-icons/sl";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
-import { PetModal } from "../PetModal/PetModal";
+import { PetModal, type PetFormValues } from "../PetModal/PetModal";
 import { usePets } from "@/queries/profile/useProfileQueries";
-import type { Pet, PetRequest, Species } from "@/types/api";
-import { useCreatePet } from "@/queries/profile/useProfileMutations";
+import { getPetById } from "@/features/profile/api/petApi";
+import type { PetRequest, Species } from "@/types/api";
+import {
+  useCreatePet,
+  useDeletePet,
+} from "@/queries/profile/useProfileMutations";
 import { fetchSpecies } from "@/features/catalog/api/catalogApi";
+import Input from "@/ui/Input/Input";
 
 export function ProfilePet() {
   const { data: petsData } = usePets();
-
   const { mutate: createPet } = useCreatePet();
+  const { mutate: deletePet } = useDeletePet();
 
-  const [speciesData, setSpeciesData] = useState<Species[] | null>(null);
+  const [newPet, setNewPet] = useState<PetFormValues>({
+    name: "",
+    species: 0,
+    birthday: "",
+  });
+
+  const [speciesData, setSpeciesData] = useState<Species[]>([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [petToDelete, setPetToDelete] = useState<number | null>(null);
+
+  const [draft, setDraft] = useState<null | PetFormValues>(null);
+
+  const [editingId, setEditingId] = useState<null | number>(null);
+
+  useEffect(() => {
+    async function fetchPetData() {
+      if (editingId !== null) {
+        const petData = await getPetById(editingId);
+        setDraft({
+          name: petData.name,
+          species: petData.species,
+          birthday: petData.birthday || "",
+        });
+      } else {
+        setDraft(null);
+      }
+    }
+    fetchPetData();
+  }, [editingId]);
 
   useEffect(() => {
     async function getSpecies() {
@@ -32,15 +69,23 @@ export function ProfilePet() {
     getSpecies();
   }, []);
 
-  const [newPet, setNewPet] = useState<Omit<Pet, "id" | "owner">>({
-    name: "",
-    species: 0,
-    birthday: "",
-  });
+  const resetNewPet = () => {
+    setNewPet({ name: "", species: 0, birthday: "" });
+  };
+
+  function handleSpecies(speciesId: number) {
+    setNewPet((prevPet) => ({ ...prevPet, species: speciesId }));
+  }
 
   function handleAddPet(petData: PetRequest) {
-    createPet({ inData: petData });
-    setNewPet({ name: "", species: 0, birthday: "" });
+    const inData: Omit<PetRequest, "id"> = {
+      name: petData.name.trim(),
+      species: petData.species,
+      ...(petData.birthday ? { birthday: petData.birthday } : {}),
+    };
+
+    createPet({ inData });
+    resetNewPet();
   }
 
   function handlePetInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -48,15 +93,11 @@ export function ProfilePet() {
     setNewPet((prevPet) => ({ ...prevPet, [name]: value }));
   }
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setNewPet({ name: "", species: 0, birthday: "" });
+    resetNewPet();
   };
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [petToDelete, setPetToDelete] = useState<number | null>(null);
 
   const openDeleteDialog = (id?: number) => {
     if (id !== undefined) {
@@ -72,7 +113,7 @@ export function ProfilePet() {
 
   const confirmDeletePet = () => {
     if (petToDelete !== null) {
-      setPetsData((prevPets) => prevPets.filter((p) => p.id !== petToDelete));
+      deletePet({ id: petToDelete });
     }
     closeDialog();
   };
@@ -106,11 +147,29 @@ export function ProfilePet() {
                 <Typography className="petName">{pet.name}</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Box className="petInfo">
-                  <Typography className="petSpecies">{pet.species}</Typography>
-                  <Typography className="petDateOfBirth">
-                    {pet.birthday}
-                  </Typography>
+                <Box sx={styles.tableContainer}>
+                  <Box className="tableInfo">
+                    <Typography className="tableLabel">
+                      Кличка улюбленця
+                    </Typography>
+
+                    {editingId ? (
+                      <Input
+                        id="pet-name"
+                        type="text"
+                        name="name"
+                        placeholder="кличка вашої тваринки"
+                        value={draft?.name}
+                        onChange={handlePetInputChange}
+                      />
+                    ) : (
+                      <Typography className="tableValue">
+                        {draft?.name || pet.name}
+                      </Typography>
+                    )}
+                  </Box>
+                  <Divider />
+                  
                 </Box>
               </AccordionDetails>
               <AccordionActions>
@@ -118,7 +177,7 @@ export function ProfilePet() {
                   variant="secondary"
                   size="sm"
                   className="button"
-                  onClick={() => {}}
+                  onClick={() => setEditingId(editingId === pet.id ? null : pet.id)}
                 >
                   Змінити
                 </Button>
@@ -153,6 +212,8 @@ export function ProfilePet() {
         newPet={newPet}
         handleAddPet={handleAddPet}
         handlePetInputChange={handlePetInputChange}
+        handleSpecies={handleSpecies}
+        speciesData={speciesData}
       />
     </>
   );

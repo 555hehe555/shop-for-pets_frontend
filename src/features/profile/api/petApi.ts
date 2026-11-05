@@ -68,7 +68,5 @@ export async function deletePet(id: number): Promise<void> {
     throw new Error("error to delete pet");
   }
 
-  const data = await response.json();
-
-  return data;
+  return;
 }

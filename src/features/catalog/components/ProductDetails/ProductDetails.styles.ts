@@ -89,20 +89,24 @@ export const styles: Record<string, SxProps<Theme>> = {
 
     "& .stock": {
       width: "fit-content",
-      padding: "6px 14px",
+      padding: "4px 12px",
       borderRadius: 999,
-      background: "#eefaf0",
-      color: theme.palette.success.main,
       fontWeight: 600,
-    },
+      color: theme.palette.primary.contrastText,
+      boxShadow: `
+      inset 0 1px rgba(183, 200, 182, 0.45),
+      0 8px 16px rgba(0, 0, 0, 0.12)
+    `,
 
-    "& .notInStock": {
-      width: "fit-content",
-      padding: "6px 14px",
-      borderRadius: 999,
-      background: "#fbeaea",
-      color: theme.palette.error.main,
-      fontWeight: 600,
+      "&.available": {
+        // color: theme.palette.success.main,
+        backgroundColor: theme.palette.success.main,
+      },
+
+      "&.notAvailable": {
+        // color: theme.palette.error.main,
+        backgroundColor: theme.palette.error.main,
+      },
     },
 
     "& .priceBlock": {
