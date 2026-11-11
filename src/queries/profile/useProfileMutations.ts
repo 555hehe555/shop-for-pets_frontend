@@ -1,5 +1,5 @@
 import { createPet, deletePet, updatePet } from "@/features/profile/api/petApi";
-import type { PetRequest } from "@/types/api";
+import type { PatchedPetRequest, PetRequest } from "@/types/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useCreatePet() {
@@ -19,7 +19,7 @@ export function useUpdatePet() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: ({ id, inData }: { id: number; inData: PetRequest }) =>
+    mutationFn: ({ id, inData }: { id: number; inData: PatchedPetRequest }) =>
       updatePet(id, inData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pets"] });

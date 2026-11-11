@@ -1,27 +1,17 @@
 import Button from "@/ui/Button/Button";
-import {
-  Accordion,
-  AccordionActions,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Divider,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { styles } from "./ProfilePet.styles";
 import { useEffect, useState } from "react";
-import { SlArrowUp } from "react-icons/sl";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import { PetModal, type PetFormValues } from "../PetModal/PetModal";
 import { usePets } from "@/queries/profile/useProfileQueries";
-import { getPetById } from "@/features/profile/api/petApi";
 import type { PetRequest, Species } from "@/types/api";
 import {
   useCreatePet,
   useDeletePet,
 } from "@/queries/profile/useProfileMutations";
 import { fetchSpecies } from "@/features/catalog/api/catalogApi";
-import Input from "@/ui/Input/Input";
+import { AccordionPetItem } from "../AccordionPetItem/AccordionPetItem";
 
 export function ProfilePet() {
   const { data: petsData } = usePets();
@@ -40,26 +30,6 @@ export function ProfilePet() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [petToDelete, setPetToDelete] = useState<number | null>(null);
-
-  const [draft, setDraft] = useState<null | PetFormValues>(null);
-
-  const [editingId, setEditingId] = useState<null | number>(null);
-
-  useEffect(() => {
-    async function fetchPetData() {
-      if (editingId !== null) {
-        const petData = await getPetById(editingId);
-        setDraft({
-          name: petData.name,
-          species: petData.species,
-          birthday: petData.birthday || "",
-        });
-      } else {
-        setDraft(null);
-      }
-    }
-    fetchPetData();
-  }, [editingId]);
 
   useEffect(() => {
     async function getSpecies() {
@@ -88,12 +58,6 @@ export function ProfilePet() {
     resetNewPet();
   }
 
-  function handleDraftNameChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = event.target;
-
-    setDraft((prev) => (prev ? { ...prev, name: value } : prev));
-  }
-
   function handlePetInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setNewPet((prevPet) => ({ ...prevPet, [name]: value }));
@@ -105,16 +69,16 @@ export function ProfilePet() {
     resetNewPet();
   };
 
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+    setPetToDelete(null);
+  };
+
   const openDeleteDialog = (id?: number) => {
     if (id !== undefined) {
       setPetToDelete(id);
       setIsDialogOpen(true);
     }
-  };
-
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-    setPetToDelete(null);
   };
 
   const confirmDeletePet = () => {
@@ -143,61 +107,13 @@ export function ProfilePet() {
 
         {petsData ? (
           petsData.map((pet, index) => (
-            <Accordion key={pet.id ?? index}>
-              <AccordionSummary
-                className="tableTitle"
-                aria-controls="pet-data-content"
-                id="pet-data-header"
-                expandIcon={<SlArrowUp />}
-              >
-                <Typography className="petName">{pet.name}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Box sx={styles.tableContainer}>
-                  <Box className="tableInfo">
-                    <Typography className="tableLabel">
-                      Кличка улюбленця
-                    </Typography>
-
-                    {editingId ? (
-                      <Input
-                        id="pet-name"
-                        type="text"
-                        name="name"
-                        placeholder="кличка вашої тваринки"
-                        value={draft?.name}
-                        onChange={handleDraftNameChange}
-                      />
-                    ) : (
-                      <Typography className="tableValue">
-                        {draft?.name || pet.name}
-                      </Typography>
-                    )}
-                  </Box>
-                  <Divider />
-                </Box>
-              </AccordionDetails>
-              <AccordionActions>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="button"
-                  onClick={() =>
-                    setEditingId(editingId === pet.id ? null : pet.id)
-                  }
-                >
-                  Змінити
-                </Button>
-                <Button
-                  variant="tertiary"
-                  size="sm"
-                  className="button"
-                  onClick={() => openDeleteDialog(pet.id)}
-                >
-                  Видалити
-                </Button>
-              </AccordionActions>
-            </Accordion>
+            <AccordionPetItem
+              key={pet.id}
+              pet={pet}
+              index={index}
+              openDeleteDialog={openDeleteDialog}
+              speciesData={speciesData}
+            />
           ))
         ) : (
           <Typography component="h3" variant="h3">

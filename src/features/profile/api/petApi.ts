@@ -1,6 +1,6 @@
 import { BASE_URL } from "@/data/user-config.json";
 import { authFetch } from "@/features/auth/api/authFetch";
-import type { Pet, PetRequest } from "@/types/api";
+import type { PatchedPetRequest, Pet, PetRequest } from "@/types/api";
 
 export async function getPets(): Promise<Pet[]> {
   const response = await authFetch(`${BASE_URL}/pets/`);
@@ -42,7 +42,10 @@ export async function createPet(inData: PetRequest): Promise<Pet> {
   return data;
 }
 
-export async function updatePet(id: number, inData: PetRequest): Promise<void> {
+export async function updatePet(
+  id: number,
+  inData: PatchedPetRequest,
+): Promise<Pet> {
   const response = await authFetch(`${BASE_URL}/pets/${id}/`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

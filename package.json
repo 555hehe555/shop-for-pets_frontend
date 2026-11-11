@@ -9,6 +9,7 @@
     "format": "prettier --write .",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "generate:types": "swagger-typescript-api generate -p http://localhost:8000/api/schema/ -o ./src/types/api -n index.ts --no-client --route-types --clean-output"
   },
