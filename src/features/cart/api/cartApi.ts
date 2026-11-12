@@ -13,7 +13,7 @@ export async function fetchCartItems(): Promise<Cart[]> {
   return cartItems;
 }
 
-export async function addCartItem(id: number) {
+export async function addCartItem(id: number): Promise<Cart> {
   const response = await authFetch(`${BASE_URL}/cart/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -29,7 +29,7 @@ export async function addCartItem(id: number) {
   return await response.json();
 }
 
-export async function removeCartItem(id: number) {
+export async function removeCartItem(id: number): Promise<void> {
   const response = await authFetch(`${BASE_URL}/cart/${id}`, {
     method: "DELETE",
   });

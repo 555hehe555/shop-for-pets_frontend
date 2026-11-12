@@ -5,6 +5,7 @@ import { Box, IconButton, Slide, Typography } from "@mui/material";
 import { GrCaretNext, GrCaretPrevious } from "react-icons/gr";
 import { useState } from "react";
 import { ProductPrice } from "../ProductPrice/ProductPrice";
+import { FavouriteButton } from "@/features/favourite/components/FavouriteButton/FavouriteButton";
 
 export function ProductDetails({
   id,
@@ -128,6 +129,8 @@ export function ProductDetails({
           {product.description ||
             "На жаль, опис цього товару відсутній. Будь ласка, зверніться до продавця для отримання додаткової інформації."}
         </Typography>
+
+        <FavouriteButton productId={id} />
       </Box>
     </Box>
   );

@@ -82,6 +82,17 @@ export interface CreateCustomUserRequest {
   email?: string;
 }
 
+export interface FavouriteProduct {
+  product: number;
+  product_data: Product;
+  /** @format date-time */
+  created_at: string;
+}
+
+export interface FavouriteProductRequest {
+  product: number;
+}
+
 export interface GetCustomUser {
   id: number;
   /**
@@ -175,7 +186,6 @@ export interface PatchedPetRequest {
   species?: number;
   /** @format date */
   birthday?: string | null;
-  favourite_products?: number[];
 }
 
 export interface PatchedProductImageRequest {
@@ -234,7 +244,6 @@ export interface Pet {
   species: number;
   /** @format date */
   birthday?: string | null;
-  favourite_products?: number[];
 }
 
 export interface PetRequest {
@@ -246,7 +255,6 @@ export interface PetRequest {
   species: number;
   /** @format date */
   birthday?: string | null;
-  favourite_products?: number[];
 }
 
 export interface Product {
@@ -502,6 +510,74 @@ export namespace Api {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = Category[];
+  }
+
+  /**
+   * @description Returns a list of favourite products for the authenticated user.
+   * @tags Favourites
+   * @name ApiFavouritesList
+   * @summary Get favourite products
+   * @request GET:/api/favourites/
+   * @secure
+   */
+  export namespace ApiFavouritesList {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = FavouriteProduct[];
+  }
+
+  /**
+   * @description Adds a product to the authenticated user's favourites. If the product is already in favourites, returns the existing record with 200.
+   * @tags Favourites
+   * @name ApiFavouritesCreate
+   * @summary Add product to favourites
+   * @request POST:/api/favourites/
+   * @secure
+   */
+  export namespace ApiFavouritesCreate {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = FavouriteProductRequest;
+    export type RequestHeaders = {};
+    export type ResponseBody = FavouriteProduct;
+  }
+
+  /**
+   * @description Returns detailed information about a specific favourite product entry.
+   * @tags Favourites
+   * @name ApiFavouritesRetrieve
+   * @summary Retrieve favourite product
+   * @request GET:/api/favourites/{product_id}
+   * @secure
+   */
+  export namespace ApiFavouritesRetrieve {
+    export type RequestParams = {
+      productId: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = FavouriteProduct;
+  }
+
+  /**
+   * @description Removes the selected product from the authenticated user's favourites.
+   * @tags Favourites
+   * @name ApiFavouritesDestroy
+   * @summary Delete favourite product
+   * @request DELETE:/api/favourites/{product_id}
+   * @secure
+   */
+  export namespace ApiFavouritesDestroy {
+    export type RequestParams = {
+      productId: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
   }
 
   /**
