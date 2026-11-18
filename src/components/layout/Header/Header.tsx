@@ -9,7 +9,7 @@ import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 
 import { styles } from "./Header.styles";
 import Input from "@/ui/Input/Input";
-import { GrUser } from "react-icons/gr";
+import { User } from "@phosphor-icons/react";
 
 export default function Header() {
   const { itemsCount } = useCart();
@@ -84,7 +84,7 @@ export default function Header() {
               to="/profile"
               sx={styles.profileButton}
             >
-              <GrUser color="white" />
+              <User color="white" size={20} />
             </IconButton>
           )}
         </Box>

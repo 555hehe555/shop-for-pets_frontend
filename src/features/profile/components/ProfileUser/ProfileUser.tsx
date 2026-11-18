@@ -11,12 +11,17 @@ import {
 } from "@mui/material";
 import { styles } from "./ProfileUser.styles";
 import { useState } from "react";
-import { SlArrowUp } from "react-icons/sl";
+import { CaretUp } from "@phosphor-icons/react";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import { useGetMe } from "@/queries/auth/useAuthQueries";
-import type { PatchedUpdateCustomUserRequest } from "@/types/api";
+import type {
+  FavouriteProduct,
+  PatchedUpdateCustomUserRequest,
+} from "@/types/api";
 import { useUpdateUser } from "@/queries/auth/useAuthMutations";
+import { useFavouriteItems } from "@/queries/favourite/useFavouriteQueries";
+import { ProductCard } from "@/features/catalog";
 
 export function ProfileUser() {
   const { data: userData } = useGetMe();
@@ -38,9 +43,11 @@ export function ProfileUser() {
     }
   }
 
-  const { logoutUser } = useAuth();
+  const { logoutUser, isAuthenticated } = useAuth();
 
   const { mutate: updateUser } = useUpdateUser();
+
+  const { data: favouriteItems } = useFavouriteItems(isAuthenticated);
 
   const values = draft;
 
@@ -86,7 +93,7 @@ export function ProfileUser() {
             className="tableTitle"
             aria-controls="personal-data-content"
             id="personal-data-header"
-            expandIcon={<SlArrowUp />}
+            expandIcon={<CaretUp size={18} />}
           >
             Особисті дані
           </AccordionSummary>
@@ -198,6 +205,33 @@ export function ProfileUser() {
               </Button>
             )}
           </AccordionActions>
+        </Accordion>
+
+        <Accordion
+          slotProps={{
+            heading: { component: "h3" },
+            transition: { unmountOnExit: true },
+          }}
+          className="accordion"
+        >
+          <AccordionSummary
+            className="tableTitle"
+            aria-controls="personal-data-content"
+            id="personal-data-header"
+            expandIcon={<CaretUp size={18} />}
+          >
+            Вподобані товари
+          </AccordionSummary>
+          <AccordionDetails className="favouriteProductsContainer">
+            {favouriteItems?.map((item: FavouriteProduct) => (
+              <ProductCard
+                key={item.product_data.id}
+                product={item.product_data}
+                className="favouriteProduct"
+              />
+            ))}
+          </AccordionDetails>
+          <AccordionActions></AccordionActions>
         </Accordion>
       </Box>
 

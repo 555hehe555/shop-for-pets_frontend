@@ -2,7 +2,7 @@ import Button from "@/ui/Button/Button";
 import { useProductById } from "@/queries/catalog/useCatalogQueries";
 import { styles } from "./ProductDetails.styles";
 import { Box, IconButton, Slide, Typography } from "@mui/material";
-import { GrCaretNext, GrCaretPrevious } from "react-icons/gr";
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { useState } from "react";
 import { ProductPrice } from "../ProductPrice/ProductPrice";
 import { FavouriteButton } from "@/features/favourite/components/FavouriteButton/FavouriteButton";
@@ -72,13 +72,13 @@ export function ProductDetails({
                 className="navButton navButtonPrev"
                 onClick={handlePrevious}
               >
-                <GrCaretPrevious />
+                <CaretLeft size={24} />
               </IconButton>
               <IconButton
                 className="navButton navButtonNext"
                 onClick={handleNext}
               >
-                <GrCaretNext />
+                <CaretRight size={24} />
               </IconButton>
               <Box className="dots">
                 {product.images.map((_, index) => (
@@ -116,6 +116,8 @@ export function ProductDetails({
             <Button size="lg" onClick={() => onAddToCartItem(id)}>
               Додати у кошик
             </Button>
+
+            <FavouriteButton productId={id} />
           </Box>
         </Box>
       </Box>
@@ -129,8 +131,6 @@ export function ProductDetails({
           {product.description ||
             "На жаль, опис цього товару відсутній. Будь ласка, зверніться до продавця для отримання додаткової інформації."}
         </Typography>
-
-        <FavouriteButton productId={id} />
       </Box>
     </Box>
   );

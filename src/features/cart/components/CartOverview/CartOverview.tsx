@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 import Button from "@/ui/Button/Button";
-import { GoTrash } from "react-icons/go";
+import { Trash } from "@phosphor-icons/react";
 import InfoState from "@/components/InfoState/InfoState";
 import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import toast from "react-hot-toast";
@@ -127,7 +127,7 @@ export function CartOverview() {
                     setIdToDelete(cartItem.product);
                   }}
                 >
-                  <GoTrash />
+                  <Trash size={18} />
                 </Button>
               </Box>
             </Box>

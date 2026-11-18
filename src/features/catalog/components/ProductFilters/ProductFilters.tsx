@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { FilterState } from "../../api";
-import { SlArrowUp, SlArrowDown } from "react-icons/sl";
+import { CaretUp, CaretDown } from "@phosphor-icons/react";
 import { useId, useState } from "react";
 import { styles } from "./ProductFilters.styles";
 
@@ -79,7 +79,7 @@ function FilterGroup({
           sx={styles.toggleButton}
           aria-label={open ? `Collapse ${title}` : `Expand ${title}`}
         >
-          {open ? <SlArrowUp /> : <SlArrowDown />}
+          {open ? <CaretUp size={16} /> : <CaretDown size={16} />}
         </IconButton>
       </Box>
 
@@ -143,7 +143,7 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
           sx={styles.toggleButtonContainer}
           aria-hidden="true"
         >
-          {open ? <SlArrowUp /> : <SlArrowDown />}
+          {open ? <CaretUp size={16} /> : <CaretDown size={16} />}
         </Box>
       </ButtonBase>
       <Collapse in={open} orientation="vertical">

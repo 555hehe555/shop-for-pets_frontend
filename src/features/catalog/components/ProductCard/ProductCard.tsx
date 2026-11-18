@@ -1,6 +1,5 @@
 import type { Product } from "@/types/api/";
 import {
-  Box,
   Card,
   CardActionArea,
   CardContent,
@@ -32,7 +31,7 @@ export function ProductCard({ product }: ProductProps) {
 
   return (
     <Card sx={styles.cardContainer}>
-      <CardActionArea onClick={() => navigate(`product/${id}`)}>
+      <CardActionArea onClick={() => navigate(`/product/${id}`)}>
         <CardMedia
           className="cardMedia"
           component="img"
@@ -46,26 +45,6 @@ export function ProductCard({ product }: ProductProps) {
           </Typography>
 
           <ProductPrice price={Number(price)} discount={Number(discount)} />
-
-          {/* <Box>
-            {discount ? (
-              <>
-                <Typography className="currentPrice" component="span">
-                  {Number(price) - Number(discount)}₴
-                </Typography>
-
-                <Typography className="oldPrice" component="span">
-                  {price}₴
-                </Typography>
-              </>
-            ) : (
-              <>
-                <Typography className="currentPrice" component="span">
-                  {price}₴
-                </Typography>
-              </>
-            )}
-          </Box> */}
           <>
             {discount && (
               <>

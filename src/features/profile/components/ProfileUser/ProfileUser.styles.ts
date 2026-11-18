@@ -61,5 +61,13 @@ export const styles: Record<string, SxProps<Theme>> = {
       borderRadius: "16px",
       boxShadow: theme.shadows[1],
     },
+
+    "& .favouriteProductsContainer": {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      gap: "16px",
+      marginTop: "16px",
+    },
   }),
 };

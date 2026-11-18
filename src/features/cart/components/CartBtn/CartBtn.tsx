@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { styles } from "./CartBtn.styles";
 
-import { GrCart } from "react-icons/gr";
+import { ShoppingCart } from "@phosphor-icons/react";
 
 interface CartBtnProps {
   count: number;
@@ -10,7 +10,7 @@ interface CartBtnProps {
 export function CartBtn({ count }: CartBtnProps) {
   return (
     <Box sx={styles.cartContainer}>
-      <Box component={GrCart} sx={styles.cartImg} />
+      <ShoppingCart size={36} color="white" />
       {count > 0 && (
         <Box sx={styles.cartCountContainer}>
           <Typography sx={styles.cartCount}>{count}</Typography>

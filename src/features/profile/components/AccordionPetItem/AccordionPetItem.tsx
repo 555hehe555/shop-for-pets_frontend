@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { SlArrowUp } from "react-icons/sl";
+import { CaretUp } from "@phosphor-icons/react";
 import Input from "@/ui/Input/Input";
 import type { PatchedPetRequest, Pet, Species } from "@/types/api";
 import { useState } from "react";
@@ -85,7 +85,7 @@ export function AccordionPetItem({
         className="tableTitle"
         aria-controls="pet-data-content"
         id="pet-data-header"
-        expandIcon={<SlArrowUp />}
+        expandIcon={<CaretUp size={18} />}
       >
         <Typography className="petName">{pet.name}</Typography>
       </AccordionSummary>

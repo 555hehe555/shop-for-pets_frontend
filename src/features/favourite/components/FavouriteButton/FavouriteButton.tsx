@@ -2,7 +2,7 @@ import { useAuth } from "@/features/auth/context/AuthContext";
 import { useToggleFavourite } from "@/queries/favourite/useFavouriteMutations";
 import { useFavouriteItems } from "@/queries/favourite/useFavouriteQueries";
 import { IconButton } from "@mui/material";
-import { MdFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
+import { Heart } from "@phosphor-icons/react";
 
 export function FavouriteButton({ productId }: { productId: number }) {
   const { isAuthenticated } = useAuth();
@@ -27,7 +27,7 @@ export function FavouriteButton({ productId }: { productId: number }) {
         },
       }}
     >
-      {isFavourite ? <MdFavorite /> : <MdOutlineFavoriteBorder />}
+      <Heart size={26} weight={isFavourite ? "fill" : "regular"} />
     </IconButton>
   );
 }
