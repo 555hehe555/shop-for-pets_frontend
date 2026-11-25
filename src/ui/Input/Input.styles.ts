@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 const getInputVariant = (
   bg: string,
@@ -35,7 +36,7 @@ export const styles = {
     margin: 0,
     padding: "12px 20px",
 
-    borderRadius: "12px",
+    borderRadius: radii.md,
 
     fontWeight: 500,
 

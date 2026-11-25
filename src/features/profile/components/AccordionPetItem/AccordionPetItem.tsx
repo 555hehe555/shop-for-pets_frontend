@@ -80,7 +80,7 @@ export function AccordionPetItem({
   }
 
   return (
-    <Accordion key={pet.id ?? index}>
+    <Accordion key={pet.id ?? index} className="accordion">
       <AccordionSummary
         className="tableTitle"
         aria-controls="pet-data-content"

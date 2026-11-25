@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 export const styles: Record<string, SxProps<Theme>> = {
   cartContainer: {
@@ -42,10 +43,17 @@ export const styles: Record<string, SxProps<Theme>> = {
     alignItems: "center",
     gap: 2,
     border: `1px solid ${theme.palette.divider}`,
-    borderRadius: "16px",
+    borderRadius: radii.lg,
     padding: 1.5,
     margin: "4px 0",
     backgroundColor: theme.palette.background.paper,
+
+    transition: "transform 0.25s ease, box-shadow 0.25s ease",
+
+    "&:hover": {
+      transform: "translateY(-4px)",
+      boxShadow: 3,
+    },
   }),
   cartItemLeft: {
     display: "flex",
@@ -61,7 +69,7 @@ export const styles: Record<string, SxProps<Theme>> = {
     width: 80,
     height: 80,
     objectFit: "cover",
-    borderRadius: "10px",
+    borderRadius: radii.md,
   },
   cartitemName: {
     fontSize: "1.15rem",

@@ -1,11 +1,12 @@
 import type { SxProps } from "@mui/material";
 import type { Theme } from "@mui/material/styles";
+import { radii } from "@/styles/radii";
 
 export const styles: Record<string, SxProps<Theme>> = {
   container: {
     width: "100%",
     p: 2.5,
-    borderRadius: 2,
+    borderRadius: radii.lg,
   },
 
   title: {

@@ -1,4 +1,5 @@
 import type { Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 export const styles = {
   appBar: {
@@ -49,7 +50,7 @@ export const styles = {
     p: 1,
     border: "1px solid",
     borderColor: "divider",
-    borderRadius: "10px",
+    borderRadius: radii.md,
     backgroundColor: theme.palette.secondary.main,
 
     "&:hover": {

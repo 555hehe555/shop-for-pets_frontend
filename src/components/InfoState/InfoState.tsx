@@ -18,6 +18,7 @@ interface InfoStateProps {
   title: string;
   message: string;
   situation: InfoSituation;
+  titleComponent?: "h1" | "h2";
 }
 
 const situationImages: Record<InfoSituation, string[]> = {
@@ -37,6 +38,7 @@ export default function InfoState({
   title,
   message,
   situation,
+  titleComponent = "h2",
 }: InfoStateProps) {
   const navigate = useNavigate();
 
@@ -48,7 +50,7 @@ export default function InfoState({
         src={getRandomImage(situation)}
         alt={`Image for ${situation} situation`}
       />
-      <Typography variant="h4" component="h2" sx={styles.title}>
+      <Typography variant="h4" component={titleComponent} sx={styles.title}>
         {title}
       </Typography>
       <Typography variant="body1" sx={styles.message}>

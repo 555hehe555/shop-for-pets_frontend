@@ -1,73 +1,127 @@
-# React + TypeScript + Vite
+# Shop for Pets — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React SPA для інтернет-магазину товарів для домашніх тварин.
 
-Currently, two official plugins are available:
+## Технології
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Технологія | Призначення |
+|---|---|
+| React 19 | UI-бібліотека |
+| TypeScript 6 | Типізація |
+| Vite 8 | Збірка та dev-сервер |
+| React Router 7 | Маршрутизація |
+| TanStack React Query | Кешування та синхронізація запитів |
+| MUI (Material UI) 9 | Компоненти інтерфейсу |
+| Zod | Валідація форм |
+| Phosphor Icons | Іконки |
 
-## React Compiler
+## Структура
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```
+src/
+├── components/              # Загальні компоненти
+│   ├── layout/              # Header, Footer, Main, Layout
+│   ├── InfoState/           # Стани порожніх/помилкових сторінок
+│   └── ProtectedRoute.tsx   # Захищені маршрути
+│
+├── features/                # Feature-модулі
+│   ├── auth/                # Автентифікація
+│   │   ├── api/             # API-виклики, authFetch з JWT refresh
+│   │   ├── context/         # AuthContext (login, logout, isAuthenticated)
+│   │   └── components/      # LoginForm, RegistrationForm
+│   ├── cart/                # Кошик
+│   │   ├── api/             # CRUD операції з кошиком
+│   │   ├── context/         # CartContext (стан кошика)
+│   │   └── components/      # CartBtn, CartOverview
+│   ├── catalog/             # Каталог товарів
+│   │   ├── api/             # Запити до продуктів, фільтрів
+│   │   └── components/      # ProductCard, ProductDetails, ProductFilters, ProductsList
+│   ├── favourite/           # Обрані товари
+│   │   ├── api/             # API обраних
+│   │   └── components/      # FavouriteButton (toggle)
+│   └── profile/             # Профіль користувача
+│       ├── api/             # API домашніх тварин
+│       └── components/      # ProfileUser, ProfilePet, PetModal, AccordionPetItem
+│
+├── pages/                   # Сторінки
+│   ├── HomePage/            # Каталог з фільтрами
+│   ├── ProductDetailsPage/  # Деталі товару
+│   ├── CartPage/            # Кошик
+│   ├── ProfilePage/         # Профіль
+│   ├── LoginPage/           # Вхід
+│   ├── RegistrationPage/    # Реєстрація
+│   └── NotFoundPage/        # 404
+│
+├── queries/                 # React Query хуки
+│   ├── auth/                # useAuthMutations, useAuthQueries
+│   ├── cart/                # useCartMutations, useCartQueries
+│   ├── catalog/             # useCatalogQueries
+│   ├── favourite/           # useFavouriteMutations, useFavouriteQueries
+│   └── profile/             # useProfileMutations, useProfileQueries
+│
+├── schemas/                 # Zod-схеми валідації
+├── types/api/               # Автогенеровані TypeScript типи з OpenAPI
+├── ui/                      # UI-компоненти (Button, Input, Modal, ConfirmDialog)
+├── utils/                   # Утиліти
+├── theme.ts                 # MUI тема (палітра, типографіка)
+└── App.tsx                  # Маршрутизація
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Маршрути
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+| Шлях | Сторінка | Доступ |
+|---|---|---|
+| `/` | Головна (каталог) | Публічний |
+| `/product/:id` | Деталі товару | Публічний |
+| `/login` | Вхід | Публічний |
+| `/registration` | Реєстрація | Публічний |
+| `/cart` | Кошик | Авторизований |
+| `/profile` | Профіль | Авторизований |
+| `*` | 404 | — |
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+## Встановлення
+
+```bash
+npm install
+```
+
+## Скрипти
+
+| Команда | Опис |
+|---|---|
+| `npm run dev` | Генерація типів + запуск Vite |
+| `npm run dev:client` | Тільки Vite dev-сервер |
+| `npm run build` | Збірка для production |
+| `npm run lint` | Перевірка ESLint |
+| `npm run lint:fix` | ESLint з автофіксом |
+| `npm run format` | Форматування Prettier |
+| `npm run generate:types` | Генерація TS типів з OpenAPI (потрібен запущений бекенд) |
+
+## Запуск
+
+```bash
+npm run dev:client
+```
+
+Dev-сервер: `http://localhost:3000/`
+
+## Генерація типів
+
+Типи для API генеруються автоматично з OpenAPI-схеми бекенду за допомогою `swagger-typescript-api`:
+
+```bash
+# Потрібен запущений бекенд на localhost:8000
+npm run generate:types
+```
+
+Результат зберігається у `src/types/api/index.ts`.
+
+## Конфігурація API
+
+Базова URL бекенду задається у `src/data/user-config.json`:
+
+```json
+{
+  "BASE_URL": "http://localhost:8000/api"
+}
 ```

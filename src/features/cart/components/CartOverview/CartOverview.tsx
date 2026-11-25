@@ -9,12 +9,15 @@ import ConfirmDialog from "@/ui/ConfirmDialog/ConfirmDialog";
 import toast from "react-hot-toast";
 import { mainImgResolver } from "@/utils/mainImgResolver";
 import { styles } from "./CartOverview.styles";
+import { useNavigate } from "react-router-dom";
 
 export function CartOverview() {
   const { cartItems, error, loading, changeCartItemQuantity, deleteCartItem } =
     useCart();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
+
+  const navigate = useNavigate();
 
   function handleCancel() {
     setIsDialogOpen(false);
@@ -60,14 +63,20 @@ export function CartOverview() {
         {cartItems.length > 0 ? (
           cartItems.map((cartItem) => (
             <Box key={cartItem.product} sx={styles.cartItem}>
-              <Box sx={styles.cartItemLeft}>
+              <Box
+                sx={styles.cartItemLeft}
+                onClick={() => navigate(`/product/${cartItem.product}`)}
+              >
                 <Box
                   component="img"
                   sx={styles.cartItemImage}
                   src={
                     mainImgResolver(cartItem.product_data.images)?.image || ""
                   }
-                  alt={mainImgResolver(cartItem.product_data.images)?.alt || ""}
+                  alt={
+                    mainImgResolver(cartItem.product_data.images)?.alt ||
+                    "немає опису картинки"
+                  }
                 />
                 <Typography
                   variant="h6"
@@ -82,7 +91,8 @@ export function CartOverview() {
                 <Box sx={styles.cartItemQuantity}>
                   <Typography sx={styles.cartItemPrice}>
                     {(
-                      (Number(cartItem.product_data.price) || 0) *
+                      (Number(cartItem.product_data.price) -
+                        Number(cartItem.product_data.discount) || 0) *
                       (cartItem.quantity || 0)
                     ).toFixed(2)}
                     ₴
@@ -147,7 +157,8 @@ export function CartOverview() {
               .reduce(
                 (total, item) =>
                   total +
-                  (Number(item.product_data.price) || 0) *
+                  (Number(item.product_data.price) -
+                    Number(item.product_data.discount) || 0) *
                     (item?.quantity || 1),
                 0,
               )

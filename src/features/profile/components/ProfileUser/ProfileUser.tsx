@@ -78,7 +78,7 @@ export function ProfileUser() {
   return (
     <>
       <Box sx={styles.profileContainer}>
-        <Typography className="pageTitle" component="h2">
+        <Typography className="pageTitle" component="h1">
           Профіль користувача
         </Typography>
 

@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 const getButtonVariant = (
   bg: string,
@@ -34,7 +35,7 @@ export const styles = {
     padding: "12px 20px",
     minWidth: "32px",
     border: "none",
-    borderRadius: "12px",
+    borderRadius: radii.md,
     fontWeight: 600,
     cursor: "pointer",
     width: "fit-content",

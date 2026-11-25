@@ -213,6 +213,11 @@ export interface PatchedProductRequest {
    * @pattern ^-?\d{0,8}(?:\.\d{0,2})?$
    */
   discount?: string;
+  /**
+   * @minLength 1
+   * @maxLength 3
+   */
+  currency?: string;
   is_available?: boolean;
   /** @minLength 1 */
   species?: string | null;
@@ -272,7 +277,10 @@ export interface Product {
    * @pattern ^-?\d{0,8}(?:\.\d{0,2})?$
    */
   discount: string;
+  /** @maxLength 3 */
+  currency?: string;
   is_available?: boolean;
+  channel3_id: string | null;
   species?: string | null;
   category?: string | null;
   brand?: string | null;
@@ -313,6 +321,11 @@ export interface ProductRequest {
    * @pattern ^-?\d{0,8}(?:\.\d{0,2})?$
    */
   discount: string;
+  /**
+   * @minLength 1
+   * @maxLength 3
+   */
+  currency?: string;
   is_available?: boolean;
   /** @minLength 1 */
   species?: string | null;

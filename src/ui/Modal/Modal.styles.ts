@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 export const styles = {
   backdrop: {
@@ -10,7 +11,7 @@ export const styles = {
     position: "relative",
     maxWidth: 700,
     maxHeight: 700,
-    borderRadius: "18px",
+    borderRadius: radii.xl,
     backgroundColor: "background.paper",
     padding: "20px",
     outline: "none",

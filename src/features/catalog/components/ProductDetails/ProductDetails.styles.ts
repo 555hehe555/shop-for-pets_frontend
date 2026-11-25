@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 export const styles: Record<string, SxProps<Theme>> = {
   container: (theme) => ({
@@ -16,7 +17,7 @@ export const styles: Record<string, SxProps<Theme>> = {
     "& .gallery": {
       background: theme.palette.background.paper,
       border: `1px solid ${theme.palette.divider}`,
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: radii.lg,
       padding: "24px",
       boxShadow: 1,
       position: "relative",
@@ -43,7 +44,7 @@ export const styles: Record<string, SxProps<Theme>> = {
       position: "absolute",
       top: "50%",
       transform: "translateY(-50%)",
-      borderRadius: "50%",
+      borderRadius: radii.circle,
     },
 
     "& .navButtonPrev": {
@@ -66,7 +67,7 @@ export const styles: Record<string, SxProps<Theme>> = {
     "& .dot": {
       width: 10,
       height: 10,
-      borderRadius: "50%",
+      borderRadius: radii.circle,
       backgroundColor: "lightgray",
 
       "&.active": {
@@ -90,7 +91,7 @@ export const styles: Record<string, SxProps<Theme>> = {
     "& .stock": {
       width: "fit-content",
       padding: "4px 12px",
-      borderRadius: 999,
+      borderRadius: radii.pill,
       fontWeight: 600,
       color: theme.palette.primary.contrastText,
       boxShadow: `
@@ -144,7 +145,7 @@ export const styles: Record<string, SxProps<Theme>> = {
       marginTop: "48px",
       background: theme.palette.background.paper,
       border: `1px solid ${theme.palette.divider}`,
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: radii.lg,
       padding: "24px",
       boxShadow: 1,
 

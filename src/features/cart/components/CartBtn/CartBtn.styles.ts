@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 export const styles: Record<string, SxProps<Theme>> = {
   cartContainer: {
@@ -17,7 +18,7 @@ export const styles: Record<string, SxProps<Theme>> = {
     minWidth: "24px",
     height: "24px",
     padding: "0 6px",
-    borderRadius: "12px",
+    borderRadius: radii.pill,
     backgroundColor: theme.palette.accent.main,
     border: `2px solid ${theme.palette.divider}`,
     boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",

@@ -11,35 +11,41 @@ import {
 } from "@mui/material";
 import type { FilterState } from "../../api";
 import { CaretUp, CaretDown } from "@phosphor-icons/react";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { styles } from "./ProductFilters.styles";
+import type { Brand, Category, Species } from "@/types/api";
+import {
+  fetchBrands,
+  fetchCategories,
+  fetchSpecies,
+} from "../../api/catalogApi";
 
-const SPECIES_OPTIONS = [
-  "Dogs",
-  "Cats",
-  "Birds",
-  "Fish",
-  "Small Pets",
-  "Reptiles",
-];
+// const SPECIES_OPTIONS = [
+//   "Dogs",
+//   "Cats",
+//   "Birds",
+//   "Fish",
+//   "Small Pets",
+//   "Reptiles",
+// ];
 
-const CATEGORIES_OPTIONS = [
-  "Food",
-  "Toys",
-  "Accessories",
-  "Health & Wellness",
-  "Grooming",
-  "Beds & Furniture",
-];
+// const CATEGORIES_OPTIONS = [
+//   "Food",
+//   "Toys",
+//   "Accessories",
+//   "Health & Wellness",
+//   "Grooming",
+//   "Beds & Furniture",
+// ];
 
-const BRANDS_OPTIONS = [
-  "Royal Canin",
-  "Purina",
-  "Whiskas",
-  "Pedigree",
-  "Trixie",
-  "Acana",
-];
+// const BRANDS_OPTIONS = [
+//   "Royal Canin",
+//   "Purina",
+//   "Whiskas",
+//   "Pedigree",
+//   "Trixie",
+//   "Acana",
+// ];
 
 interface ProductFiltersType {
   filters: FilterState;
@@ -48,7 +54,7 @@ interface ProductFiltersType {
 
 interface FilterGroupType {
   title: string;
-  options: string[];
+  options: Brand[] | Category[] | Species[] | null;
   filterKey: keyof FilterState;
   handleToggle: (
     category: keyof FilterState,
@@ -85,24 +91,25 @@ function FilterGroup({
 
       <Collapse in={open}>
         <FormGroup sx={styles.options}>
-          {options.map((option) => (
-            <FormControlLabel
-              key={option}
-              sx={styles.option}
-              control={
-                <Checkbox
-                  sx={styles.checkbox}
-                  checked={filters[filterKey].includes(option)}
-                  onChange={(e) =>
-                    handleToggle(filterKey, e.target.checked, option)
-                  }
-                  color="primary"
-                  size="small"
-                />
-              }
-              label={option}
-            />
-          ))}
+          {options?.length &&
+            options.map((option) => (
+              <FormControlLabel
+                key={option.id}
+                sx={styles.option}
+                control={
+                  <Checkbox
+                    sx={styles.checkbox}
+                    checked={filters[filterKey].includes(option.name)}
+                    onChange={(e) =>
+                      handleToggle(filterKey, e.target.checked, option.name)
+                    }
+                    color="primary"
+                    size="small"
+                  />
+                }
+                label={option.name}
+              />
+            ))}
         </FormGroup>
       </Collapse>
     </Box>
@@ -111,6 +118,23 @@ function FilterGroup({
 
 export function ProductFilters({ filters, onChange }: ProductFiltersType) {
   const [open, setOpen] = useState(true);
+  const [brand, setBrand] = useState<Brand[] | null>(null);
+  const [species, setSpecies] = useState<Species[] | null>(null);
+  const [category, setCategory] = useState<Category[] | null>(null);
+
+  useEffect(() => {
+    async function getFilters() {
+      const brand = await fetchBrands();
+      const species = await fetchSpecies();
+      const category = await fetchCategories();
+
+      setBrand(brand);
+      setSpecies(species);
+      setCategory(category);
+    }
+
+    getFilters();
+  }, []);
 
   function handleToggle(
     category: keyof FilterState,
@@ -149,7 +173,7 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
       <Collapse in={open} orientation="vertical">
         <FilterGroup
           title="Бренди"
-          options={BRANDS_OPTIONS}
+          options={brand}
           filterKey="brands"
           handleToggle={handleToggle}
           filters={filters}
@@ -159,7 +183,7 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
 
         <FilterGroup
           title="Категорії"
-          options={CATEGORIES_OPTIONS}
+          options={category}
           filterKey="categories"
           handleToggle={handleToggle}
           filters={filters}
@@ -169,7 +193,7 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
 
         <FilterGroup
           title="Види"
-          options={SPECIES_OPTIONS}
+          options={species}
           filterKey="species"
           handleToggle={handleToggle}
           filters={filters}

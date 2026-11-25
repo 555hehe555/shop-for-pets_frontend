@@ -1,4 +1,5 @@
 import type { SxProps, Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 export const styles: Record<string, SxProps<Theme>> = {
   profileContainer: (theme) => ({
@@ -58,7 +59,7 @@ export const styles: Record<string, SxProps<Theme>> = {
 
     "& .accordion": {
       border: `1px solid ${theme.palette.divider}`,
-      borderRadius: "16px",
+      borderRadius: radii.lg,
       boxShadow: theme.shadows[1],
     },
   }),

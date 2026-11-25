@@ -36,7 +36,16 @@ export function ProductDetails({
     );
   }
 
-  if (isLoading || !product) return <p>Завантаження...</p>;
+  if (isLoading || !product) {
+    return (
+      <Box sx={styles.container}>
+        <Typography component="h1" variant="h2">
+          Деталі товару
+        </Typography>
+        <p>Завантаження...</p>
+      </Box>
+    );
+  }
 
   // const mainImg = mainImgResolver(product.images);
   console.log(product.images);
@@ -93,7 +102,7 @@ export function ProductDetails({
         </Box>
 
         <Box className="info">
-          <Typography className="title" variant="h2">
+          <Typography className="title" variant="h2" component="h1">
             {product.title}
           </Typography>
 
@@ -113,8 +122,14 @@ export function ProductDetails({
           </Typography>
 
           <Box className="actions">
-            <Button size="lg" onClick={() => onAddToCartItem(id)}>
-              Додати у кошик
+            <Button
+              size="lg"
+              onClick={() => onAddToCartItem(id)}
+              disabled={!product.is_available}
+            >
+              {product.is_available
+                ? "Додати у кошик"
+                : "Підходьте коли появиться"}
             </Button>
 
             <FavouriteButton productId={id} />

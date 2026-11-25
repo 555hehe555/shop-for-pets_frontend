@@ -49,7 +49,7 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
   return (
     <Box sx={styles.formContainer}>
       <Box component="form" sx={styles.form} action={handleSubmit}>
-        <Typography variant="h4" component="h2" sx={styles.title}>
+        <Typography variant="h4" component="h1" sx={styles.title}>
           Login
         </Typography>
 

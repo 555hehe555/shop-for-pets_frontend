@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import { baseRadius, radii } from "./styles/radii";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -84,13 +85,37 @@ export const theme = createTheme({
     divider: "#e8ddd2",
   },
   shape: {
-    borderRadius: 2,
+    borderRadius: baseRadius,
   },
   typography: {
     fontFamily: '"Roboto", sans-serif',
     fontLogo: {
       fontFamily: '"Lobster", cursive',
       fontSize: "32px",
+    },
+  },
+  components: {
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          borderRadius: radii.lg,
+          "&:first-of-type": {
+            borderTopLeftRadius: radii.lg,
+            borderTopRightRadius: radii.lg,
+          },
+          "&:last-of-type": {
+            borderBottomLeftRadius: radii.lg,
+            borderBottomRightRadius: radii.lg,
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: radii.lg,
+        },
+      },
     },
   },
 });

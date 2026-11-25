@@ -29,6 +29,8 @@ export function ProductCard({ product }: ProductProps) {
 
   const mainImg = mainImgResolver(images);
 
+  console.log(mainImg);
+
   return (
     <Card sx={styles.cardContainer}>
       <CardActionArea onClick={() => navigate(`/product/${id}`)}>
@@ -37,6 +39,7 @@ export function ProductCard({ product }: ProductProps) {
           component="img"
           image={mainImg?.image}
           title={mainImg?.alt}
+          alt={mainImg?.alt}
         />
 
         <CardContent className="cardInfo">
@@ -46,7 +49,7 @@ export function ProductCard({ product }: ProductProps) {
 
           <ProductPrice price={Number(price)} discount={Number(discount)} />
           <>
-            {discount && (
+            {Number(discount) > 0 && (
               <>
                 <Divider />
                 <Typography className="discount" component="p">

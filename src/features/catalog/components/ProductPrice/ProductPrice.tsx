@@ -16,17 +16,17 @@ export function ProductPrice({
       {discount ? (
         <>
           <Typography className="currentPrice" component="span">
-            {price - discount}₴
+            {(price - discount).toFixed(2)}₴
           </Typography>
 
           <Typography className="oldPrice" component="span">
-            {price}₴
+            {price.toFixed(2)}₴
           </Typography>
         </>
       ) : (
         <>
           <Typography className="currentPrice" component="span">
-            {price}₴
+            {price.toFixed(2)}₴
           </Typography>
         </>
       )}

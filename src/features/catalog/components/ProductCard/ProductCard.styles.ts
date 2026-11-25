@@ -1,13 +1,15 @@
 import type { SxProps, Theme } from "@mui/material";
+import { radii } from "@/styles/radii";
 
 export const styles: Record<string, SxProps<Theme>> = {
   cardContainer: (theme) => ({
     border: `1px solid ${theme.palette.divider}`,
 
     width: 300,
+    height: "100%",
     background: theme.palette.background.paper,
 
-    borderRadius: 2,
+    borderRadius: radii.lg,
     overflow: "hidden",
     boxShadow: 1,
 
