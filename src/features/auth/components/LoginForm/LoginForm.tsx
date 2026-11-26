@@ -1,10 +1,12 @@
 import { useId, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import toast from "react-hot-toast";
 
 import Input from "@/ui/Input/Input";
 import Button from "@/ui/Button/Button";
 import { loginSchema } from "@/schemas";
 import { useAuth } from "../../context/AuthContext";
+import { getAuthErrorMessage } from "../../utils/authError";
 import { styles } from "./LoginForm.styles";
 
 interface LoginInterface {
@@ -15,19 +17,24 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
   const fieldId = useId();
 
   const [erorrs, setErorrs] = useState<Record<string, string>>({});
+  const [values, setValues] = useState({ username: "", pass: "" });
   const { authenticateUser } = useAuth();
+  const [isPending, setIsPending] = useState(false);
 
-  const handleSubmit = async (formData: FormData) => {
-    const data = Object.fromEntries(formData);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-    const result = loginSchema.safeParse(data);
-    console.log(result);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const result = loginSchema.safeParse(values);
 
     if (!result.success) {
       const errorsForm: Record<string, string> = {};
       result.error.issues.forEach((issu) => {
-        const path = issu.path[0] as string;
-        if (!errorsForm[path]) {
+        const path = issu.path[0];
+        if (typeof path === "string" && !errorsForm[path]) {
           errorsForm[path] = issu.message;
         }
       });
@@ -36,19 +43,29 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
     }
 
     setErorrs({});
+    setIsPending(true);
 
     try {
       await authenticateUser(result.data.username, result.data.pass);
+
+      toast.success("Ви успішно увійшли.", { id: "login-success" });
       onLoginSuccessful();
-      console.log("close form");
     } catch (error) {
-      console.log(error);
+      toast.error(getAuthErrorMessage(error, "login"), {
+        id: "login-error",
+      });
+    } finally {
+      setIsPending(false);
     }
   };
 
   return (
     <Box sx={styles.formContainer}>
-      <Box component="form" sx={styles.form} action={handleSubmit}>
+      <Box
+        component="form"
+        sx={styles.form}
+        onSubmit={handleSubmit}
+      >
         <Typography variant="h4" component="h1" sx={styles.title}>
           Login
         </Typography>
@@ -67,6 +84,8 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
             id={`${fieldId}-username`}
             autoComplete="username"
             placeholder="Username"
+            value={values.username}
+            onChange={handleChange}
           />
           <Typography component="span" sx={styles.errorText}>
             {erorrs.username}
@@ -87,13 +106,15 @@ export function LoginForm({ onLoginSuccessful }: LoginInterface) {
             id={`${fieldId}-pass`}
             autoComplete="current-password"
             placeholder="Password"
+            value={values.pass}
+            onChange={handleChange}
           />
           <Typography component="span" sx={styles.errorText}>
             {erorrs.pass}
           </Typography>
         </Box>
 
-        <Button size="lg" type="submit" sx={styles.submitButton}>
+        <Button size="lg" type="submit" sx={styles.submitButton} disabled={isPending}>
           Login
         </Button>
       </Box>

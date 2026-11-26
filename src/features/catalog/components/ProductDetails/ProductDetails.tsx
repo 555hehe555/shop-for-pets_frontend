@@ -6,14 +6,14 @@ import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { useState } from "react";
 import { ProductPrice } from "../ProductPrice/ProductPrice";
 import { FavouriteButton } from "@/features/favourite/components/FavouriteButton/FavouriteButton";
+import type { Cart } from "@/types/api";
 
-export function ProductDetails({
-  id,
-  onAddToCartItem,
-}: {
+interface ProductDetailsProps {
   id: number;
-  onAddToCartItem: (id: number) => Promise<void>;
-}) {
+  onAddToCartItem: (id: number) => Promise<Cart>;
+}
+
+export function ProductDetails({ id, onAddToCartItem }: ProductDetailsProps) {
   const { data: product, isLoading } = useProductById(id);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -46,9 +46,6 @@ export function ProductDetails({
       </Box>
     );
   }
-
-  // const mainImg = mainImgResolver(product.images);
-  console.log(product.images);
 
   return (
     <Box sx={styles.container}>

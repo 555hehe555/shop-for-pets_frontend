@@ -1,0 +1,963 @@
+================================================================================
+AUDIT_REPORT
+Проєкт: shop-for-pets_frontend (React 19 + TypeScript + Vite)
+Дата аудиту: 2026-11-26
+Тип роботи: технічний аудит без зміни вихідного коду
+================================================================================
+
+Легенда критичності:
+  Critical — блокує роботу/збірку, втрата даних або прямий security-дефект.
+  High     — ламає ключовий користувацький сценарій або безпеку.
+  Medium   — помітний функціональний/UX/архітектурний дефект з обхідним шляхом.
+  Low      — локальна некоректність, гігієна коду, a11y/perf-дрібниці.
+
+Легенда впевненості:
+  підтверджено (tsc)      — відтворено компілятором TypeScript.
+  підтверджено (lint)     — відтворено ESLint.
+  підтверджено (runtime)  — відтворено у браузері (Playwright) на локальному
+                            dev-сервері та локальному бекенді.
+  підтверджено (код)      — випливає безпосередньо з наведеного фрагмента коду.
+  потребує перевірки      — залежить від поведінки бекенду/середовища.
+
+================================================================================
+1. ЖУРНАЛ ДОСЛІДЖЕННЯ
+================================================================================
+
+1.1. Точки входу та порядок огляду
+--------------------------------------------------------------------------------
+Перевірено в такому порядку:
+  1. Конфігурація: package.json, vite.config.ts, tsconfig*.json, eslint.config.js,
+     index.html, .gitignore.
+  2. Точки входу: src/main.tsx, src/App.tsx.
+  3. Глобальний стан: AuthContext, CartContext.
+  4. Мережевий шар: authFetch, authApi, cartApi, catalogApi, favouriteApi, petApi.
+  5. React Query хуки: queries/auth, queries/cart, queries/catalog,
+     queries/favourite, queries/profile.
+  6. UI-примітиви: Button, Input, Modal, ConfirmDialog.
+  7. Layout і спільні компоненти: Header, Footer, Main, Layout, InfoState,
+     ProtectedRoute.
+  8. Сторінки: HomePage, ProductDetailsPage, CartPage, ProfilePage, LoginPage,
+     RegistrationPage, NotFoundPage.
+  9. Фічі: auth (форми, схеми), cart (CartOverview, CartBtn), catalog
+     (ProductCard, ProductsList, ProductFilters, ProductDetails, ProductPrice),
+     favourite (FavouriteButton), profile (ProfileUser, ProfilePet, PetModal,
+     AccordionPetItem).
+ 10. Типи API: src/types/api/index.ts (згенерований OpenAPI-контракт).
+ 11. Стилі *.styles.ts (вибірково, лише на предмет функціональних проблем).
+
+Не аналізувалися: node_modules, dist, .git, .serena, .playwright-mcp,
+package-lock.json.
+
+1.2. Виявлені залежності між модулями
+--------------------------------------------------------------------------------
+- main.tsx -> QueryClientProvider -> AuthProvider -> CartProvider -> App.
+- CartProvider залежить від AuthContext (useAuth) і від queries/cart.
+- AuthProvider залежить від queries/auth, які залежать від features/auth/api.
+- Header -> useCart (CartContext) + useAuth (AuthContext) + ui/Input, ui/Button.
+- ProtectedRoute -> AuthContext; захищає /profile та /cart.
+- ProductDetailsPage -> useCart + useProductById; ProductDetails -> FavouriteButton,
+  ProductPrice; FavouriteButton -> AuthContext + queries/favourite.
+- ProfileUser -> useGetMe, useUpdateUser, useFavouriteItems, ProductCard.
+- ProfilePet -> usePets, useCreatePet, useDeletePet, fetchSpecies (catalog API),
+  AccordionPetItem, PetModal.
+- ProductsList -> useProducts, ProductFilters; ProductFilters -> catalogApi
+  (fetchBrands/fetchSpecies/fetchCategories) напряму, повз React Query.
+- Усі захищені API-модулі (cart, favourite, pets, users/me) -> authFetch.
+- Каталог (products/brands/categories/species) -> звичайний fetch без токена.
+- Типи: більшість компонентів беруть типи з @/types/api, але
+  features/catalog/api/catalogTypes.ts містить власну (застарілу) копію Product.
+
+1.3. Виконані перевірки та їх результати
+--------------------------------------------------------------------------------
+- `npx tsc --noEmit -p tsconfig.app.json`
+  -> FAIL: 2 помилки TS2322 (CartContext.tsx:48, ProfileUser.tsx:230).
+- `npx tsc -b` (саме це виконує `npm run build`)
+  -> FAIL з тими самими 2 помилками, exit code 2.
+  Висновок: production-збірка на поточному стані неможлива.
+- `npx eslint .`
+  -> FAIL: 2 errors react-refresh/only-export-components
+     (AuthContext.tsx:89, CartContext.tsx:58).
+- Перевірка наявності тестів/тестового скрипта в package.json
+  -> тестів і test-runner немає.
+- Перевірка вмісту dist і експортів @tanstack/react-query-devtools
+  -> у production-бандлі devtools є no-op (package exports "production" stub).
+     Це НЕ проблема; у звіт не включено.
+- Перевірка кодування index.html за байтами
+  -> файл валідний UTF-8 (кирилиця коректна). Помилки кодування немає.
+
+1.4. Runtime-перевірки (Playwright, локальний dev-сервер + локальний бекенд)
+--------------------------------------------------------------------------------
+Сценарії, які було реально відтворено:
+  1. /login, submit з паролем "123" (коротший за 8 символів):
+     - показано "Password must be at least 8 characters";
+     - поля Username і Password ОЧИЩЕНО (React 19 скидає uncontrolled-форму
+       після завершення form action), хоча помилка валідації.
+  2. /login, валідні дані, бекенд недоступний:
+     - у UI жодної помилки; лише console.log(TypeError: Failed to fetch).
+  3. /registration, pass1="password123", pass2="totallydifferent":
+     - клієнтська валідація пропустила форму;
+     - запит на створення користувача пішов; акаунт створено (див. 1.6).
+  4. /product/abc:
+     - запит GET /api/products/NaN -> 404;
+     - сторінка безстроково показує "Завантаження...".
+  5. /profile:
+     - у DOM два елементи з id="personal-data-header" (дубль);
+     - за відсутності тварин повідомлення "У вас поки нема домашніх улюбленців"
+       НЕ показується.
+  6. /cart з порожнім кошиком:
+     - показано "Сумарна вартість: 0.00₴" і кнопку "Оформити замовлення";
+     - клік по кнопці показує toast "успішно оформлено замовлення",
+       жодного запиту до API не виконано.
+  7. /?search=cat -> клік по логотипу SfP (клієнтська навігація на "/"):
+     - URL став "/", але поле пошуку в хедері досі містить "cat".
+  8. Каталог, перехід на сторінку 3, потім пошук "Hikari Herptile DragonGel":
+     - запит GET /api/products/?search=...&page=3 -> 404 (тричі, retry);
+     - список порожній, повідомлення "нічого не знайдено" або помилки немає,
+       пагінація зникає.
+  9. / (каталог) з реальним бекендом:
+     - /api/brands/, /api/species/, /api/categories/ повертають масиви (200),
+       фільтри рендеряться коректно;
+     - у dev-режимі StrictMode кожен із цих запитів виконується двічі
+       (очікувана поведінка React 19 у dev, не є дефектом).
+
+1.5. Що перевірено і визнано коректним (щоб не шукати проблем там, де їх немає)
+--------------------------------------------------------------------------------
+- Ендпоінти кошика та обраного справді ключуються за product_id
+  (OpenAPI: /api/cart/{product_id}, /api/favourites/{product_id}) — фронтенд
+  використовує їх правильно.
+- Семантика Product.discount відповідає відніманню суми (decimal), а не
+  відсотку; формула price - discount узгоджена з контрактом.
+- Черга запитів у authFetch під час refresh логічно коректна для одночасних 401.
+- React Compiler підключений (vite.config.ts + babel-plugin-react-compiler),
+  тому відсутність useMemo/useCallback сама по собі не є дефектом.
+- dist/ у .gitignore; згенеровані типи мають @ts-nocheck (це нормально для
+  автогенерації).
+- XSS через dangerouslySetInnerHTML відсутній (не знайдено жодного входження).
+- ReactQueryDevtools у production-бандл не потрапляє (перевірено).
+
+1.6. Побічні ефекти перевірок (важливо для розробника)
+--------------------------------------------------------------------------------
+Під час runtime-перевірки реєстрації на локальному бекенді (localhost:8000)
+було створено тестовий акаунт:
+  username: newuser
+  email:    new@example.com
+  password: password123
+Це сталося саме тому, що підтвердження пароля не перевіряється (див. H-02).
+Якщо цей акаунт не потрібен — його слід видалити вручну з локальної БД.
+Вихідний код, конфігурація та залежності не змінювалися; створено лише цей
+звіт.
+
+1.7. Питання, що залишилися невирішеними
+--------------------------------------------------------------------------------
+- Чи налаштований на бекенді APPEND_SLASH для /api/products без слеша
+  (catalogApi.ts:46-48) — потребує перевірки конфігурації Django.
+- Чи ротує бекенд refresh-токен (authFetch.ts:63-66 зберігає лише access).
+  OpenAPI TokenRefresh містить лише access, тому це радше не проблема,
+  але поведінка залежить від SimpleJWT ROTATE_REFRESH_TOKENS.
+- Чи гарантує бекенд поле Product.is_available (у типах воно optional).
+  Якщо ні — кнопка "Додати у кошик" буде завжди disabled.
+- Реальність даних у src/data/db.json (схоже на реальну email-адресу).
+- Чи використовується проєкт за HTTPS у production (впливає на оцінку
+  зберігання JWT у localStorage та source maps).
+
+================================================================================
+2. ПІДТВЕРДЖЕНІ ПРОБЛЕМИ
+================================================================================
+
+[ВИКОНАНО]:
+- C-01, C-02: Помилки компіляції TS виправлені, збірка проходить.
+- H-01, M-01: Контрольовані форми (Login, Registration), поля не скидаються при помилці валідації.
+- H-02: Валідація збігу паролів pass1 === pass2 у Zod-схемі.
+- H-03: Заборонено відправку quantity < 1 у кошику.
+- H-05: BASE_URL винесено в env змінні (VITE_API_URL).
+- H-06: Strict mode у TypeScript увімкнено і валідовано.
+- H-07, L-01: Зайві console.log видалено, додано правило ESLint no-console.
+- M-02: Logout тепер очищає стейт/storage до SPA-навігації через navigate("/").
+- M-04: Секрети з db.json видалено (файл видалено).
+- M-05: Виправлена типізація updateUser (GetCustomUser) та changeCartItemQuantity (Cart).
+- M-11, M-13: Async await і тости для кошика та профілю.
+- M-12: Блок оформлення ховається при порожньому кошику.
+- M-15: Уніфікована єдина модель Product з types/api.
+- M-16: Прибрано minWidth 1000px у профілі (замінено на width 100%, maxWidth 1000px).
+- M-17: Усі помилки ESLint виправлені.
+- L-02: InfoState не ре-рандомить картинку при кожному рендері (ініціалізація у useState).
+- L-03: Рендер "0" у фільтрах усунено.
+- L-05: Поле пошуку в хедері синхронізується з URL searchParams.
+- L-06: Пріоритет дужок у розрахунку ціни та знижки виправлено.
+- L-07: Бейдж кошика тепер сумує загальну кількість товарів (sum of quantities), а не кількість унікальних позицій.
+- L-08: mainImgResolver підтримує fallback на перше фото і плейсхолдер.
+- L-09: activeStep у деталях товару скидається при зміні товару (через key).
+- L-10: Картка товару є повноцінним посиланням (RouterLink to=...).
+- L-12: Видалено порожні мертві файли (authType.ts, *.styles.ts).
+- L-13: Sourcemap для production вимкнено (vite.config.ts).
+- P-01: Додано trailing slash до ендпоінту /api/products/.
+
+--------------------------------------------------------------------------------
+2.3. MEDIUM
+--------------------------------------------------------------------------------
+
+--- [M-01] React 19 скидає поля форми після невдалої валідації ---
+Категорія: React / UI/UX
+Критичність: Medium
+Файл: src/features/auth/components/LoginForm/LoginForm.tsx:51
+      src/features/auth/components/RegistrationForm/RegistrationForm.tsx:55
+Що не так: форми використовують `<Box component="form" action={handleSubmit}>`
+(React 19 form actions) з uncontrolled-полями. React 19 після завершення
+action скидає всі uncontrolled-поля, навіть якщо валідація не пройшла.
+Чому це проблема: користувач вводить логін/пароль, отримує "Password must be at
+least 8 characters" — і поля вже порожні. Довелося вводити все заново. Для
+форми логіну/реєстрації це поганий UX.
+Умови прояву: будь-яка помилка клієнтської валідації. Відтворено: після submit
+з паролем "123" обидва поля мають value "".
+Рекомендація: або перейти на контрольовані поля/react-hook-form, або
+використовувати `onSubmit` замість `action`, або керувати скиданням вручну
+(не покладатися на автоматичний reset).
+Впевненість: підтверджено (runtime).
+
+--- [M-02] Logout робить повне перезавантаження до очищення стану ---
+Категорія: React / надійність
+Критичність: Medium
+Файл: src/features/auth/context/AuthContext.tsx:45-54
+Що не так: спочатку `queryClient.clear()`, потім `window.location.href = "/"`,
+і лише після цього setState + localStorage.removeItem.
+Чому це проблема: порядок крихкий і семантично неправильний: навігація
+ініціюється до завершення очищення (у різних браузерах/середовищах це може
+обірвати виконання), а повне перезавантаження втрачає SPA-стан і зайве
+перезавантажує бандл. Також після logout неможливо показати toast/повідомлення.
+Умови прояву: кожен вихід із профілю.
+Рекомендація: спочатку очистити стан і localStorage, потім `navigate("/")`
+через react-router; для повного скидання кешу — `queryClient.clear()`.
+Впевненість: підтверджено (код).
+
+--- [M-03] JWT (access + refresh) зберігаються в localStorage ---
+Категорія: Безпека
+Критичність: Medium
+Файл: src/features/auth/api/authApi.ts:35-36
+      src/features/auth/api/authFetch.ts:27, 37, 65
+      src/features/auth/context/AuthContext.tsx:10-11
+Що не так: обидва токени читаються/пишуться в localStorage, а refreshToken ще й
+віддається через React-контекст.
+Чому це проблема: будь-який XSS (наявний або майбутній) автоматично краде
+довгоживучий refresh-токен. localStorage доступний усьому JS на домені.
+Зараз XSS-векторів у коді не знайдено, тому це ризик, а не активна вразливість.
+Умови прояву: компрометація будь-якого скрипта на сторінці (розширення,
+залежність, XSS).
+Рекомендація: у пріоритеті — httpOnly Secure SameSite cookie для refresh;
+access тримати в пам'яті. Якщо це неможливо без зміни бекенду — задокументувати
+ризик і мінімізувати час життя refresh. Не передавати refreshToken у контекст,
+він там не потрібен.
+Впевненість: підтверджено (код); рівень ризику залежить від моделі загроз.
+
+--- [M-04] У репозиторії лежить db.json з паролями та email ---
+Категорія: Безпека / гігієна
+Критичність: Medium
+Файл: src/data/db.json:31-42
+Що не так: файл містить масив "user" з полями username/pass/email у відкритому
+вигляді, зокрема адресу, схожу на реальну (ivakh.pr.pr@gmail.com).
+Чому це проблема: секрети/персональні дані в git-історії. Навіть якщо це
+навчальні дані, репозиторій виглядає так, ніби там реальні облікові дані.
+Файл при цьому не використовується кодом (немає жодного імпорту, json-server
+відсутній у залежностях).
+Умови прояву: публікація/передача репозиторію, сканування секретів.
+Рекомендація: видалити файл; якщо пароль реальний — змінити його. Перевірити
+історію git (файл міг потрапити в старі коміти) і за потреби почистити історію.
+Впевненість: підтверджено (код).
+
+--- [M-05] updateUser типізований як Promise<void>, але повертає тіло відповіді ---
+Категорія: TypeScript / API
+Критичність: Medium
+Файл: src/features/auth/api/authApi.ts:81-98
+Що не так: сигнатура `Promise<void>`, а в кінці `return data;` (результат
+response.json()). Типізація не відображає контракт PATCH /users/{id}/, який
+повертає GetCustomUser.
+Чому це проблема: компілятор не бачить реального типу (json() -> any),
+майбутній виклик не зможе використати оновлені дані, а помилка в контракті
+не буде зловлена. Аналогічно `changeCartItemQuantity` не має return-типу.
+Умови прояву: будь-яке використання результату updateUser.
+Рекомендація: `Promise<GetCustomUser>` (за OpenAPI ApiUsersPartialUpdate) і
+явний тип для response.json() або runtime-валідація (zod).
+Впевненість: підтверджено (код + OpenAPI).
+
+--- [M-06] Неузгоджена обробка помилок API, повідомлення бекенду втрачаються ---
+Категорія: API / надійність
+Критичність: Medium
+Файл: src/features/auth/api/authApi.ts:29-31
+      src/features/cart/api/cartApi.ts:8-10, 23-27
+      src/features/catalog/api/catalogApi.ts:52-54, 65-67
+      src/features/favourite/api/favouriteApi.ts:8-10
+      src/features/profile/api/petApi.ts:8-10
+Що не так: у різних модулях різні формати помилок ("error to authenticate user",
+"faill to fetch products", `${status} ${statusText}`), тіло відповіді (JSON з
+полями помилок DRF) ніколи не читається. Частина функцій спочатку робить
+response.json(), а вже потім перевіряє response.ok.
+Чому це проблема: користувач бачить або технічний текст, або загальне
+"Failed to fetch"; причини на кшталт "username вже існує" чи "quantity must be
+>= 1" не доносяться. Це ускладнює і UX, і діагностику.
+Умови прояву: будь-яка помилка 4xx/5xx.
+Рекомендація: єдиний apiClient/обгортка: перевіряти ok, парсити JSON-помилку,
+кидати типізований ApiError(status, code, message, fieldErrors) і показувати
+fieldErrors у формах. Порядок "спочатку ok, потім json()" — уніфікувати.
+Впевненість: підтверджено (код).
+
+--- [M-07] Каталог не має станів loading/error/empty; помилки retry-яться мовчки ---
+Категорія: UI/UX / надійність
+Критичність: Medium
+Файл: src/features/catalog/components/ProductsList/ProductsList.tsx:28-37, 50-56
+      src/main.tsx:21-23 (немає retry-конфігурації -> default 3)
+Що не так: з useProducts беруться лише data; isLoading та isError ігноруються.
+При помилці products = [], рендериться порожній список без пояснень. React Query
+за замовчуванням робить 3 retry, зокрема для 404.
+Чому це проблема: користувач бачить пусту сторінку замість "нічого не знайдено"
+або "помилка, спробуйте ще". Зайві повторні запити на 404/401 створюють шум і
+навантаження. Відтворено: search + page=3 -> три однакові 404, UI без змін.
+Умови прояву: будь-яка помилка запиту або порожній результат пошуку.
+Рекомендація: додати isLoading (скелетон/spinner), isError (InfoState/повтор),
+порожній результат; налаштувати retry (не ретраїти 4xx) у QueryClient.
+Впевненість: підтверджено (runtime + код).
+
+--- [M-08] URL не є джерелом істини для search/page/filters ---
+Категорія: React / UI/UX
+Критичність: Medium
+Файл: src/features/catalog/components/ProductsList/ProductsList.tsx:13-33
+Що не так: search читається з URL, а page і filters — локальний useState.
+При зміні search сторінка не скидається на 1; filters і page не потрапляють в
+URL.
+Чому це проблема: (а) пошук зі сторінки 3 дає 404/порожній список (відтворено);
+(б) назад/вперед або F5 втрачають фільтри й сторінку; (в) посиланням не можна
+поділитися результатами.
+Умови прояву: зміна пошуку не з першої сторінки; навігація back/refresh.
+Рекомендація: тримати search/page/filters у searchParams (useSearchParams) або
+в одному стані, синхронізованому з URL; при зміні search/filters робити
+setPage(1).
+Впевненість: підтверджено (runtime + код).
+
+--- [M-09] Сторінка товару безстроково показує "Завантаження..." при помилці ---
+Категорія: UI/UX / надійність
+Критичність: Medium
+Файл: src/features/catalog/components/ProductDetails/ProductDetails.tsx:17, 39-48
+      src/pages/ProductDetailsPage/ProductDetailsPage.tsx:12-15
+Що не так: `const { data: product, isLoading } = useProductById(id)`; умова
+`if (isLoading || !product)` показує "Завантаження...". isError не
+обробляється. Крім того, `Number(id)` для "/product/abc" дає NaN і запит іде на
+/products/NaN.
+Чому це проблема: при 404/500 або некоректному id користувач назавжди бачить
+"Завантаження..." замість 404-сторінки чи помилки. Відтворено: /product/abc ->
+GET /api/products/NaN -> 404, текст "Завантаження..." лишається.
+Умови прояву: неіснуючий/некоректний id, помилка мережі.
+Рекомендація: валідувати id (Number.isInteger(id) && id > 0, інакше NotFound),
+обробляти isError окремим станом, показувати NotFoundPage для 404.
+Впевненість: підтверджено (runtime + код).
+
+--- [M-10] Завантаження опцій фільтрів без обробки помилок і без кешу ---
+Категорія: API / надійність / архітектура
+Критичність: Medium
+Файл: src/features/catalog/components/ProductFilters/ProductFilters.tsx:125-137
+      src/features/profile/components/ProfilePet/ProfilePet.tsx:34-40
+Що не так: три послідовні await (brands -> species -> categories) в useEffect
+без try/catch і без React Query. Той самий fetchSpecies дублюється в ProfilePet.
+Чому це проблема: якщо перший запит падає, решта навіть не виконується,
+setState не викликається, фільтри назавжди лишаються порожніми, а помилка стає
+unhandled rejection. Дані не кешуються: кожен захід на головну — 3 нові запити;
+у ProfilePet — ще один.
+Умови прояву: помилка будь-якого з трьох запитів; повторні навігації.
+Рекомендація: використати useQuery зі staleTime для довідників
+(useBrands/useSpecies/useCategories) або Promise.all з try/catch і станом
+помилки; прибрати дублювання fetchSpecies.
+Впевненість: підтверджено (код).
+
+--- [M-11] Видалення з кошика показує успіх до завершення запиту ---
+Категорія: UI/UX / надійність
+Критичність: Medium
+Файл: src/features/cart/components/CartOverview/CartOverview.tsx:27-36
+Що не так: `deleteCartItem(idToDelete)` (mutateAsync) не очікується, одразу
+викликається `toast.success("успішно забрано з корзини")`.
+Чому це проблема: при 400/500/мережевій помилці користувач бачить "успішно",
+хоча товар лишився; паралельно з'явиться toast помилки з onError. Крім того,
+rejection mutateAsync ніхто не ловить -> unhandled promise rejection.
+Умови прояву: будь-яка помилка DELETE /cart/{product_id}.
+Рекомендація: зробити handleDeleteItem async, await deleteCartItem, показувати
+success лише після успіху (краще — в onSuccess мутації), помилку — в onError.
+Впевненість: підтверджено (код).
+
+--- [M-12] "Оформити замовлення" — фіктивний успіх, працює з порожнім кошиком ---
+Категорія: UI/UX / функціональність
+Критичність: Medium
+Файл: src/features/cart/components/CartOverview/CartOverview.tsx:153-177
+Що не так: кнопка лише викликає toast.success("успішно оформлено замовлення"),
+жодного API-виклику немає. Блок підсумку рендериться навіть при порожньому
+кошику ("Сумарна вартість: 0.00₴" + кнопка).
+Чому це проблема: застосунок повідомляє про успішне замовлення, якого не
+існує. Відтворено: порожній кошик -> клік -> toast успіху, 0 запитів.
+Умови прояву: завжди.
+Рекомендація: або реалізувати checkout-ендпоінт, або прибрати/задизейблити
+кнопку і чесно позначити функцію як незавершену; ховати summary при порожньому
+кошику.
+Впевненість: підтверджено (runtime + код).
+
+--- [M-13] Збереження профілю не очікується і не має обробки помилок ---
+Категорія: UI/UX / надійність
+Критичність: Medium
+Файл: src/features/profile/components/ProfileUser/ProfileUser.tsx:70-76
+      src/queries/auth/useAuthMutations.ts:27-43
+Що не так: `updateUser(...)` викликається без await, `setDraft(null)` одразу
+закриває режим редагування. У useUpdateUser немає onError/onSuccess-toast.
+Чому це проблема: при помилці (невалідний email, 400, мережа) UI виглядає так,
+ніби зміни збережено, а насправді їх немає; введені дані втрачені. Немає
+індикації збереження.
+Умови прояву: будь-яка помилка PATCH /users/{id}/.
+Рекомендація: використовувати mutateAsync + await, закривати редактор лише в
+onSuccess, показувати toast/помилки полів, блокувати кнопку на час запиту.
+Впевненість: підтверджено (код).
+
+--- [M-14] Тварини: порожній стан недосяжний, створення без валідації і фідбеку ---
+Категорія: UI/UX / надійність
+Критичність: Medium
+Файл: src/features/profile/components/ProfilePet/ProfilePet.tsx:21-25, 50-59,
+      108-122
+      src/features/profile/components/PetModal/PetModal.tsx:38-43
+      src/queries/profile/useProfileMutations.ts:5-44
+Що не так:
+  - `petsData ? ... : "У вас поки нема..."` — порожній масив [] є truthy, тому
+    повідомлення не показується (відтворено на /profile);
+  - createPet викликається без await, модалка закривається одразу;
+  - немає валідації: можна відправити name="" і species=0;
+  - у useCreatePet/useUpdatePet/useDeletePet немає onError — помилки мовчать.
+Чому це проблема: користувач не бачить, що тварин немає; при помилці створення
+вважає, що тварину додано; порожня назва/вид дають 400 без пояснень.
+Умови прояву: 0 тварин; помилка POST/PATCH/DELETE; submit порожньої форми.
+Рекомендація: перевіряти `petsData?.length`, валідувати name/species перед
+submit, закривати модалку в onSuccess, додати onError-toast, блокувати submit.
+Впевненість: підтверджено (runtime + код).
+
+--- [M-15] Дві різні моделі Product у проєкті ---
+Категорія: TypeScript / архітектура
+Критичність: Medium
+Файл: src/features/catalog/api/catalogTypes.ts:1-15
+      src/types/api/index.ts:265-297
+      src/features/catalog/index.ts:3 (реекспорт застарілого Product)
+Що не так: локальний Product містить лише id/title/price/is_available/images,
+а згенерований — ще description, discount, currency, species/category/brand,
+channel3_id. Barrel `@/features/catalog` експортує саме локальний тип.
+Чому це проблема: новий код, який імпортує Product з бареля, отримує неповний
+тип; звернення до discount/description дасть помилку, або (через any) —
+прихований баг. Типи дрейфують від OpenAPI.
+Умови прояву: будь-яке використання `import type { Product } from
+"@/features/catalog"`.
+Рекомендація: видалити catalogTypes.Product і реекспортувати тип із
+@/types/api; залишити в catalogTypes лише FilterState.
+Впевненість: підтверджено (код).
+
+--- [M-16] Фіксована minWidth 1000px ламає мобільну верстку профілю ---
+Категорія: UI/UX
+Критичність: Medium
+Файл: src/features/profile/components/ProfileUser/ProfileUser.styles.ts:7
+      src/features/profile/components/ProfilePet/ProfilePet.styles.ts:7
+Що не так: контейнер профілю має `minWidth: "1000px"` без breakpoint-ів.
+Чому це проблема: на екранах < 1000px (мобільні, планшети) виникає
+горизонтальний скрол/обрізання; решта сторінок (каталог, деталі товару) вже
+адаптивні.
+Умови прояву: viewport < 1000px, сторінки /profile.
+Рекомендація: прибрати minWidth, використати maxWidth + width: 100% і
+адаптивні flex-напрямки; перевірити на 360/768px.
+Впевненість: підтверджено (код).
+
+--- [M-17] `npm run lint` завершується помилкою ---
+Категорія: Інструменти / якість коду
+Критичність: Medium
+Файл: src/features/auth/context/AuthContext.tsx:89
+      src/features/cart/context/CartContext.tsx:58
+Що не так: ESLint rule react-refresh/only-export-components вважає файли
+порушниками, бо вони експортують і компонент (AuthProvider/CartProvider), і хук
+(useAuth/useCart).
+Чому це проблема: лінт-гейт червоний; у dev Fast Refresh для цих файлів
+працюватиме некоректно (повний reload замість HMR).
+Умови прояву: `npm run lint`; редагування контекстів у dev.
+Рекомендація: винести хуки в окремі файли (auth/useAuth.ts, cart/useCart.ts) і
+реекспортувати; або, якщо це свідоме рішення, локалізувати правило.
+Впевненість: підтверджено (lint).
+
+--- [M-18] Немає автоматичних тестів і тестового скрипта ---
+Категорія: Надійність / підтримка
+Критичність: Medium
+Файл: package.json:6-15
+Що не так: відсутні test-runner, тестові файли та script "test".
+Чому це проблема: критичні сценарії (auth refresh, кошик, фільтри, валідація
+форм) нічим не захищені; дефекти H-02/H-03/M-08 легко повернути рефакторингом.
+Умови прояву: будь-яка зміна коду.
+Рекомендація: мінімально — Vitest + React Testing Library для схем, authFetch
+(refresh/черга), CartContext і форм; окремо e2e (Playwright) для логіну/кошика.
+Впевненість: підтверджено (код).
+
+--------------------------------------------------------------------------------
+2.4. LOW
+--------------------------------------------------------------------------------
+
+--- [L-01] Відлагоджувальні console.log у коді ---
+Категорія: Гігієна коду
+Критичність: Low
+Файл: src/features/catalog/components/ProductCard/ProductCard.tsx:32
+      src/features/catalog/components/ProductDetails/ProductDetails.tsx:51
+      src/utils/mainImgResolver.ts:8
+      src/queries/profile/useProfileMutations.ts:38
+      src/features/auth/context/AuthContext.tsx:69
+      src/features/auth/components/LoginForm/LoginForm.tsx:43
+Що не так: залишкові console.log, зокрема `console.log(!!accessToken)` на
+кожен рендер AuthProvider (відтворено: кілька записів у консолі).
+Чому це проблема: шум у консолі, зайва робота, витік внутрішніх деталей.
+Умови прояву: завжди.
+Рекомендація: прибрати; додати правило no-console для src (дозволити
+console.error у catch).
+Впевненість: підтверджено (runtime + код).
+
+--- [L-02] InfoState обирає випадкову картинку під час рендеру ---
+Категорія: React
+Критичність: Low
+Файл: src/components/InfoState/InfoState.tsx:31-35, 50
+Що не так: `getRandomImage(situation)` викликається в JSX, тобто Math.random
+виконується на кожен рендер.
+Чому це проблема: порушується чистота рендеру (React Compiler може
+мемоізувати/переобчислювати непередбачувано), картинка "стрибає" при будь-якій
+зміні стану батьківського компонента.
+Умови прояву: повторний рендер InfoState.
+Рекомендація: обрати зображення в useMemo/useState з ключем situation або
+детерміновано (hash від situation/title).
+Впевненість: підтверджено (код).
+
+--- [L-03] Порожній список опцій фільтра рендерить "0" ---
+Категорія: React
+Критичність: Low
+Файл: src/features/catalog/components/ProductFilters/ProductFilters.tsx:94-95
+Що не так: `{options?.length && options.map(...)}` — при `options = []`
+вираз дорівнює 0, і React рендерить текст "0" у FormGroup.
+Чому це проблема: у DOM з'являється зайвий текст; виглядає як баг верстки.
+Умови прояву: ендпоінт довідника повернув порожній масив.
+Рекомендація: `options?.length ? options.map(...) : null` або перевіряти
+`options?.length > 0`.
+Впевненість: підтверджено (код; потребує порожнього довідника для візуалізації).
+
+--- [L-04] Доступність: вкладені інтерактивні елементи, безіменні кнопки, div-onClick ---
+Категорія: A11y / HTML
+Критичність: Low
+Файл: src/components/layout/Header/Header.tsx:47-57 (Link > Button)
+      src/components/layout/Header/Header.tsx:67-74 (поле пошуку без label)
+      src/features/favourite/components/FavouriteButton/FavouriteButton.tsx:20-31
+      src/features/cart/components/CartOverview/CartOverview.tsx:66-69, 132-141
+      src/features/profile/components/ProfileUser/ProfileUser.tsx:94-95, 219-220
+      src/features/catalog/components/ProductFilters/ProductFilters.tsx:159
+Що не так:
+  - <Link><Button/></Link> — вкладений <button> в <a> (невалідний HTML,
+    дублювання фокусу; підтверджено в a11y-дереві);
+  - IconButton обраного/видалення не має aria-label; поле пошуку — без label;
+  - перехід на товар у кошику — onClick на <div>, недоступний з клавіатури;
+  - два блоки з однаковими id="personal-data-header" (підтверджено в DOM);
+  - aria-controls={useId()} вказує на неіснуючий id.
+Чому це проблема: порушення семантики та доступності, проблеми зі скрінрідерами
+й клавіатурою.
+Умови прояву: навігація з клавіатури, скрінрідери, валідатори HTML.
+Рекомендація: Link стилізувати як кнопку (без <button> всередині); додати
+aria-label/aria-pressed; замінити div на Link/ButtonBase; унікальні id або
+aria-labelledby; прибрати фіктивний aria-controls.
+Впевненість: підтверджено (runtime + код).
+
+--- [L-05] Стан пошуку в хедері не синхронізується з URL ---
+Категорія: React / UI
+Критичність: Low
+Файл: src/components/layout/Header/Header.tsx:18-21
+Що не так: searchQuery ініціалізується з searchParams лише при монтуванні.
+Чому це проблема: після клієнтської навігації на "/" (логотип) поле досі
+показує старий запит. Відтворено: /?search=cat -> клік SfP -> URL "/", у полі
+"cat".
+Умови прояву: зміна URL без перемонтування Header.
+Рекомендація: синхронізувати через useEffect або зробити searchParams єдиним
+джерелом (value з URL + локальний draft).
+Впевненість: підтверджено (runtime).
+
+--- [L-06] Формула ціни: пріоритет операторів, дублювання, ігнорування currency ---
+Категорія: Логіка / UI
+Критичність: Low
+Файл: src/features/cart/components/CartOverview/CartOverview.tsx:93-97, 156-165
+      src/features/catalog/components/ProductPrice/ProductPrice.tsx:16-31
+Що не так: `(Number(price) - Number(discount) || 0)` — `|| 0` застосовується до
+різниці, а не до discount. Якщо discount відсутній/NaN, ціна стає 0, а не
+price. Та сама формула продубльована в рядку позиції та в підсумку. Символ ₴
+захардкоджений, хоча в Product є поле currency.
+Чому це проблема: при неочікуваних даних показується 0.00₴; дублювання
+ускладнює виправлення; ігнорується валюта товару.
+Умови прояву: discount === undefined/не число; товари в іншій валюті.
+Рекомендація: `const unit = Number(price) - (Number(discount) || 0)` в одній
+функції/утиліті; форматувати через Intl.NumberFormat з currency.
+Впевненість: підтверджено (код).
+
+--- [L-07] Бейдж кошика показує кількість позицій, а не кількість товарів ---
+Категорія: UI
+Критичність: Low
+Файл: src/features/cart/context/CartContext.tsx:39
+      src/types/api/index.ts:19-32 (Cart.quantity)
+Що не так: `itemsCount = cartItems.length`, хоча в Cart є quantity.
+Чому це проблема: 3 однакові товари показуються як "1". Це суперечить
+очікуванням користувача від бейджа кошика.
+Умови прояву: quantity > 1.
+Рекомендація: `cartItems.reduce((s, i) => s + (i.quantity ?? 1), 0)`.
+Впевненість: підтверджено (код).
+
+--- [L-08] mainImgResolver викликається двічі і не має fallback для відсутнього main ---
+Категорія: Продуктивність / надійність
+Критичність: Low
+Файл: src/features/cart/components/CartOverview/CartOverview.tsx:74-79
+      src/utils/mainImgResolver.ts:19
+Що не так: для одного елемента кошика функція викликається двічі (src і alt).
+Якщо images непорожні, але жодне не має is_main, повертається undefined.
+Чому це проблема: зайва робота на кожен рендер; CardMedia/img отримує
+undefined і показує порожнечу замість плейсхолдера.
+Умови прояву: товар без is_main-зображення.
+Рекомендація: один виклик у змінну; fallback на images[0] або placeholder.
+Впевненість: підтверджено (код).
+
+--- [L-09] activeStep не скидається при зміні товару ---
+Категорія: React / UI
+Критичність: Low
+Файл: src/features/catalog/components/ProductDetails/ProductDetails.tsx:19
+Що не так: індекс слайда зберігається в useState(0) і не залежить від id.
+Чому це проблема: при переході з товару з 5 фото на товар з 1 фото activeStep
+може лишитися 3; жоден Slide не буде in=true -> порожня галерея.
+Умови прояву: навігація між товарами без перемонтування компонента.
+Рекомендація: скидати activeStep при зміні product.id (key={product.id} або
+useEffect).
+Впевненість: підтверджено (код).
+
+--- [L-10] Картка товару — не посилання ---
+Категорія: UI / SEO
+Критичність: Low
+Файл: src/features/catalog/components/ProductCard/ProductCard.tsx:36
+Що не так: перехід виконується через onClick у CardActionArea, а не через
+Link/to.
+Чому це проблема: не працює "відкрити в новій вкладці", немає href для
+пошукових ботів, слабша семантика навігації.
+Умови прояву: Ctrl/Cmd+клік, контекстне меню, індексація.
+Рекомендація: `component={RouterLink} to={/product/${id}}` на CardActionArea.
+Впевненість: підтверджено (код).
+
+--- [L-11] Type-safety smells: non-null assertions і небезпечні касти ---
+Категорія: TypeScript
+Критичність: Low
+Файл: src/features/catalog/components/ProductDetails/ProductDetails.tsx:27, 35
+      src/features/profile/components/AccordionPetItem/AccordionPetItem.tsx:64-70, 73
+      src/features/auth/components/LoginForm/LoginForm.tsx:29
+      src/features/auth/components/RegistrationForm/RegistrationForm.tsx:31
+Що не так: `product!`, `editingId!`, `issu.path[0] as string`, а також
+`{...prev, [name]: value}` з довільним string-ключем і spread лише truthy
+полів (неможливо очистити name/birthday).
+Чому це проблема: компілятор не гарантує безпеку; при зміні потоку даних
+з'являться runtime-помилки; очищення полів тварини не працює.
+Умови прояву: помилковий порядок рендеру/стану; редагування тварини.
+Рекомендація: звузити типи замість `!`; для форм — типізовані keyof-сетери;
+перевіряти `issu.path[0]` на string; дозволити явне null/"" для очищення.
+Впевненість: підтверджено (код).
+
+--- [L-12] Мертві файли та зайві залежності ---
+Категорія: Архітектура / гігієна
+Критичність: Low
+Файл: src/features/auth/api/authType.ts (0 байт)
+      src/features/catalog/components/ProductPrice/ProductPrice.styles.ts (0 байт)
+      src/features/favourite/components/FavouriteButton/FavouriteButton.styles.ts (0 байт)
+      src/main.tsx:1 (закоментований modern-normalize)
+      src/declarations.d.ts:1
+      package.json:16-33 (stylelint, sass-embedded, @tanstack/react-query-devtools)
+      package.json:2 (name: "a")
+Що не так: порожні файли; задекларований, але не імпортований modern-normalize;
+stylelint/sass-embedded не використовуються (SCSS-міграцію завершено, конфігу
+stylelint немає); devtools лежить у dependencies, а не devDependencies.
+Чому це проблема: шум в репозиторії, зайві залежності в install/audit,
+неправильний поділ prod/dev.
+Умови прояву: install, аудит залежностей, онбординг.
+Рекомендація: видалити порожні файли й невикористані пакети, перенести
+devtools у devDependencies, дати пакету осмислену назву.
+Впевненість: підтверджено (код).
+
+--- [L-13] Source maps увімкнені для production-збірки ---
+Категорія: Безпека / продуктивність
+Критичність: Low
+Файл: vite.config.ts:22-24
+Що не так: `build.sourcemap: true`.
+Чому це проблема: якщо dist публікується разом з .map (зараз dist містить
+index-*.js.map ~3.3 МБ), будь-хто може відновити вихідний код. Це також
+збільшує артефакти.
+Умови прояву: деплой dist як є.
+Рекомендація: вимкнути sourcemap для prod або завантажувати maps у
+error-tracking сервіс, не публікуючи їх.
+Впевненість: підтверджено (код + dist).
+
+--- [L-14] Немає ErrorBoundary і таймаутів запитів ---
+Категорія: Надійність
+Критичність: Low
+Файл: src/main.tsx:25-45 (немає ErrorBoundary)
+      src/features/auth/api/authFetch.ts:34 (fetch без AbortSignal/timeout)
+Що не так: будь-яка помилка рендеру залишає білий екран; fetch може висіти
+нескінченно (немає timeout/abort).
+Чому це проблема: погіршує відновлюваність і діагностику; "Завантаження..."
+може тривати вічно не лише через 404.
+Умови прояву: виняток у рендері; завислий запит.
+Рекомендація: додати ErrorBoundary з fallback; AbortSignal.timeout у fetch-
+обгортці.
+Впевненість: підтверджено (код).
+
+================================================================================
+3. ПОТЕНЦІЙНІ РИЗИКИ ТА ПОТРЕБУЄ ПЕРЕВІРКИ
+================================================================================
+
+--- [P-01] /api/products без слеша при порожніх параметрах ---
+Категорія: API
+Критичність: Low
+Файл: src/features/catalog/api/catalogApi.ts:46-48
+Що не так: при відсутності параметрів URL = `${BASE_URL}/products`, тоді як
+решта ендпоінтів і OpenAPI використовують `/api/products/`.
+Чому це може бути проблемою: Django APPEND_SLASH робить 301-редірект; fetch
+його пройде, але буде зайвий round-trip, а при суворих CORS-налаштуваннях
+редірект може впасти.
+Умови прояву: перший захід на "/" без search/filters.
+Рекомендація: завжди додавати слеш: `${BASE_URL}/products/?${queryString}`.
+Впевненість: потребує перевірки (конфігурація бекенду). На практиці під час
+аудиту запит ішов з page/page_size, тому слеш був присутній.
+
+--- [P-02] Ротація refresh-токена ---
+Категорія: Безпека / API
+Критичність: Low
+Файл: src/features/auth/api/authFetch.ts:63-66
+Що не так: після refresh зберігається лише data.access; якщо бекенд ротує
+refresh (SIMPLE_JWT.ROTATE_REFRESH_TOKENS), новий refresh ігнорується.
+Чому це може бути проблемою: наступний refresh використає старий токен і
+отримає 401 -> примусовий вихід.
+Умови прояву: увімкнена ротація refresh на бекенді.
+Рекомендація: якщо data.refresh присутній — зберігати його.
+Впевненість: потребує перевірки (OpenAPI TokenRefresh містить лише access,
+тому за поточним контрактом проблеми немає).
+
+--- [P-03] Product.is_available оголошений optional ---
+Категорія: API / UI
+Критичність: Low
+Файл: src/types/api/index.ts:282
+      src/features/catalog/components/ProductDetails/ProductDetails.tsx:128
+Що не так: `disabled={!product.is_available}`; якщо бекенд не повертає поле,
+кнопка завжди disabled.
+Чому це може бути проблемою: товар неможливо додати в кошик.
+Умови прояву: відповідь без is_available.
+Рекомендація: уточнити контракт; якщо поле завжди є — зробити його required
+у генерації, інакше трактувати undefined як "доступний" або показувати
+невизначеність.
+Впевненість: потребує перевірки (реальні відповіді під час аудиту містили поле).
+
+--- [P-04] Реальність даних у src/data/db.json ---
+Категорія: Безпека
+Критичність: Medium (якщо дані реальні)
+Файл: src/data/db.json:31-42
+Що не так: див. M-04.
+Чому це може бути проблемою: якщо це реальні облікові дані, вони вже в історії
+репозиторію; видалення файлу з робочого дерева не прибирає їх із минулих
+комітів.
+Умови прояву: публічний/переданий репозиторій, сканери секретів.
+Рекомендація: підтвердити походження даних; за наявності реальних облікових
+даних — ротувати пароль і почистити git-історію.
+Впевненість: потребує перевірки (неможливо визначити з коду).
+
+--- [P-05] HTTPS і політика розгортання ---
+Категорія: Безпека
+Критичність: Medium
+Файл: src/data/user-config.json:2, vite.config.ts:22-24
+Що не так: http-адреса API та source maps у prod.
+Чому це може бути проблемою: http передає JWT у відкритому вигляді (MITM), а
+опубліковані source maps розкривають вихідний код.
+Умови прояву: production-деплой без HTTPS; публікація dist разом із .map.
+Рекомендація: переконатися, що production працює за HTTPS, а maps не
+публікуються; додати CSP/HSTS на рівні сервера/хостингу.
+Впевненість: потребує перевірки (немає конфігурації деплою в репозиторії).
+
+================================================================================
+4. ПИТАННЯ, ЩО ЗАЛИШИЛИСЯ
+================================================================================
+1. Які правила валідації та формати помилок реально повертає бекенд
+   (щоб спроєктувати ApiError і показ fieldErrors)?
+2. Чи увімкнено APPEND_SLASH і чи очікується слеш у /api/products?
+3. Чи ротується refresh-токен?
+4. Чи завжди присутнє Product.is_available і Product.discount?
+5. Чи є в репозиторії CI (GitHub Actions тощо), який запускає lint/build?
+   У межах проєкту конфігурації CI не знайдено.
+6. Чи дані в db.json реальні?
+7. Які цільові браузери/пристрої (впливає на пріоритет a11y та мобільної
+   верстки)?
+8. Чи планується checkout-функціональність (зараз кнопка фіктивна)?
+
+================================================================================
+5. ПІДСУМКОВИЙ ЗВІТ
+================================================================================
+
+5.1. Короткий загальний стан проєкту
+--------------------------------------------------------------------------------
+Проєкт має зрозумілу feature-based структуру, сучасний стек (React 19,
+React Query 5, MUI 9, Zod 4, React Compiler) і в цілому робочі основні
+сценарії: каталог із фільтрами та пагінацією, картка товару, кошик, JWT-логін
+із refresh-чергою, профіль із тваринами й обраним.
+
+Разом з тим поточний стан не є "готовим до релізу":
+  - production-збірка не проходить (2 помилки TypeScript);
+  - лінт не проходить;
+  - ключові помилки форм і мережі не показуються користувачу;
+  - підтвердження пароля не перевіряється (реально створює акаунт з
+    невідповідним паролем);
+  - стан авторизації розсинхронізується після refresh;
+  - частина UI-станів (loading/error/empty) відсутня;
+  - є проблеми безпеки середнього рівня (пароль у console, JWT у localStorage,
+    облікові дані в db.json, http-URL).
+
+Код читабельний, але типізація послаблена (strict вимкнено), а обробка помилок
+несистемна. Це створює відчуття працездатності на "щасливому шляху" і крихкість
+на помилках.
+
+5.2. Список проблем за рівнем критичності
+--------------------------------------------------------------------------------
+Critical (2):
+  C-01  Збірка падає: тип CartContext (TS2322).
+  C-02  Збірка падає: className у ProductCard (TS2322).
+
+High (7):
+  H-01  Помилки логіну/реєстрації не показуються.
+  H-02  Підтвердження пароля не перевіряється.
+  H-03  Кошик відправляє quantity 0/-1 (порушення min 1).
+  H-04  Розсинхронізація auth-стану після refresh.
+  H-05  Захардкоджений http://localhost:8000/api.
+  H-06  Вимкнений strict у TypeScript.
+  H-07  Пароль логується в console.
+
+Medium (18):
+  M-01  React 19 скидає поля форми після помилки валідації.
+  M-02  Logout: повне перезавантаження до очищення стану.
+  M-03  JWT у localStorage + refresh у контексті.
+  M-04  db.json з паролями/email у репозиторії.
+  M-05  updateUser: Promise<void> замість GetCustomUser.
+  M-06  Неузгоджена обробка помилок API.
+  M-07  Каталог без loading/error/empty, зайві retry.
+  M-08  URL не є джерелом істини (search/page/filters).
+  M-09  Деталі товару: вічне "Завантаження..." при помилці/NaN id.
+  M-10  Опції фільтрів: без try/catch, без кешу, дублювання.
+  M-11  Видалення з кошика: успіх до завершення запиту.
+  M-12  Фіктивне оформлення замовлення, працює з порожнім кошиком.
+  M-13  Збереження профілю без очікування/фідбеку.
+  M-14  Тварини: порожній стан, валідація, фідбек.
+  M-15  Дві моделі Product.
+  M-16  minWidth 1000px на профілі.
+  M-17  ESLint падає.
+  M-18  Немає тестів.
+
+Low (14):
+  L-01  console.log-и.
+  L-02  Random image у рендері InfoState.
+  L-03  Рендер "0" для порожніх опцій.
+  L-04  A11y: вкладені інтерактивні елементи, безіменні кнопки, div-onClick,
+        дубльовані id, фіктивний aria-controls.
+  L-05  Хедер-пошук не синхронізований з URL.
+  L-06  Формула ціни: пріоритет ||, дублювання, ігнорування currency.
+  L-07  Бейдж кошика рахує позиції, а не кількість.
+  L-08  mainImgResolver двічі + немає fallback.
+  L-09  activeStep не скидається.
+  L-10  Картка товару не є посиланням.
+  L-11  non-null assertions / небезпечні касти / truthy-spread.
+  L-12  Мертві файли та зайві залежності.
+  L-13  Source maps у production.
+  L-14  Немає ErrorBoundary/timeout.
+
+Потенційні (5): P-01..P-05.
+
+5.3. Найважливіші проблеми, які варто виправити першими
+--------------------------------------------------------------------------------
+1. C-01, C-02 — відновити збірку. Без цього неможливо ні задеплоїти, ні
+   прогнати CI. Це два маленькі виправлення.
+2. H-06 — увімкнути strict (після виправлення C-01/C-02), щоб подальші
+   виправлення не створювали нових прихованих помилок.
+3. H-01 + M-01 — дати користувачу бачити причину невдалого логіну й не стирати
+   введене. Це найпомітніший UX-дефект.
+4. H-02 — додати перевірку pass1 === pass2.
+5. H-04 — синхронізувати токени з AuthContext і коректно розлогінювати при
+   невдалому refresh.
+6. H-03 — не відправляти quantity < 1.
+7. H-05 — винести BASE_URL в env.
+8. H-07 + M-04 — прибрати пароль з логів і облікові дані з репозиторію.
+9. M-07, M-08, M-09 — стани loading/error/empty і коректна робота
+   search/page, щоб каталог не "зникав" при помилках.
+10. M-11, M-12, M-13, M-14 — прибрати фальшиві success-toast і додати
+    onError/await для мутацій.
+
+5.4. Рекомендації щодо архітектури та підтримки коду
+--------------------------------------------------------------------------------
+1. Єдиний API-клієнт. Замість шести копій BASE_URL і різних форматів помилок —
+   один модуль (baseUrl з env, authFetch всередині, розбір помилок, типізований
+   ApiError). Це прибере M-05/M-06/H-05 і спростить тестування.
+2. Єдине джерело істини для auth. Токени + стан користувача мають жити в
+   одному місці; authFetch має повідомляти контекст про refresh/logout
+   (подія або callback), а не мовчки правити localStorage.
+3. Довідники через React Query. brands/species/categories — це серверний стан,
+   його місце в useQuery зі staleTime, а не в useEffect. Це прибере дублювання
+   (M-10) і дасть кеш/retry/error.
+4. URL як стан каталогу. search/page/filters у searchParams; це виправить
+   M-08 і зробить посилання відтворюваними.
+5. Типізація з OpenAPI. Прибрати локальні копії Product (M-15), увімкнути
+   strict, не використовувати `!`/`as` там, де можна звузити тип. Для
+   відповідей API — або згенеровані типи, або zod-схеми на межі.
+6. Єдина політика мутацій. Для кожної мутації: pending -> disable, success ->
+   toast/invalidate, error -> toast + збереження введених даних. Зараз кожна
+   фіча робить це по-різному.
+7. Форми: контрольовані поля або react-hook-form + zodResolver. Це вирішує
+   M-01, H-02 і дає field-level помилки.
+8. Мінімальний набір тестів: схеми (pass1/pass2), authFetch (refresh, черга,
+   невдача), CartContext, ProductsList (search/page), форма логіну. Плюс
+   e2e-сценарій "логін -> додати в кошик -> змінити кількість".
+9. Гігієна: no-console, видалення мертвих файлів, devDependencies, source maps
+   лише для error-tracking.
+
+5.5. Перелік перевірених і неперевірених частин проєкту
+--------------------------------------------------------------------------------
+Перевірено (читання коду + аналіз):
+  - конфігурація збірки/TS/ESLint/Vite/HTML;
+  - усі файли з логікою: компоненти, хуки, API, контексти, схеми, типи,
+    конфігурація (91 .ts/.tsx у src, з них прочитано всі, крім частини
+    декоративних *.styles.ts);
+  - усі API-модулі та React Query хуки;
+  - усі сторінки, layout-компоненти, UI-примітиви;
+  - усі фічі: auth, cart, catalog, favourite, profile;
+  - згенерований OpenAPI-контракт (використано для звірки ендпоінтів);
+  - стилі *.styles.ts — вибірково (функціональні аспекти: minWidth, адаптив).
+
+Перевірено частково:
+  - *.styles.ts — візуальна відповідність макетам не оцінювалася;
+  - theme.ts — коректність палітри/типографіки не оцінювалася;
+  - index.html — лише lang/favicon/кодування.
+
+Не перевірено:
+  - бекенд-код і його валідація (немає в цьому репозиторії);
+  - production-деплой, HTTPS, CORS, CSP;
+  - продуктивність на реальних обсягах даних (профілювання);
+  - кросплатформна/кросбраузерна сумісність;
+  - доступність із реальними скрінрідерами;
+  - історія git на предмет інших секретів (перевірено лише робоче дерево).
+
+5.6. Перевірки, які не вдалося виконати, із причинами
+--------------------------------------------------------------------------------
+1. `npm run build` повністю (tsc + vite build) — неможливо, бо `tsc -b`
+   падає на C-01/C-02. Запускати `vite build` в обхід type-check не мало сенсу:
+   це приховало б блокер і перезаписало dist.
+2. Юніт-тести / e2e-набір — у проєкті немає тестового фреймворку та тестів;
+   нічого запускати.
+3. Перевірка реального сценарію "протермінований access + невалідний refresh" —
+   вимагала б ручного псування токенів/очікування expiry; зроблено висновок із
+   коду (H-04).
+4. Перевірка quantity=0 на реальному бекенді — вимагала б зміни кошика
+   (мутація даних користувача); висновок зроблено з OpenAPI (min 1) і коду.
+5. Перевірка мобільної верстки профілю — не виконувалася у браузері з
+   мобільним viewport; висновок із `minWidth: 1000px` (M-16).
+6. Перевірка поведінки Django APPEND_SLASH / ротації refresh / обов'язковості
+   is_available — потребує доступу до налаштувань і коду бекенду.
+7. Перевірка продуктивності (React Profiler, Lighthouse) — не виконувалася,
+   щоб не виходити за межі статичного аудиту; знахідки L-02/L-08 позначені як
+   локальні.
+
+================================================================================
+Кінець звіту.
+================================================================================

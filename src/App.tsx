@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import HomePage from "@/pages/HomePage/HomePage";
 import ProductDetailsPage from "./pages/ProductDetailsPage/ProductDetailsPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
@@ -12,24 +12,22 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="/product/:id" element={<ProductDetailsPage />} />
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="/product/:id" element={<ProductDetailsPage />} />
 
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/registration" element={<RegistrationPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/registration" element={<RegistrationPage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/cart" element={<CartPage />} />
-          </Route>
-
-          <Route path="*" element={<NotFoundPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/cart" element={<CartPage />} />
         </Route>
-      </Routes>
-    </BrowserRouter>
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 

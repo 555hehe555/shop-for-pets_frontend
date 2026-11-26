@@ -32,6 +32,7 @@ export function useChangeCartItemQuantity() {
     mutationFn: ({ product, quantity }: CartRequest) =>
       changeCartItemQuantity(product, quantity),
     onSuccess: () => {
+      toast.success("успішно забрано з корзини");
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (error: Error) => {
@@ -48,6 +49,7 @@ export function useRemoveCartItem() {
   const mutation = useMutation({
     mutationFn: (product: number) => removeCartItem(product),
     onSuccess: () => {
+      toast.success("успішно забрано з корзини");
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (error: Error) => {

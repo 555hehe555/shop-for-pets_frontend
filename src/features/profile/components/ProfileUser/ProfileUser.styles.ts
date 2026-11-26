@@ -4,7 +4,8 @@ import { radii } from "@/styles/radii";
 export const styles: Record<string, SxProps<Theme>> = {
   profileContainer: (theme) => ({
     margin: "18px auto",
-    minWidth: "1000px",
+    width: "100%",
+    maxWidth: "1000px",
     display: "flex",
     flexDirection: "column",
     gap: "16px",

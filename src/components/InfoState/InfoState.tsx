@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 import Button from "@/ui/Button/Button";
@@ -41,13 +42,14 @@ export default function InfoState({
   titleComponent = "h2",
 }: InfoStateProps) {
   const navigate = useNavigate();
+  const [imageSrc] = useState(() => getRandomImage(situation));
 
   return (
     <Box sx={styles.container}>
       <Box
         component="img"
         sx={styles.image}
-        src={getRandomImage(situation)}
+        src={imageSrc}
         alt={`Image for ${situation} situation`}
       />
       <Typography variant="h4" component={titleComponent} sx={styles.title}>

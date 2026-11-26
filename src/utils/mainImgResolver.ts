@@ -2,10 +2,9 @@ import type { ProductImage } from "@/types/api";
 import { CatPlaseholder } from "@/data/images";
 
 export function mainImgResolver(
-  images: ProductImage[],
+  images: ProductImage[] | undefined,
 ): ProductImage | undefined {
-  if (images.length == 0) {
-    console.log("in if");
+  if (!images || images.length === 0) {
     const placeholderImg: ProductImage = {
       id: -1,
       image: CatPlaseholder,
@@ -16,5 +15,8 @@ export function mainImgResolver(
     return placeholderImg;
   }
 
-  return images.filter((image) => image.is_main).at(0);
+  const main = images.find((image) => image.is_main);
+  if (main) return main;
+
+  return images[0];
 }

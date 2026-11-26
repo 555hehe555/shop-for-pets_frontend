@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/data/user-config.json";
+import { BASE_URL } from "@/config/api";
 import { authFetch } from "@/features/auth/api/authFetch";
 import type { PatchedPetRequest, Pet, PetRequest } from "@/types/api";
 

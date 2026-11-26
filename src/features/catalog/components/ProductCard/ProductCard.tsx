@@ -10,7 +10,7 @@ import {
 
 import { styles } from "./ProductCard.styles";
 
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { mainImgResolver } from "@/utils/mainImgResolver";
 import { ProductPrice } from "../ProductPrice/ProductPrice";
 
@@ -19,8 +19,6 @@ interface ProductProps {
 }
 
 export function ProductCard({ product }: ProductProps) {
-  const navigate = useNavigate();
-
   if (!product) {
     return null;
   }
@@ -29,11 +27,9 @@ export function ProductCard({ product }: ProductProps) {
 
   const mainImg = mainImgResolver(images);
 
-  console.log(mainImg);
-
   return (
     <Card sx={styles.cardContainer}>
-      <CardActionArea onClick={() => navigate(`/product/${id}`)}>
+      <CardActionArea component={RouterLink} to={`/product/${id}`}>
         <CardMedia
           className="cardMedia"
           component="img"

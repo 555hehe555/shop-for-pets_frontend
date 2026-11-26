@@ -18,7 +18,7 @@ export default function ProductDetailsPage() {
 
   return (
     <Main>
-      <ProductDetails id={productId} onAddToCartItem={addToCartItem} />
+      <ProductDetails key={productId} id={productId} onAddToCartItem={addToCartItem} />
     </Main>
   );
 }

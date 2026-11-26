@@ -16,9 +16,14 @@ export default function Header() {
   const { isAuthenticated } = useAuth();
 
   const [searchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || "",
-  );
+  const urlSearch = searchParams.get("search") || "";
+  const [searchQuery, setSearchQuery] = useState(urlSearch);
+  const [prevUrlSearch, setPrevUrlSearch] = useState(urlSearch);
+
+  if (urlSearch !== prevUrlSearch) {
+    setPrevUrlSearch(urlSearch);
+    setSearchQuery(urlSearch);
+  }
 
   const navigate = useNavigate();
 

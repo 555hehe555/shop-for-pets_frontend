@@ -6,7 +6,6 @@ import {
   Divider,
   FormControlLabel,
   FormGroup,
-  IconButton,
   Typography,
 } from "@mui/material";
 import type { FilterState } from "../../api";
@@ -19,33 +18,7 @@ import {
   fetchCategories,
   fetchSpecies,
 } from "../../api/catalogApi";
-
-// const SPECIES_OPTIONS = [
-//   "Dogs",
-//   "Cats",
-//   "Birds",
-//   "Fish",
-//   "Small Pets",
-//   "Reptiles",
-// ];
-
-// const CATEGORIES_OPTIONS = [
-//   "Food",
-//   "Toys",
-//   "Accessories",
-//   "Health & Wellness",
-//   "Grooming",
-//   "Beds & Furniture",
-// ];
-
-// const BRANDS_OPTIONS = [
-//   "Royal Canin",
-//   "Purina",
-//   "Whiskas",
-//   "Pedigree",
-//   "Trixie",
-//   "Acana",
-// ];
+import Button from "@/ui/Button/Button";
 
 interface ProductFiltersType {
   filters: FilterState;
@@ -72,44 +45,67 @@ function FilterGroup({
   filters,
 }: FilterGroupType) {
   const [open, setOpen] = useState(true);
+  const contentId = useId();
+
+  const [showAll, setShowAll] = useState(false);
+
+  if (!options || options?.length === 0) {
+    return null;
+  }
+
+  const resolvedOptions = showAll ? options : options.slice(0, 5);
 
   return (
     <Box sx={styles.group}>
-      <Box sx={styles.groupHeader} onClick={() => setOpen((prev) => !prev)}>
+      <ButtonBase
+        sx={styles.groupHeader}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-controls={contentId}
+        aria-label={open ? `Згорнути ${title}` : `Розгорнути ${title}`}
+      >
         <Typography variant="subtitle1" sx={styles.groupTitle}>
           {title}
         </Typography>
 
-        <IconButton
-          size="small"
+        <Box
+          component="span"
+          className="filter-toggle"
           sx={styles.toggleButton}
-          aria-label={open ? `Collapse ${title}` : `Expand ${title}`}
+          aria-hidden="true"
         >
-          {open ? <CaretUp size={16} /> : <CaretDown size={16} />}
-        </IconButton>
-      </Box>
+          {open ? <CaretUp size={18} /> : <CaretDown size={18} />}
+        </Box>
+      </ButtonBase>
 
-      <Collapse in={open}>
+      <Collapse in={open} id={contentId}>
         <FormGroup sx={styles.options}>
-          {options?.length &&
-            options.map((option) => (
-              <FormControlLabel
-                key={option.id}
-                sx={styles.option}
-                control={
-                  <Checkbox
-                    sx={styles.checkbox}
-                    checked={filters[filterKey].includes(option.name)}
-                    onChange={(e) =>
-                      handleToggle(filterKey, e.target.checked, option.name)
-                    }
-                    color="primary"
-                    size="small"
-                  />
-                }
-                label={option.name}
-              />
-            ))}
+          {resolvedOptions.map((option) => (
+            <FormControlLabel
+              key={option.id}
+              sx={styles.option}
+              control={
+                <Checkbox
+                  sx={styles.checkbox}
+                  checked={filters[filterKey].includes(option.name)}
+                  onChange={(e) =>
+                    handleToggle(filterKey, e.target.checked, option.name)
+                  }
+                  color="primary"
+                  size="small"
+                />
+              }
+              label={option.name}
+            />
+          ))}
+          <Button
+            variant="text"
+            size="sm"
+            sx={{ color: "orange" }}
+            onClick={() => setShowAll(!showAll)}
+          >
+            {showAll ? "Показати менше" : "Показати все"}
+          </Button>
         </FormGroup>
       </Collapse>
     </Box>
@@ -121,6 +117,7 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
   const [brand, setBrand] = useState<Brand[] | null>(null);
   const [species, setSpecies] = useState<Species[] | null>(null);
   const [category, setCategory] = useState<Category[] | null>(null);
+  const contentId = useId();
 
   useEffect(() => {
     async function getFilters() {
@@ -153,10 +150,10 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
   return (
     <Box sx={styles.container}>
       <ButtonBase
-        sx={styles.groupHeader}
+        sx={styles.panelHeader}
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
-        aria-controls={useId()}
+        aria-controls={contentId}
       >
         <Typography variant="h5" sx={styles.title}>
           Фільтри
@@ -164,13 +161,14 @@ export function ProductFilters({ filters, onChange }: ProductFiltersType) {
 
         <Box
           component="span"
-          sx={styles.toggleButtonContainer}
+          className="filter-toggle"
+          sx={styles.toggleButton}
           aria-hidden="true"
         >
-          {open ? <CaretUp size={16} /> : <CaretDown size={16} />}
+          {open ? <CaretUp size={18} /> : <CaretDown size={18} />}
         </Box>
       </ButtonBase>
-      <Collapse in={open} orientation="vertical">
+      <Collapse in={open} orientation="vertical" id={contentId}>
         <FilterGroup
           title="Бренди"
           options={brand}

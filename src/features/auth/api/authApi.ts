@@ -1,13 +1,15 @@
-import { BASE_URL } from "@/data/user-config.json";
+import { BASE_URL } from "@/config/api";
 import type {
   CreateCustomUser,
   CreateCustomUserRequest,
+  GetCustomUser,
   GetMe,
   PatchedUpdateCustomUserRequest,
   TokenObtainPair,
   TokenObtainPairRequest,
 } from "@/types/api";
 import { authFetch } from "./authFetch";
+import { createAuthApiError } from "../utils/authError";
 
 export async function loginUser({
   username,
@@ -27,7 +29,7 @@ export async function loginUser({
   });
 
   if (!response.ok) {
-    throw new Error("error to authenticate user");
+    throw await createAuthApiError(response);
   }
 
   const data = await response.json();
@@ -58,7 +60,7 @@ export async function registrateUser({
   });
 
   if (!response.ok) {
-    throw new Error("error to registrate user");
+    throw await createAuthApiError(response);
   }
 
   const data = await response.json();
@@ -81,7 +83,7 @@ export async function getMe(): Promise<GetMe> {
 export async function updateUser(
   id: number,
   inData: PatchedUpdateCustomUserRequest,
-): Promise<void> {
+): Promise<GetCustomUser> {
   const response = await authFetch(`${BASE_URL}/users/${id}/`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -92,7 +94,7 @@ export async function updateUser(
     throw new Error("error to patch user");
   }
 
-  const data = await response.json();
+  const data: GetCustomUser = await response.json();
 
   return data;
 }

@@ -24,15 +24,18 @@ export function CartOverview() {
     setIdToDelete(null);
   }
 
-  function handleDeleteItem() {
+  async function handleDeleteItem() {
     if (idToDelete !== null) {
-      deleteCartItem(idToDelete);
+      try {
+        await deleteCartItem(idToDelete);
+        toast.success("успішно забрано з корзини");
+      } catch {
+        // error toast handled by mutation onError
+      }
     }
 
     setIsDialogOpen(false);
     setIdToDelete(null);
-
-    toast.success("успішно забрано з корзини");
   }
 
   if (loading) {
@@ -92,20 +95,23 @@ export function CartOverview() {
                   <Typography sx={styles.cartItemPrice}>
                     {(
                       (Number(cartItem.product_data.price) -
-                        Number(cartItem.product_data.discount) || 0) *
-                      (cartItem.quantity || 0)
+                        (Number(cartItem.product_data.discount) || 0)) *
+                      (cartItem.quantity || 1)
                     ).toFixed(2)}
                     ₴
                   </Typography>
                   <Box sx={styles.cartItemQuantityControls}>
                     <Button
                       size="xs"
-                      onClick={() =>
-                        changeCartItemQuantity({
-                          product: cartItem?.product,
-                          quantity: (cartItem?.quantity || 0) - 1,
-                        })
-                      }
+                      onClick={() => {
+                        const newQty = (cartItem?.quantity || 1) - 1;
+                        if (newQty >= 1) {
+                          changeCartItemQuantity({
+                            product: cartItem?.product,
+                            quantity: newQty,
+                          });
+                        }
+                      }}
                     >
                       -
                     </Button>
@@ -150,32 +156,34 @@ export function CartOverview() {
           />
         )}
 
-        <Box sx={styles.cartSummary}>
-          <Typography variant="h5" component="h2">
-            Сумарна вартість:{" "}
-            {cartItems
-              .reduce(
-                (total, item) =>
-                  total +
-                  (Number(item.product_data.price) -
-                    Number(item.product_data.discount) || 0) *
-                    (item?.quantity || 1),
-                0,
-              )
-              .toFixed(2)}
-            ₴
-          </Typography>
+        {cartItems.length > 0 && (
+          <Box sx={styles.cartSummary}>
+            <Typography variant="h5" component="h2">
+              Сумарна вартість:{" "}
+              {cartItems
+                .reduce(
+                  (total, item) =>
+                    total +
+                    (Number(item.product_data.price) -
+                      (Number(item.product_data.discount) || 0)) *
+                      (item?.quantity || 1),
+                  0,
+                )
+                .toFixed(2)}
+              ₴
+            </Typography>
 
-          <Button
-            variant="primary"
-            size="md"
-            onClick={() => {
-              toast.success("успішно оформлено замовлення");
-            }}
-          >
-            Оформити замовлення
-          </Button>
-        </Box>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => {
+                toast.success("успішно оформлено замовлення");
+              }}
+            >
+              Оформити замовлення
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <ConfirmDialog

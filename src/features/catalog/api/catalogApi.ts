@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/data/user-config.json";
+import { BASE_URL } from "@/config/api";
 import type { Brand, Category, Product, Species } from "@/types/api";
 
 export type ProductFiltersParams = {
@@ -45,7 +45,7 @@ export async function fetchProducts(
 
   const url = queryString
     ? `${BASE_URL}/products/?${queryString}`
-    : `${BASE_URL}/products`;
+    : `${BASE_URL}/products/`;
 
   const response = await fetch(url);
 

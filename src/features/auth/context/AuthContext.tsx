@@ -1,10 +1,17 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import type { CreateCustomUserRequest } from "@/types/api";
 import {
   useLoginUser,
   useRegistrateUser,
 } from "@/queries/auth/useAuthMutations";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextInterface {
   accessToken: string | null;
@@ -34,6 +41,21 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.getItem("refresh"),
   );
 
+  useEffect(() => {
+    function syncTokens() {
+      setAccessToken(localStorage.getItem("access"));
+      setRefreshToken(localStorage.getItem("refresh"));
+    }
+
+    window.addEventListener("auth:sync", syncTokens);
+    window.addEventListener("storage", syncTokens);
+
+    return () => {
+      window.removeEventListener("auth:sync", syncTokens);
+      window.removeEventListener("storage", syncTokens);
+    };
+  }, []);
+
   async function authenticateUser(username: string, password: string) {
     const data = await loginUser({ username, password });
 
@@ -41,16 +63,15 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     setRefreshToken(data.refresh);
   }
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   function logoutUser() {
-    queryClient.clear();
-    window.location.href = "/";
-
-    setAccessToken(null);
-    setRefreshToken(null);
-
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
+    setAccessToken(null);
+    setRefreshToken(null);
+    queryClient.clear();
+    navigate("/");
   }
 
   async function registerUser({
@@ -65,8 +86,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     setAccessToken(loginData.access);
     setRefreshToken(loginData.refresh);
   }
-
-  console.log(!!accessToken);
 
   const isAuthenticated = !!accessToken;
 
@@ -86,6 +105,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);
 

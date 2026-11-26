@@ -45,7 +45,7 @@ export function ProfileUser() {
 
   const { logoutUser, isAuthenticated } = useAuth();
 
-  const { mutate: updateUser } = useUpdateUser();
+  const { mutateAsync: updateUser } = useUpdateUser();
 
   const { data: favouriteItems } = useFavouriteItems(isAuthenticated);
 
@@ -67,11 +67,14 @@ export function ProfileUser() {
     );
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (values && userData && userData.id) {
-      updateUser({ id: userData.id, inData: values });
-
-      setDraft(null);
+      try {
+        await updateUser({ id: userData.id, inData: values });
+        setDraft(null);
+      } catch {
+        // error toast handled by mutation onError
+      }
     }
   }
 
@@ -227,7 +230,6 @@ export function ProfileUser() {
               <ProductCard
                 key={item.product_data.id}
                 product={item.product_data}
-                className="favouriteProduct"
               />
             ))}
           </AccordionDetails>

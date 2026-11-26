@@ -2,6 +2,7 @@ import { loginUser, registrateUser } from "@/features/auth";
 import { updateUser } from "@/features/auth/api/authApi";
 import type { PatchedUpdateCustomUserRequest } from "@/types/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 export function useLoginUser() {
   const queryClient = useQueryClient();
@@ -37,6 +38,10 @@ export function useUpdateUser() {
     }) => updateUser(id, inData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      toast.success("Дані профілю збережено");
+    },
+    onError: () => {
+      toast.error("Не вдалося зберегти дані профілю");
     },
   });
 

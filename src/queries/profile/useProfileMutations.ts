@@ -35,7 +35,6 @@ export function useDeletePet() {
   const mutation = useMutation({
     mutationFn: ({ id }: { id: number }) => deletePet(id),
     onSuccess: () => {
-      console.log("Pet deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["pets"] });
     },
   });

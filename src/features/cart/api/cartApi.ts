@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/data/user-config.json";
+import { BASE_URL } from "@/config/api";
 import { authFetch } from "@/features/auth/api/authFetch";
 import type { Cart } from "@/types/api";
 
@@ -44,7 +44,7 @@ export async function removeCartItem(id: number): Promise<void> {
 export async function changeCartItemQuantity(
   product: number,
   quantity?: number,
-) {
+): Promise<Cart> {
   const response = await authFetch(`${BASE_URL}/cart/${product}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -57,5 +57,5 @@ export async function changeCartItemQuantity(
     );
   }
 
-  return await response.json();
+  return (await response.json()) as Cart;
 }

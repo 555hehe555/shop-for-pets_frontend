@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/data/user-config.json";
+import { BASE_URL } from "@/config/api";
 
 interface FailedQueueType {
   resolve: (token: string) => void;
@@ -65,11 +65,14 @@ export async function authFetch(
         localStorage.setItem("access", data.access);
         processQueue(null, data.access);
 
+        window.dispatchEvent(new Event("auth:sync"));
+
         headers.set("Authorization", `Bearer ${data.access}`);
 
         response = await fetch(input, { ...init, headers });
       } else {
         processQueue(new Error("faill refresh"));
+        window.dispatchEvent(new Event("auth:sync"));
 
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");

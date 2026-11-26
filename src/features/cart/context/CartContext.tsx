@@ -14,8 +14,8 @@ interface CartContextType {
   loading: boolean;
   itemsCount: number;
 
-  addToCartItem: (id: number) => Promise<void>;
-  changeCartItemQuantity: ({ product, quantity }: CartRequest) => Promise<void>;
+  addToCartItem: (id: number) => Promise<Cart>;
+  changeCartItemQuantity: ({ product, quantity }: CartRequest) => Promise<Cart>;
   deleteCartItem: (id: number) => Promise<void>;
 }
 
@@ -36,7 +36,10 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   const error = queryError ? queryError.message : null;
 
-  const itemsCount = cartItems.length;
+  const itemsCount = cartItems.reduce(
+    (sum, item) => sum + (item.quantity ?? 1),
+    0,
+  );
 
   return (
     <CartContext.Provider
@@ -55,6 +58,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line
 export function useCart() {
   const context = useContext(CartContext);
 
